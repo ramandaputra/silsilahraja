@@ -28,9 +28,13 @@
 </head>
 <body class="bg-light">
 
-    <div class="container mt-3">
+    <div class="container mt-3 d-flex justify-content-between align-items-center">
         <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm">
             <i class="fa-solid fa-arrow-left"></i> Kembali ke Pencarian
+        </a>
+        
+        <a href="{{ route('person.trah', $person->id) }}" class="btn btn-primary btn-sm shadow-sm fw-bold">
+            <i class="fa-solid fa-diagram-project me-1"></i> Lihat Pohon Silsilah / Trah
         </a>
     </div>
 
@@ -55,7 +59,7 @@
                         @else
                             <span class="badge bg-success">Hidup</span>
                         @endif
-                    </</p>
+                    </p>
                 </div>
             </div>
         </div>
@@ -85,6 +89,27 @@
                                     <td>{{ \Carbon\Carbon::parse($person->tanggal_wafat)->translatedFormat('d F Y') }}</td>
                                 </tr>
                                 @endif
+                                <tr>
+                                    <th class="ps-3">Status</th>
+                                    <td>{{ $person->status_pernikahan ?? 'Belum Menikah' }}</td>
+                                </tr>
+                                @if($person->status_pernikahan == 'Menikah')
+                                <tr>
+                                    <th class="ps-3">{{ $person->jenis_kelamin == 'L' ? 'Istri' : 'Suami' }}</th>
+                                    <td class="fw-semibold text-success">
+                                        @if($person->nama_pasangan)
+                                            {{-- Menampilkan daftar pasangan dengan nomor urut ke bawah --}}
+                                            <ol class="ps-3 mb-0">
+                                                @foreach(explode(',', $person->nama_pasangan) as $pasangan)
+                                                    <li>{{ trim($pasangan) }}</li>
+                                                @endforeach
+                                            </ol>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -95,7 +120,7 @@
                         <i class="fa-solid fa-book me-2"></i> Biografi / Catatan Sejarah
                     </div>
                     <div class="card-body">
-                        <p class="text-muted lh-base">
+                        <p class="text-muted lh-base" style="text-align: justify;">
                             {{ $person->biografi ?? 'Belum ada data biografi tertulis untuk tokoh ini.' }}
                         </p>
                     </div>
@@ -104,8 +129,8 @@
 
             <div class="col-md-7 mb-4">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white fw-bold text-primary">
-                        <i class="fa-solid fa-sitemap me-2"></i> Struktur Hubungan Keluarga (Silsilah)
+                    <div class="card-header bg-white fw-bold text-primary d-flex justify-content-between align-items-center">
+                        <span><i class="fa-solid fa-sitemap me-2"></i> Struktur Hubungan Keluarga (Silsilah)</span>
                     </div>
                     <div class="card-body">
                         
@@ -126,11 +151,18 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="p-3 border rounded bg-white">
-                                        <small class="text-muted d-block">Ibu</small>
+                                        <small class="text-muted d-block">Ibu Kandung</small>
                                         @if($person->mother)
+                                            {{-- Jika Ibunya adalah keluarga raja yang punya profil sendiri --}}
                                             <a href="{{ route('person.detail', $person->mother->id) }}" class="fw-bold text-decoration-none text-dark">
                                                 <i class="fa-solid fa-venus text-danger me-1"></i> {{ $person->mother->nama_lengkap }}
                                             </a>
+                                        @elseif($person->nama_ibu_non_raja)
+                                            {{-- Jika Ibunya adalah Istri Kedua/Luar Kerajaan yang diketik manual --}}
+                                            <span class="fw-bold text-dark">
+                                                <i class="fa-solid fa-venus text-secondary me-1"></i> {{ $person->nama_ibu_non_raja }} 
+                                                <small class="text-muted d-block" style="font-size: 11px; font-weight: normal;">(Luar Kerajaan)</small>
+                                            </span>
                                         @else
                                             <span class="text-muted italic">Tidak terdata</span>
                                         @endif
@@ -141,22 +173,31 @@
 
                         <div class="mb-4">
                             <h6 class="text-uppercase text-muted fw-bold small"><i class="fa-solid fa-user text-primary"></i> Fokus Profil</h6>
-                            <div class="p-3 bg-primary text-white rounded shadow-sm mt-1">
-                                <span class="fw-bold d-block">{{ $person->nama_lengkap }}</span>
-                                <small>Subjek Utama</small>
+                            <div class="row g-2 mt-1">
+                                <div class="{{ $person->status_pernikahan == 'Menikah' ? 'col-6' : 'col-12' }}">
+                                    <div class="p-3 bg-primary text-white rounded shadow-sm h-100">
+                                        <span class="fw-bold d-block">{{ $person->nama_lengkap }}</span>
+                                        <small>Subjek Utama</small>
+                                    </div>
+                                </div>
+                                @if($person->status_pernikahan == 'Menikah')
+                                <div class="col-6">
+                                    <div class="p-3 bg-white border border-success rounded shadow-sm h-100">
+                                        <small class="text-muted d-block mb-1"><i class="fa-solid fa-heart text-danger me-1"></i> Pasangan (Luar Kerajaan)</small>
+                                        <div class="text-success small fw-bold">
+                                            @foreach(explode(',', $person->nama_pasangan) as $pasangan)
+                                                <div class="mb-1"><i class="fa-solid fa-circle-dot text-secondary me-1" style="font-size: 8px;"></i> {{ trim($pasangan) }}</div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                         </div>
 
                         <div>
                             <h6 class="text-uppercase text-muted fw-bold small mb-2"><i class="fa-solid fa-caret-down text-secondary"></i> Keturunan / Anak</h6>
                             
-                            @php
-                                // Ambil data anak secara fleksibel (baik subjek ini bertindak sebagai ayah maupun ibu)
-                                $children = \App\Models\Person::where('father_id', $person->id)
-                                             ->orWhere('mother_id', $person->id)
-                                             ->get();
-                            @endphp
-
                             @if($children->isEmpty())
                                 <div class="p-3 border rounded bg-white text-muted">
                                     Tidak memiliki atau belum terdata hubungan anak.

@@ -30,6 +30,9 @@ class PersonController extends Controller
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
+            'status_pernikahan' => 'required|in:Belum Menikah,Menikah',
+            'nama_pasangan' => 'nullable|string|max:255',
+            'nama_ibu_non_raja' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -62,6 +65,9 @@ class PersonController extends Controller
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
+            'status_pernikahan' => 'required|in:Belum Menikah,Menikah',
+            'nama_pasangan' => 'nullable|string|max:255',
+            'nama_ibu_non_raja' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/person/{id}', [PublicController::class, 'show'])->name('person.detail');
+// Rute untuk melihat halaman silsilah/trah penuh
+Route::get('/person/{id}/trah', [App\Http\Controllers\HomeController::class, 'trah'])->name('person.trah');
 
 /*
 |--------------------------------------------------------------------------
