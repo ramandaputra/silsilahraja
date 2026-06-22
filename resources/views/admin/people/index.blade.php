@@ -1,94 +1,134 @@
 <x-app-layout>
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold text-dark mb-0">Kelola Silsilah Keluarga</h2>
-                <p class="text-muted mb-0">Daftar seluruh silsilah raja yang terdaftar di sistem</p>
-            </div>
-            <a href="{{ route('admin.people.create') }}" class="btn btn-primary shadow-sm">
-                <i class="fa-solid fa-user-plus me-1"></i> Tambah Anggota
-            </a>
-        </div>
+    @slot('page-title') Kelola Data Silsilah @endslot
 
+    <div class="space-y-lg">
+        
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
-                <i class="fa-solid fa-circle-check me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="bg-primary-fixed text-on-primary-fixed px-lg py-sm rounded-xl flex items-center gap-xs shadow-sm text-sm">
+                <span class="material-symbols-outlined text-secondary">check_circle</span>
+                <span class="font-semibold">{{ session('success') }}</span>
             </div>
         @endif
 
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle mb-0">
-                        <thead class="table-light text-secondary">
-                            <tr>
-                                <th class="ps-3 py-3" width="50">No</th>
-                                <th class="py-3">Nama Lengkap</th>
-                                <th class="py-3">Jenis Kelamin</th>
-                                <th class="py-3">Ayah</th>
-                                <th class="py-3">Ibu</th>
-                                <th class="text-center py-3" width="200">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($people as $index => $p)
-                                <tr>
-                                    <td class="ps-3 text-muted">
-                                        {{ $people->firstItem() + $index }}
-                                    </td>
-                                    <td class="fw-bold text-dark">
-                                        {{ $p->nama_lengkap }}
-                                    </td>
-                                    <td>
-                                        @if($p->jenis_kelamin == 'L')
-                                            <span class="badge bg-info-subtle text-info px-2 py-1.5">
-                                                <i class="fa-solid fa-mars me-1"></i> Laki-Laki
-                                            </span>
-                                        @else
-                                            <span class="badge bg-danger-subtle text-danger px-2 py-1.5">
-                                                <i class="fa-solid fa-venus me-1"></i> Perempuan
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="text-secondary">
-                                        {{ $p->father->nama_lengkap ?? '-' }}
-                                    </td>
-                                    <td class="text-secondary">
-                                        {{ $p->mother->nama_lengkap ?? '-' }}
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group btn-group-sm shadow-sm" role="group">
-                                            <a href="{{ route('admin.people.edit', $p->id) }}" class="btn btn-outline-warning" title="Ubah Data">
-                                                <i class="fa-solid fa-pen-to-square"></i> Edit
-                                            </a>
-                                            <form action="{{ route('admin.people.destroy', $p->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tokoh {{ $p->nama_lengkap }} dari silsilah?')">
-                                                @csrf 
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger" title="Hapus Data">
-                                                    <i class="fa-solid fa-trash"></i> Hapus
-                                                </button>
-                                            </form>
+        <div class="bento-card overflow-hidden">
+            
+            <div class="px-lg py-md border-b border-outline-variant flex flex-col md:flex-row justify-between items-stretch md:items-center gap-sm bg-surface-container-low">
+                <h3 class="font-title-lg text-[16px] text-primary font-bold flex items-center gap-xs">
+                    <span class="material-symbols-outlined">groups</span>
+                    Daftar Anggota Aktif
+                </h3>
+                
+                <form action="{{ route('admin.people.index') }}" method="GET" class="flex flex-col sm:flex-row gap-xs">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                        <input class="pl-9 pr-md py-xs bg-surface border border-outline-variant rounded-lg font-label-md text-xs focus:ring-2 focus:ring-secondary outline-none transition-all" placeholder="Cari Nama Anggota..." type="text" name="search" value="{{ request('search') }}">
+                    </div>
+                    
+                    <select name="gender" onchange="this.form.submit()" class="bg-surface border border-outline-variant rounded-lg font-label-md text-xs px-md py-xs outline-none focus:ring-2 focus:ring-secondary text-on-surface-variant">
+                        <option value="">Semua Gender</option>
+                        <option value="L" {{ request('gender') == 'L' ? 'selected' : '' }}>♂️ Laki-laki</option>
+                        <option value="P" {{ request('gender') == 'P' ? 'selected' : '' }}>♀️ Perempuan</option>
+                    </select>
+
+                    @if(request('search') || request('gender'))
+                        <a href="{{ route('admin.people.index') }}" class="flex items-center justify-center px-md py-xs border border-error text-error rounded-lg font-label-md text-xs hover:bg-error-container transition-colors">Reset</a>
+                    @endif
+                </form>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left font-data-table text-sm">
+                    <thead class="bg-primary-container/10 text-primary border-b border-outline-variant text-xs font-bold uppercase">
+                        <tr>
+                            <th class="px-lg py-md">Nama Tokoh</th>
+                            <th class="px-lg py-md">Jenis Kelamin</th>
+                            <th class="px-lg py-md">Hubungan Orang Tua</th>
+                            <th class="px-lg py-md text-center">Status Hubungan</th>
+                            <th class="px-lg py-md text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/30 text-xs">
+                        @forelse($people as $person)
+                            <tr class="hover:bg-primary-container/5 transition-colors group">
+                                <td class="px-lg py-md">
+                                    <div class="flex items-center gap-sm">
+                                        <div class="w-8 h-8 rounded-lg bg-primary-fixed text-primary flex items-center justify-center font-bold uppercase">
+                                            {{ Str::substr($person->nama_lengkap, 0, 1) }}
                                         </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center py-5 text-muted">
-                                        <i class="fa-solid fa-folder-open fa-3x mb-3 text-opacity-25 text-secondary"></i>
-                                        <p class="mb-0 fw-semibold">Belum ada data silsilah raja yang tersimpan.</p>
-                                        <small class="text-muted">Klik tombol "Tambah Anggota" di atas untuk memasukkan data pertama.</small>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                        <div>
+                                            <span class="font-semibold text-on-surface block text-sm">{{ $person->nama_lengkap }}</span>
+                                            <span class="text-[10px] text-outline block">ID: #{{ $person->id }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-lg py-md">
+                                    @if($person->jenis_kelamin == 'L')
+                                        <span class="px-xs py-0.5 bg-secondary-fixed text-on-secondary-fixed rounded-full font-bold text-[10px]">♂️ LAKI-LAKI</span>
+                                    @else
+                                        <span class="px-xs py-0.5 bg-error-container text-on-error-container rounded-full font-bold text-[10px]">♀️ PEREMPUAN</span>
+                                    @endif
+                                </td>
+                                <td class="px-lg py-md text-on-surface-variant">
+                                    <div class="space-y-0.5">
+                                        <div><span class="text-outline font-bold">Ayah:</span> {{ $person->father ? $person->father->nama_lengkap : '—' }}</div>
+                                        <div><span class="text-outline font-bold">Ibu:</span> {{ $person->mother ? $person->mother->nama_lengkap : ($person->nama_ibu_non_raja ?: '—') }}</div>
+                                    </div>
+                                </td>
+                                <td class="px-lg py-md text-center">
+                                    @if(!$person->father_id && !$person->mother_id)
+                                        <span class="px-xs py-0.5 bg-tertiary-fixed text-on-tertiary-fixed rounded-full text-[10px] font-black tracking-wider">👑 LELUHUR PUNCAK</span>
+                                    @else
+                                        <span class="px-xs py-0.5 bg-surface-container-highest text-on-surface-variant rounded-full text-[10px] font-medium">🔗 KETURUNAN</span>
+                                    @endif
+                                </td>
+                                <td class="px-lg py-md text-right">
+                                    <div class="inline-flex items-center gap-xs opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <a href="{{ route('admin.people.edit', $person->id) }}" class="p-1 hover:bg-primary-fixed text-primary rounded" title="Edit">
+                                            <span class="material-symbols-outlined text-[18px] block">edit_square</span>
+                                        </a>
+                                        <form action="{{ route('admin.people.destroy', $person->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="p-1 hover:bg-error-container text-error rounded" title="Hapus">
+                                                <span class="material-symbols-outlined text-[18px] block">delete</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-lg py-xl text-center text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-xl block text-outline mb-1">search_off</span>
+                                    Tidak ditemukan data silsilah yang sesuai kriteria.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="px-lg py-sm border-t border-outline-variant bg-surface-container-low flex items-center justify-between text-xs">
+                <p class="font-label-md text-on-surface-variant">
+                    Menampilkan {{ $people->firstItem() ?? 0 }} - {{ $people->lastItem() ?? 0 }} dari {{ $people->total() ?? 0 }} Anggota
+                </p>
+                <div class="flex items-center gap-xs">
+                    @if ($people->onFirstPage())
+                        <span class="p-1 border border-outline-variant rounded-lg text-outline cursor-not-allowed"><span class="material-symbols-outlined text-[18px] block">chevron_left</span></span>
+                    @else
+                        <a href="{{ $people->previousPageUrl() }}" class="p-1 border border-outline-variant rounded-lg hover:bg-surface text-on-surface-variant"><span class="material-symbols-outlined text-[18px] block">chevron_left</span></a>
+                    @endif
+
+                    <span class="font-label-md px-md text-on-surface font-semibold">Halaman {{ $people->currentPage() }}</span>
+
+                    @if ($people->hasMorePages())
+                        <a href="{{ $people->nextPageUrl() }}" class="p-1 border border-outline-variant rounded-lg hover:bg-surface text-on-surface-variant"><span class="material-symbols-outlined text-[18px] block">chevron_right</span></a>
+                    @else
+                        <span class="p-1 border border-outline-variant rounded-lg text-outline cursor-not-allowed"><span class="material-symbols-outlined text-[18px] block">chevron_right</span></span>
+                    @endif
                 </div>
             </div>
-        </div>
 
-        <div class="d-flex justify-content-end mt-3">
-            {{ $people->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </x-app-layout>

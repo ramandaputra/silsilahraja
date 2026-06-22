@@ -48,18 +48,18 @@
 <body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden">
 
 <header class="fixed top-0 left-0 w-full z-50 bg-surface/80 glass-nav border-b-2 border-primary">
-    <nav class="flex justify-between items-center w-full px-margin-desktop max-w-7xl mx-auto h-20">
+    <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop bg-surface/90 backdrop-blur-sm border-b border-primary h-20">
         <div class="flex items-center gap-xs">
-            <span class="font-headline-md text-headline-md font-bold text-primary">{{ \App\Models\Setting::get('nav_brand', 'Silsilah Raja') }}</span>
+            <span class="material-symbols-outlined text-primary text-3xl">account_tree</span>
+            <span class="font-headline-md text-headline-md font-bold text-primary">Silsilah Keluarga</span>
         </div>
         <div class="hidden md:flex items-center gap-lg">
-            <a class="font-label-md text-label-md text-secondary font-bold border-b-2 border-secondary pb-1" href="{{ route('home') }}">Beranda</a>
-            <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('relation.index') }}">Cari Relasi</a>
+        <a class="font-body-md text-body-md {{ request()->routeIs('home') ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary transition-colors duration-200' }}" href="{{ route('home') }}">Beranda</a>
+        <a class="font-body-md text-body-md {{ request()->routeIs('relation.*') ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary transition-colors duration-200' }}" href="{{ route('relation.index') }}">Cari Relasi</a>
+        <a class="font-body-md text-body-md {{ request()->routeIs('about') ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary transition-colors duration-200' }}" href="{{ route('about') }}">Tentang Kami</a>
         </div>
-        <div class="flex items-center gap-md">
-            <a href="{{ route('admin.people.index') }}" class="hidden md:flex items-center gap-xs px-md py-xs bg-primary-container text-on-primary-container font-label-md text-label-md rounded-xl hover:bg-primary transition-all text-decoration-none">
-                <span class="material-symbols-outlined text-[18px]">login</span> Panel Admin
-            </a>
+        <div class="flex items-center gap-sm">
+            <a href="{{ route('login') }}" class="material-symbols-outlined text-primary p-xs hover:bg-surface-container-highest rounded-full transition-all">account_circle</a>
         </div>
     </nav>
 </header>
@@ -67,9 +67,9 @@
 <main class="pt-20">
     <section class="relative w-full min-h-[600px] flex flex-col items-center justify-center hero-gradient text-white overflow-hidden px-margin-mobile md:px-margin-desktop">
         <div class="relative z-10 text-center max-w-4xl w-full py-12">
-            <h1 class="font-display-lg text-display-lg mb-md leading-tight">
-                {!! nl2br(e(\App\Models\Setting::get('hero_title', "Temukan Akar & \n Warisan Agung Keluarga Raja"))) !!}
-            </h1>
+          <h1 class="font-bold text-2xl mb-md leading-tight">
+    {!! nl2br(e(\App\Models\Setting::get('hero_title', "Temukan Akar & \n Warisan Agung Keluarga Raja"))) !!}
+</h1>
             <p class="font-body-lg text-body-lg text-on-primary-container mb-xl opacity-90 max-w-2xl mx-auto">
                 {{ \App\Models\Setting::get('hero_subtitle', 'Arsip digital silsilah keturunan ningrat yang aman, terstruktur, dan terverifikasi.') }}
             </p>

@@ -76,3 +76,20 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 require __DIR__ . '/auth.php';
+
+// Jalankan import Controller di bagian atas file bersama controller lainnya
+use App\Http\Controllers\AboutController;
+
+/*
+|--------------------------------------------------------------------------
+| 1. RUTE PUBLIK / PENGUNJUNG
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/person/{id}', [PublicController::class, 'show'])->name('person.detail');
+Route::get('/person/{id}/trah', [HomeController::class, 'trah'])->name('person.trah');
+Route::get('/cari-relasi', [RelationController::class, 'index'])->name('relation.index');
+Route::get('/proses-relasi', [RelationController::class, 'process'])->name('relation.process');
+
+// RUTE BARU: Halaman Profil Penyusun / Tentang Kami
+Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
