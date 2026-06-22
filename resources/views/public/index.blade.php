@@ -24,6 +24,17 @@
             </div>
         </div>
 
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8 text-center">
+                <div class="alert alert-info d-inline-block">
+                    <a href="{{ route('relation.index') }}" class="btn btn-info btn-sm">
+                        <i class="fa-solid fa-link me-2"></i>Cari Relasi Kekerabatan
+                    </a>
+                    <small class="ms-2">Temukan hubungan keluarga antara dua tokoh</small>
+                </div>
+            </div>
+        </div>
+
         <div class="row justify-content-center">
             <div class="col-md-8">
                 @if(request()->has('q'))
