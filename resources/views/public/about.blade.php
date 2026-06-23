@@ -144,9 +144,9 @@
         <section class="hero-gradient py-xl px-margin-mobile md:px-margin-desktop text-white relative overflow-hidden">
             <div class="max-w-7xl mx-auto relative z-10 py-lg">
                 <div class="w-full md:w-2/3">
-                    <h1 class="font-display-lg text-display-lg mb-sm">Profil Penyusun</h1>
+                <h1 class="font-display-lg text-display-lg mb-sm">Profil Penyusun</h1>
                     <p class="font-body-lg text-body-lg text-on-primary-container leading-relaxed">
-                        Mendedikasikan teknologi untuk melestarikan memori kolektif bangsa melalui dokumentasi silsilah keluarga yang akurat, sistematis, dan terintegrasi secara digital. Kami percaya bahwa memahami akar adalah langkah awal membangun masa depan.
+                    {{ $settings['about_hero_description'] ?? 'Mendedikasikan teknologi untuk melestarikan memori kolektif bangsa melalui dokumentasi silsilah keluarga yang akurat, sistematis, dan terintegrasi secara digital. Kami percaya bahwa memahami akar adalah langkah awal membangun masa depan.' }}
                     </p>
                 </div>
             </div>
@@ -156,18 +156,19 @@
         </section>
 
         <section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
-                <div class="md:col-span-7">
-                    <h2 class="font-headline-lg text-headline-lg text-primary mb-md">Dedikasi terhadap Integritas Genealogi</h2>
-                    <div class="space-y-sm text-on-surface-variant leading-relaxed">
-                        <p class="font-body-lg text-body-lg">
-                            Berawal dari sebuah inisiatif penelitian sejarah lisan di lingkungan akademis, proyek Silsilah Keluarga tumbuh menjadi sebuah platform institusional yang mengedepankan akurasi data. Kami menyadari bahwa sejarah keluarga bukan sekadar daftar nama, melainkan warisan budaya yang membutuhkan sistem penyimpanan yang aman dan terstruktur.
-                        </p>
-                        <p class="font-body-lg text-body-lg">
-                            Melalui metodologi yang diadaptasi dari standar arsip nasional, setiap fitur dalam aplikasi ini dirancang untuk meminimalisir redundansi data dan memastikan hubungan antar-generasi tercatat secara logis. Fokus kami adalah memberikan kemudahan bagi setiap keluarga Indonesia untuk membangun repositori sejarah mereka sendiri dengan standar profesional.
-                        </p>
-                    </div>
+            <div class="md:col-span-7">
+                <h2 class="font-headline-lg text-headline-lg text-primary mb-md">
+                    {{ $settings['about_history_title'] ?? 'Dedikasi terhadap Integritas Genealogi' }}
+                </h2>
+                <div class="space-y-sm text-on-surface-variant leading-relaxed">
+                <p class="font-body-lg text-body-lg">
+                    {{ $settings['about_history_body_1'] ?? 'Berawal dari sebuah inisiatif penelitian sejarah lisan di lingkungan akademis, proyek Silsilah Keluarga tumbuh menjadi sebuah platform institusional yang mengedepankan akurasi data. Kami menyadari bahwa sejarah keluarga bukan sekadar daftar nama, melainkan warisan budaya yang membutuhkan sistem penyimpanan yang aman dan terstruktur.' }}
+                </p>
+                <p class="font-body-lg text-body-lg">
+                    {{ $settings['about_history_body_2'] ?? 'Melalui metodologi yang diadaptasi dari standar arsip nasional, setiap fitur dalam aplikasi ini dirancang untuk meminimalisir redundansi data dan memastikan hubungan antar-generasi tercatat secara logis. Fokus kami adalah memberikan kemudahan bagi setiap keluarga Indonesia untuk membangun repositori sejarah mereka sendiri dengan standar profesional.' }}
+                </p>
                 </div>
+            </div>
                 <div class="md:col-span-5">
                     <div class="bg-surface-container-low p-lg border border-outline-variant rounded-xl">
                         <h3 class="font-title-lg text-title-lg text-secondary mb-sm border-b border-outline-variant pb-xs">Misi Kami</h3>

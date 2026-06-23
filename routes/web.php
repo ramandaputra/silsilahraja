@@ -6,11 +6,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\RelationController;
+use App\Http\Controllers\AboutController; // Controller Halaman Tentang Kami
 
 // Import Controllers Admin & Auth
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\PersonController as AdminPersonController;
+use App\Http\Controllers\Admin\SettingController; // Controller Setting Baru
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,9 @@ Route::get('/person/{id}/trah', [HomeController::class, 'trah'])->name('person.t
 // Fitur Pencari Relasi Kekerabatan / Jarak Hubungan
 Route::get('/cari-relasi', [RelationController::class, 'index'])->name('relation.index');
 Route::get('/proses-relasi', [RelationController::class, 'process'])->name('relation.process');
+
+// Halaman Profil Penyusun / Tentang Kami Publik
+Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
 
 
 /*
@@ -57,9 +62,13 @@ Route::middleware(['auth', 'admin'])
         // Manajemen Data Keturunan (CRUD Silsilah)
         Route::resource('people', AdminPersonController::class);
 
-        // Pengatur Konten Teks Beranda (CMS Dinamis)
+        // Pengatur Konten Teks Beranda (CMS Dinamis Lama - jika masih dipakai)
         Route::get('/cms', [CmsController::class, 'index'])->name('cms.index');
         Route::post('/cms', [CmsController::class, 'update'])->name('cms.update');
+
+        // Pengaturan Situs Satu Pintu (Mengelola Beranda & about.blade.php secara terpusat)
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
     });
 
 // Kelompok Rute Manajemen Akun Pengguna / Profil (Breeze)
@@ -76,27 +85,3 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 require __DIR__ . '/auth.php';
-
-// Jalankan import Controller di bagian atas file bersama controller lainnya
-use App\Http\Controllers\AboutController;
-
-/*
-|--------------------------------------------------------------------------
-| 1. RUTE PUBLIK / PENGUNJUNG
-|--------------------------------------------------------------------------
-*/
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/person/{id}', [PublicController::class, 'show'])->name('person.detail');
-Route::get('/person/{id}/trah', [HomeController::class, 'trah'])->name('person.trah');
-Route::get('/cari-relasi', [RelationController::class, 'index'])->name('relation.index');
-Route::get('/proses-relasi', [RelationController::class, 'process'])->name('relation.process');
-
-// RUTE BARU: Halaman Profil Penyusun / Tentang Kami
-Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
-
-use App\Http\Controllers\Admin\SettingController;
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
-});
