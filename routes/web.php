@@ -93,3 +93,10 @@ Route::get('/proses-relasi', [RelationController::class, 'process'])->name('rela
 
 // RUTE BARU: Halaman Profil Penyusun / Tentang Kami
 Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
+
+use App\Http\Controllers\Admin\SettingController;
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+});
