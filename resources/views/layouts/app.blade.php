@@ -128,10 +128,10 @@
                 <span class="material-symbols-outlined" style="{{ request()->is('admin/people*') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">groups</span>
                 <span class="font-label-md text-label-md">Data Anggota</span>
             </a>
-            <a href="{{ route('admin.settings.beranda') }}" 
-                class="flex items-center gap-xs px-4 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.settings.*') ? 'bg-secondary text-white font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }}">
-                <span class="material-symbols-outlined shrink-0" style="{{ request()->routeIs('admin.settings.*') ? 'font-variation-settings: \'FILL\' 1; color: white;' : '' }}">settings</span>
-                <span class="text-sm tracking-wide">Pengaturan Aplikasi</span>
+            <a href="{{ route('admin.settings.index') }}" 
+            class="flex items-center gap-xs px-4 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.settings.*') ? 'bg-secondary text-white font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }}">
+            <span class="material-symbols-outlined shrink-0" style="{{ request()->routeIs('admin.settings.*') ? 'font-variation-settings: \'FILL\' 1; color: white;' : '' }}">settings</span>
+            <span class="text-sm tracking-wide">Pengaturan Aplikasi</span>
             </a>
         </nav>
 
