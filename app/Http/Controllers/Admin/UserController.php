@@ -10,9 +10,6 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    // Fungsi __construct yang menyebabkan error SUDAH DIHAPUS SEPENUHNYA dari sini
-    // Karena proteksi role sudah kita pindahkan dengan aman ke routes/web.php
-
     public function index()
     {
         $users = User::orderBy('name', 'asc')->paginate(10);
@@ -21,6 +18,14 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // 1. Cek paksa: Apakah sudah ada admin di database?
+        if ($request->role === 'admin') {
+            $adminExists = User::where('role', 'admin')->exists();
+            if ($adminExists) {
+                return back()->with('error', 'Gagal! Sistem didesain hanya untuk memiliki 1 Administrator Utama.');
+            }
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -35,11 +40,24 @@ class UserController extends Controller
             'role' => $request->role,
         ]);
 
-        return redirect()->route('admin.users.index')->with('success', 'Akun pengguna baru berhasil ditambahkan.');
+        return redirect()->route('admin.users.index')->with('success', 'Akun operator baru berhasil ditambahkan.');
     }
 
     public function update(Request $request, User $user)
     {
+        // 2. Cek paksa saat update: Jangan biarkan operator diubah menjadi admin kedua
+        if ($request->role === 'admin' && $user->role !== 'admin') {
+            $adminExists = User::where('role', 'admin')->exists();
+            if ($adminExists) {
+                return back()->with('error', 'Gagal! Tidak dapat mengubah pengguna menjadi Admin karena kuota posisi Admin sudah penuh (Maksimal 1).');
+            }
+        }
+
+        // 3. Mencegah satu-satunya admin mengubah dirinya sendiri menjadi operator (bisa mengunci sistem)
+        if ($user->role === 'admin' && $request->role === 'operator') {
+            return back()->with('error', 'Gagal! Anda adalah satu-satunya Admin. Anda tidak boleh menurunkan pangkat Anda sendiri menjadi Operator.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
@@ -59,7 +77,7 @@ class UserController extends Controller
 
         $user->update($userData);
 
-        return redirect()->route('admin.users.index')->with('success', 'Data akun pengguna berhasil diperbarui.');
+        return redirect()->route('admin.users.index')->with('success', 'Data akun berhasil diperbarui.');
     }
 
     public function destroy(User $user)
@@ -69,6 +87,6 @@ class UserController extends Controller
         }
 
         $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'Akun pengguna berhasil dihapus.');
+        return redirect()->route('admin.users.index')->with('success', 'Akun berhasil dihapus.');
     }
 }

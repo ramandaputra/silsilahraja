@@ -2,17 +2,25 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Import Controllers Publik
+/*
+|--------------------------------------------------------------------------
+| IMPORT CONTROLLERS
+|--------------------------------------------------------------------------
+*/
+
+// Publik
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\RelationController;
-use App\Http\Controllers\AboutController; // Controller Halaman Tentang Kami
+use App\Http\Controllers\AboutController;
 
-// Import Controllers Admin & Auth
+// Auth & Admin
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\PersonController as AdminPersonController;
-use App\Http\Controllers\Admin\SettingController; // Controller Setting Baru
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\UserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,58 +28,78 @@ use App\Http\Controllers\Admin\SettingController; // Controller Setting Baru
 |--------------------------------------------------------------------------
 */
 
-// Halaman Beranda Utama (Menggunakan HomeController agar data statistik & bento terisi)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Detail Profil Anggota Silsilah
 Route::get('/person/{id}', [PublicController::class, 'show'])->name('person.detail');
-
-// Halaman Bagan Silsilah / Pohon Trah Keluarga
 Route::get('/person/{id}/trah', [HomeController::class, 'trah'])->name('person.trah');
 
-// Fitur Pencari Relasi Kekerabatan / Jarak Hubungan
 Route::get('/cari-relasi', [RelationController::class, 'index'])->name('relation.index');
 Route::get('/proses-relasi', [RelationController::class, 'process'])->name('relation.process');
 
-// Halaman Profil Penyusun / Tentang Kami Publik
 Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
 
 
 /*
 |--------------------------------------------------------------------------
-| 2. SISTEM PROTEKSI & ROUTING (AUTH BREEZE / ADMIN)
+| 2. SISTEM PROTEKSI & ROUTING (AUTH BREEZE / REDIRECT)
 |--------------------------------------------------------------------------
 */
 
-// Redirect otomatis dari halaman /dashboard bawaan Breeze menuju dashboard admin kita
-Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
-    return redirect()->route('admin.dashboard');
-})->name('dashboard.redirect');
+Route::middleware(['auth', 'verified'])
+    ->get('/dashboard', fn () => redirect()->route('admin.dashboard'))
+    ->name('dashboard.redirect');
 
-// Kelompok Rute Khusus Admin (Hanya bisa diakses jika sudah Login & Lolos Middleware Admin)
-Route::middleware(['auth', 'admin'])
+
+/*
+|--------------------------------------------------------------------------
+| 3. ADMIN ROUTES (Bisa Diakses Admin & Operator)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'cek_operator'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
         // Dashboard Utama Admin
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
 
         // Manajemen Data Keturunan (CRUD Silsilah)
         Route::resource('people', AdminPersonController::class);
 
-        // Pengatur Konten Teks Beranda (CMS Dinamis Lama - jika masih dipakai)
+        // Pengatur Konten Teks Beranda (CMS Lama)
         Route::get('/cms', [CmsController::class, 'index'])->name('cms.index');
         Route::post('/cms', [CmsController::class, 'update'])->name('cms.update');
 
-        // Pengaturan Situs Satu Pintu (Mengelola Beranda & about.blade.php secara terpusat)
+        // Pengaturan Situs Satu Pintu (Mengelola Beranda & about.blade.php)
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+        // Pengaturan Slot Tim Ahli Dinamis
+        Route::post('/settings/team', [SettingController::class, 'storeTeam'])->name('settings.team.store');
+        Route::delete('/settings/team/{team}', [SettingController::class, 'destroyTeam'])->name('settings.team.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | KHUSUS ADMIN UTAMA (USER MANAGEMENT)
+        |--------------------------------------------------------------------------
+        */
+        Route::middleware(['cek_admin'])->group(function () {
+            Route::get('/users', [UserController::class, 'index'])->name('users.index');
+            Route::post('/users', [UserController::class, 'store'])->name('users.store');
+            Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        });
+
     });
 
-// Kelompok Rute Manajemen Akun Pengguna / Profil (Breeze)
+
+/*
+|--------------------------------------------------------------------------
+| 4. MANAJEMEN PROFIL (BREEZE PROFILE)
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -81,17 +109,8 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| 3. AUTHENTICATION ROUTE (BREEZE REGISTER & LOGIN)
+| 5. AUTHENTICATION ROUTES (BREEZE REGISTER & LOGIN)
 |--------------------------------------------------------------------------
 */
 
-use App\Http\Controllers\Admin\UserController;
-
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    // Halaman Kelola Akun / User Management
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-});
 require __DIR__ . '/auth.php';

@@ -197,33 +197,27 @@
             <h2 class="font-headline-lg text-headline-lg text-primary">Tim Ahli & Penyusun</h2>
             <p class="font-body-md text-body-md text-on-surface-variant">Sinergi antara ahli kearsipan, peneliti sejarah, dan pengembang teknologi.</p>
         </div>
+        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
-                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary text-5xl">person</span>
+            @forelse($teams as $member)
+                <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
+                    <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
+                        @if($member->photo)
+                            <img src="{{ asset('storage/' . $member->photo) }}" alt="{{ $member->name }}" class="w-full h-full object-cover">
+                        @else
+                            <span class="material-symbols-outlined text-primary text-5xl">person</span>
+                        @endif
+                    </div>
+                    <h3 class="font-title-lg text-title-lg text-primary">{{ $member->name }}</h3>
+                    <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $member->role }}</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant">{{ $member->description }}</p>
                 </div>
-                <h3 class="font-title-lg text-title-lg text-primary">{{ $settings['team_name_1'] ?? 'Dr. Handoko Wiratama' }}</h3>
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $settings['team_role_1'] ?? 'Ketua Arsiparis' }}</p>
-                <p class="font-body-md text-body-md text-on-surface-variant">{{ $settings['team_desc_1'] ?? 'Pakar dokumentasi sejarah dengan pengalaman lebih dari 15 tahun di lembaga kearsipan nasional.' }}</p>
-            </div>
-
-            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
-                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary text-5xl">engineering</span>
+            @empty
+                <div class="col-span-full text-center py-8 text-gray-400">
+                    <span class="material-symbols-outlined text-4xl mb-2">group_off</span>
+                    <p class="text-sm">Belum ada data anggota tim penyusun yang dimasukkan.</p>
                 </div>
-                <h3 class="font-title-lg text-title-lg text-primary">{{ $settings['team_name_2'] ?? 'Siti Aminah, M.Kom' }}</h3>
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $settings['team_role_2'] ?? 'Pengembang Sistem' }}</p>
-                <p class="font-body-md text-body-md text-on-surface-variant">{{ $settings['team_desc_2'] ?? 'Arsitek sistem informasi yang fokus pada integritas data dan keamanan basis data digital terdistribusi.' }}</p>
-            </div>
-
-            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
-                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary text-5xl">history_edu</span>
-                </div>
-                <h3 class="font-title-lg text-title-lg text-primary">{{ $settings['team_name_3'] ?? 'Prof. Baskoro Jati' }}</h3>
-                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $settings['team_role_3'] ?? 'Peneliti Sejarah' }}</p>
-                <p class="font-body-md text-body-md text-on-surface-variant">{{ $settings['team_desc_3'] ?? 'Konsultan utama untuk validasi metodologi penelusuran garis keturunan dan konteks sejarah lokal.' }}</p>
-            </div>
+            @endforelse
         </div>
     </div>
 </section>

@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,13 +10,25 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function (Middleware $middleware) {
+        
+        // PASTIKAN BLOK ALIAS INI ADA DAN SUDAH TERSIMPAN:
         $middleware->alias([
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'cek_admin' => function ($request, $next) {
+                if (!auth()->check() || auth()->user()->role !== 'admin') {
+                    abort(403, 'Hanya Administrator Utama yang diizinkan mengakses halaman ini.');
+                }
+                return $next($request);
+            },
+            'cek_operator' => function ($request, $next) {
+                if (!auth()->check() || !in_array(auth()->user()->role, ['admin', 'operator'])) {
+                    abort(403, 'Akses ditolak. Halaman ini hanya untuk pengelola silsilah.');
+                }
+                return $next($request);
+            }
         ]);
+
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*'),
-        );
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
     })->create();
