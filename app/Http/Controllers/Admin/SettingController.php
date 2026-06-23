@@ -11,7 +11,7 @@ class SettingController extends Controller
 {
     /**
      * Menampilkan halaman satu atap untuk seluruh pengaturan situs.
-     * Menggabungkan data untuk halaman Beranda dan Tentang Kami.
+     * Menggabungkan data untuk halaman Beranda, Tentang Kami, dan Tim Ahli.
      */
     public function index()
     {
@@ -27,14 +27,28 @@ class SettingController extends Controller
             'about_history_title'    => Setting::get('about_history_title', 'Dedikasi terhadap Integritas Genealogi'),
             'about_history_body_1'   => Setting::get('about_history_body_1', 'Berawal dari sebuah inisiatif penelitian sejarah lisan di lingkungan akademis, proyek Silsilah Keluarga tumbuh menjadi sebuah platform institusional yang mengedepankan akurasi data. Kami menyadari bahwa sejarah keluarga bukan sekadar daftar nama, melainkan warisan budaya yang membutuhkan sistem penyimpanan yang aman dan terstruktur.'),
             'about_history_body_2'   => Setting::get('about_history_body_2', 'Melalui metodologi yang diadaptasi dari standar arsip nasional, setiap fitur dalam aplikasi ini dirancang untuk meminimalisir redundansi data dan memastikan hubungan antar-generasi tercatat secara logis. Fokus kami adalah memberikan kemudahan bagi setiap keluarga Indonesia untuk membangun repositori sejarah mereka sendiri dengan standar profesional.'),
+
+            // DATA TIM BARU: Anggota Tim 1
+            'team_name_1'            => Setting::get('team_name_1', 'Dr. Handoko Wiratama'),
+            'team_role_1'            => Setting::get('team_role_1', 'Ketua Arsiparis'),
+            'team_desc_1'            => Setting::get('team_desc_1', 'Pakar dokumentasi sejarah dengan pengalaman lebih dari 15 tahun di lembaga kearsipan nasional.'),
+
+            // DATA TIM BARU: Anggota Tim 2
+            'team_name_2'            => Setting::get('team_name_2', 'Siti Aminah, M.Kom'),
+            'team_role_2'            => Setting::get('team_role_2', 'Pengembang Sistem'),
+            'team_desc_2'            => Setting::get('team_desc_2', 'Arsitek sistem informasi yang fokus pada integritas data dan keamanan basis data digital terdistribusi.'),
+
+            // DATA TIM BARU: Anggota Tim 3
+            'team_name_3'            => Setting::get('team_name_3', 'Prof. Baskoro Jati'),
+            'team_role_3'            => Setting::get('team_role_3', 'Peneliti Sejarah'),
+            'team_desc_3'            => Setting::get('team_desc_3', 'Konsultan utama untuk validasi metodologi penelusuran garis keturunan dan konteks sejarah lokal.'),
         ];
 
-        // diarahkan ke view satu halaman terpusat yang baru
         return view('admin.settings.index', compact('settings'));
     }
 
     /**
-     * Memproses pembaruan data massal baik untuk Beranda maupun Tentang Kami.
+     * Memproses pembaruan data massal menggunakan updateOrCreate standar Laravel Eloquent.
      */
     public function update(Request $request)
     {
@@ -47,32 +61,52 @@ class SettingController extends Controller
             'about_history_body_1'    => 'required|string',
             'about_history_body_2'    => 'required|string',
             'hero_background'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+
+            // Validasi Form Tim
+            'team_name_1'             => 'required|string|max:255',
+            'team_role_1'             => 'required|string|max:255',
+            'team_desc_1'             => 'required|string',
+            'team_name_2'             => 'required|string|max:255',
+            'team_role_2'             => 'required|string|max:255',
+            'team_desc_2'             => 'required|string',
+            'team_name_3'             => 'required|string|max:255',
+            'team_role_3'             => 'required|string|max:255',
+            'team_desc_3'             => 'required|string',
         ]);
 
-        // Menyimpan Pengaturan Halaman Beranda
-        Setting::set('site_title', $request->site_title);
-        Setting::set('hero_title', $request->hero_title);
-        Setting::set('hero_subtitle', $request->hero_subtitle);
+        // Ambil semua input teks kecuali file background
+        $inputs = $request->except('hero_background');
 
-        // Menyimpan Pengaturan Halaman Tentang Kami (about.blade.php)
-        Setting::set('about_hero_description', $request->about_hero_description);
-        Setting::set('about_history_title', $request->about_history_title);
-        Setting::set('about_history_body_1', $request->about_history_body_1);
-        Setting::set('about_history_body_2', $request->about_history_body_2);
+        // Lakukan perulangan untuk menyimpan setiap key menggunakan updateOrCreate standar Laravel
+        foreach ($inputs as $key => $value) {
+            // Abaikan token CSRF dan Method PUT bawaan form HTML
+            if (in_array($key, ['_token', '_method'])) {
+                continue;
+            }
+
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value]
+            );
+        }
 
         // Manajemen Berkas Gambar Latar Belakang Beranda
         if ($request->hasFile('hero_background')) {
-            $oldImage = Setting::get('hero_background');
+            // Ambil data lama
+            $oldSetting = Setting::where('key', 'hero_background')->first();
             
-            // Hapus gambar lama jika ada di dalam storage public
-            if ($oldImage && Storage::disk('public')->exists($oldImage)) {
-                Storage::disk('public')->delete($oldImage);
+            if ($oldSetting && $oldSetting->value && Storage::disk('public')->exists($oldSetting->value)) {
+                Storage::disk('public')->delete($oldSetting->value);
             }
             
             $path = $request->file('hero_background')->store('settings', 'public');
-            Setting::set('hero_background', $path);
+            
+            Setting::updateOrCreate(
+                ['key' => 'hero_background'],
+                ['value' => $path]
+            );
         }
 
-        return redirect()->back()->with('success', 'Seluruh pengaturan aplikasi berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Seluruh pengaturan aplikasi dan tim ahli berhasil diperbarui!');
     }
 }

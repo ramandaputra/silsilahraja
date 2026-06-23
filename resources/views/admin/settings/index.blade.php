@@ -101,6 +101,68 @@
                 </div>
             </div>
 
+            <div class="space-y-md pt-md border-t border-outline-variant/40">
+    <div class="flex items-center gap-xs px-xs">
+        <span class="material-symbols-outlined text-secondary font-bold">badge</span>
+        <h2 class="font-headline-md text-base font-bold text-primary uppercase tracking-wider">Manajemen Tim Ahli & Penyusun</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+        <div class="bento-card p-5 rounded-xl bg-white border border-outline-variant/60 space-y-3">
+            <div class="flex items-center gap-2 text-primary font-bold border-b pb-xs">
+                <span class="material-symbols-outlined text-sm">person</span> Personil 1 (Kiri)
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Nama & Gelar</label>
+                <input type="text" name="team_name_1" value="{{ old('team_name_1', $settings['team_name_1'] ?? '') }}" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Jabatan/Peran</label>
+                <input type="text" name="team_role_1" value="{{ old('team_role_1', $settings['team_role_1'] ?? '') }}" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Deskripsi Ringkas</label>
+                <textarea name="team_desc_1" rows="3" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">{{ old('team_desc_1', $settings['team_desc_1'] ?? '') }}</textarea>
+            </div>
+        </div>
+
+        <div class="bento-card p-5 rounded-xl bg-white border border-outline-variant/60 space-y-3">
+            <div class="flex items-center gap-2 text-primary font-bold border-b pb-xs">
+                <span class="material-symbols-outlined text-sm">engineering</span> Personil 2 (Tengah)
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Nama & Gelar</label>
+                <input type="text" name="team_name_2" value="{{ old('team_name_2', $settings['team_name_2'] ?? '') }}" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Jabatan/Peran</label>
+                <input type="text" name="team_role_2" value="{{ old('team_role_2', $settings['team_role_2'] ?? '') }}" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Deskripsi Ringkas</label>
+                <textarea name="team_desc_2" rows="3" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">{{ old('team_desc_2', $settings['team_desc_2'] ?? '') }}</textarea>
+            </div>
+        </div>
+
+        <div class="bento-card p-5 rounded-xl bg-white border border-outline-variant/60 space-y-3">
+            <div class="flex items-center gap-2 text-primary font-bold border-b pb-xs">
+                <span class="material-symbols-outlined text-sm">history_edu</span> Personil 3 (Kanan)
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Nama & Gelar</label>
+                <input type="text" name="team_name_3" value="{{ old('team_name_3', $settings['team_name_3'] ?? '') }}" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Jabatan/Peran</label>
+                <input type="text" name="team_role_3" value="{{ old('team_role_3', $settings['team_role_3'] ?? '') }}" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[11px] font-bold text-on-surface-variant uppercase">Deskripsi Ringkas</label>
+                <textarea name="team_desc_3" rows="3" class="w-full border border-outline-variant text-on-surface rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-secondary/20 outline-none">{{ old('team_desc_3', $settings['team_desc_3'] ?? '') }}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
             <div class="flex justify-end pt-4 border-t border-outline-variant/40">
                 <button type="submit" class="w-full sm:w-auto bg-secondary hover:bg-primary text-white font-bold text-sm px-8 py-4 rounded-full shadow-md flex items-center justify-center gap-xs active:scale-95 transition-all">
                     <span class="material-symbols-outlined text-sm">save</span> Simpan Perubahan Situs (Beranda & Tentang Kami)

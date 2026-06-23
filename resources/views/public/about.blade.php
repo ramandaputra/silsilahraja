@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Profil Penyusun - Silsilah Keluarga</title>
-    
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -191,61 +191,43 @@
             </div>
         </section>
 
-        <section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-low">
-            <div class="max-w-7xl mx-auto">
-                <div class="mb-lg text-center md:text-left">
-                    <h2 class="font-headline-lg text-headline-lg text-primary">Tim Ahli & Penyusun</h2>
-                    <p class="font-body-md text-body-md text-on-surface-variant">Sinergi antara ahli kearsipan, peneliti sejarah, dan pengembang teknologi.</p>
+       <section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-low">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-lg text-center md:text-left">
+            <h2 class="font-headline-lg text-headline-lg text-primary">Tim Ahli & Penyusun</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">Sinergi antara ahli kearsipan, peneliti sejarah, dan pengembang teknologi.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
+                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-5xl">person</span>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-                    <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
-                        <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-5xl">person</span>
-                        </div>
-                        <h3 class="font-title-lg text-title-lg text-primary">Dr. Handoko Wiratama</h3>
-                        <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">Ketua Arsiparis</p>
-                        <p class="font-body-md text-body-md text-on-surface-variant">Pakar dokumentasi sejarah dengan pengalaman lebih dari 15 tahun di lembaga kearsipan nasional.</p>
-                    </div>
-                    <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
-                        <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-5xl">engineering</span>
-                        </div>
-                        <h3 class="font-title-lg text-title-lg text-primary">Siti Aminah, M.Kom</h3>
-                        <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">Pengembang Sistem</p>
-                        <p class="font-body-md text-body-md text-on-surface-variant">Arsitek sistem informasi yang fokus pada integritas data dan keamanan basis data digital terdistribusi.</p>
-                    </div>
-                    <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
-                        <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-5xl">history_edu</span>
-                        </div>
-                        <h3 class="font-title-lg text-title-lg text-primary">Prof. Baskoro Jati</h3>
-                        <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">Peneliti Sejarah</p>
-                        <p class="font-body-md text-body-md text-on-surface-variant">Konsultan utama untuk validasi metodologi penelusuran garis keturunan dan konteks sejarah lokal.</p>
-                    </div>
-                </div>
+                <h3 class="font-title-lg text-title-lg text-primary">{{ $settings['team_name_1'] ?? 'Dr. Handoko Wiratama' }}</h3>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $settings['team_role_1'] ?? 'Ketua Arsiparis' }}</p>
+                <p class="font-body-md text-body-md text-on-surface-variant">{{ $settings['team_desc_1'] ?? 'Pakar dokumentasi sejarah dengan pengalaman lebih dari 15 tahun di lembaga kearsipan nasional.' }}</p>
             </div>
-        </section>
 
-        <section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter text-center">
-                <div class="p-lg bg-surface-container border border-outline-variant rounded-xl">
-                    <span class="block font-display-lg text-display-lg text-secondary">{{ max(15, $totalFamilies) }}+</span>
-                    <span class="font-label-md text-label-md text-on-surface-variant uppercase">Keluarga Besar</span>
+            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
+                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-5xl">engineering</span>
                 </div>
-                <div class="p-lg bg-surface-container border border-outline-variant rounded-xl">
-                    <span class="block font-display-lg text-display-lg text-secondary">{{ $totalNodes }}</span>
-                    <span class="font-label-md text-label-md text-on-surface-variant uppercase">Node Individu</span>
-                </div>
-                <div class="p-lg bg-surface-container border border-outline-variant rounded-xl">
-                    <span class="block font-display-lg text-display-lg text-secondary">99%</span>
-                    <span class="font-label-md text-label-md text-on-surface-variant uppercase">Akurasi Data</span>
-                </div>
-                <div class="p-lg bg-surface-container border border-outline-variant rounded-xl">
-                    <span class="block font-display-lg text-display-lg text-secondary">24/7</span>
-                    <span class="font-label-md text-label-md text-on-surface-variant uppercase">Dukungan Sistem</span>
-                </div>
+                <h3 class="font-title-lg text-title-lg text-primary">{{ $settings['team_name_2'] ?? 'Siti Aminah, M.Kom' }}</h3>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $settings['team_role_2'] ?? 'Pengembang Sistem' }}</p>
+                <p class="font-body-md text-body-md text-on-surface-variant">{{ $settings['team_desc_2'] ?? 'Arsitek sistem informasi yang fokus pada integritas data dan keamanan basis data digital terdistribusi.' }}</p>
             </div>
-        </section>
+
+            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
+                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-5xl">history_edu</span>
+                </div>
+                <h3 class="font-title-lg text-title-lg text-primary">{{ $settings['team_name_3'] ?? 'Prof. Baskoro Jati' }}</h3>
+                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $settings['team_role_3'] ?? 'Peneliti Sejarah' }}</p>
+                <p class="font-body-md text-body-md text-on-surface-variant">{{ $settings['team_desc_3'] ?? 'Konsultan utama untuk validasi metodologi penelusuran garis keturunan dan konteks sejarah lokal.' }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
     </main>
 
     <footer class="w-full py-lg px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-sm bg-tertiary">
