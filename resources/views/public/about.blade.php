@@ -144,9 +144,9 @@
         <section class="hero-gradient py-xl px-margin-mobile md:px-margin-desktop text-white relative overflow-hidden">
             <div class="max-w-7xl mx-auto relative z-10 py-lg">
                 <div class="w-full md:w-2/3">
-                <h1 class="font-display-lg text-display-lg mb-sm">Profil Penyusun</h1>
+                    <h1 class="font-display-lg text-display-lg mb-sm">Profil Penyusun</h1>
                     <p class="font-body-lg text-body-lg text-on-primary-container leading-relaxed">
-                    {{ $settings['about_hero_description'] ?? 'Mendedikasikan teknologi untuk melestarikan memori kolektif bangsa melalui dokumentasi silsilah keluarga yang akurat, sistematis, dan terintegrasi secara digital. Kami percaya bahwa memahami akar adalah langkah awal membangun masa depan.' }}
+                        {{ $settings['about_hero_description'] ?? 'Mendedikasikan teknologi untuk melestarikan memori kolektif bangsa melalui dokumentasi silsilah keluarga yang akurat, sistematis, dan terintegrasi secara digital. Kami percaya bahwa memahami akar adalah langkah awal membangun masa depan.' }}
                     </p>
                 </div>
             </div>
@@ -156,20 +156,20 @@
         </section>
 
         <section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
-            <div class="md:col-span-7">
-                <h2 class="font-headline-lg text-headline-lg text-primary mb-md">
-                    {{ $settings['about_history_title'] ?? 'Dedikasi terhadap Integritas Genealogi' }}
-                </h2>
-                <div class="space-y-sm text-on-surface-variant leading-relaxed">
-                <p class="font-body-lg text-body-lg">
-                    {{ $settings['about_history_body_1'] ?? 'Berawal dari sebuah inisiatif penelitian sejarah lisan di lingkungan akademis, proyek Silsilah Keluarga tumbuh menjadi sebuah platform institusional yang mengedepankan akurasi data. Kami menyadari bahwa sejarah keluarga bukan sekadar daftar nama, melainkan warisan budaya yang membutuhkan sistem penyimpanan yang aman dan terstruktur.' }}
-                </p>
-                <p class="font-body-lg text-body-lg">
-                    {{ $settings['about_history_body_2'] ?? 'Melalui metodologi yang diadaptasi dari standar arsip nasional, setiap fitur dalam aplikasi ini dirancang untuk meminimalisir redundansi data dan memastikan hubungan antar-generasi tercatat secara logis. Fokus kami adalah memberikan kemudahan bagi setiap keluarga Indonesia untuk membangun repositori sejarah mereka sendiri dengan standar profesional.' }}
-                </p>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-md items-start">
+                <div class="md:col-span-7 space-y-sm text-on-surface-variant leading-relaxed">
+                    <h2 class="font-headline-lg text-headline-lg text-primary mb-md">
+                        {{ $settings['about_history_title'] ?? 'Dedikasi terhadap Integritas Genealogi' }}
+                    </h2>
+                    <p class="font-body-lg text-body-lg">
+                        {{ $settings['about_history_body_1'] ?? 'Berawal dari sebuah inisiatif penelitian sejarah lisan di lingkungan akademis, proyek Silsilah Keluarga tumbuh menjadi sebuah platform institusional yang mengedepankan akurasi data. Kami menyadari bahwa sejarah keluarga bukan sekadar daftar nama, melainkan warisan budaya yang membutuhkan sistem penyimpanan yang aman dan terstruktur.' }}
+                    </p>
+                    <p class="font-body-lg text-body-lg">
+                        {{ $settings['about_history_body_2'] ?? 'Melalui metodologi yang diadaptasi dari standar arsip nasional, setiap fitur dalam aplikasi ini dirancang untuk meminimalisir redundansi data dan memastikan hubungan antar-generasi tercatat secara logis. Fokus kami adalah memberikan kemudahan bagi setiap keluarga Indonesia untuk membangun repositori sejarah mereka sendiri dengan standar profesional.' }}
+                    </p>
                 </div>
-            </div>
-                <div class="md:col-span-5">
+                
+                <div class="md:col-span-5 w-full">
                     <div class="bg-surface-container-low p-lg border border-outline-variant rounded-xl">
                         <h3 class="font-title-lg text-title-lg text-secondary mb-sm border-b border-outline-variant pb-xs">Misi Kami</h3>
                         <ul class="space-y-xs">
@@ -191,37 +191,61 @@
             </div>
         </section>
 
-       <section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-low">
-    <div class="max-w-7xl mx-auto">
-        <div class="mb-lg text-center md:text-left">
-            <h2 class="font-headline-lg text-headline-lg text-primary">Tim Ahli & Penyusun</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant">Sinergi antara ahli kearsipan, peneliti sejarah, dan pengembang teknologi.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            @forelse($teams as $member)
-                <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center">
-                    <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed shadow-sm bg-gray-200 flex items-center justify-center">
-                        @if($member->photo)
-                            <img src="{{ asset('storage/' . $member->photo) }}" alt="{{ $member->name }}" class="w-full h-full object-cover">
-                        @else
-                            <span class="material-symbols-outlined text-primary text-5xl">person</span>
-                        @endif
+        <section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-low">
+            <div class="max-w-7xl mx-auto space-y-xl">
+                
+                <div>
+                    <h2 class="text-primary font-headline-lg text-headline-lg mb-md border-b border-outline-variant/40 pb-2">Tim Ahli & Penyusun</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                        @forelse($ahli as $member)
+                            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center shadow-sm">
+                                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed bg-gray-200 flex items-center justify-center shadow-inner">
+                                    @if($member->photo)
+                                        <img src="{{ asset('storage/' . $member->photo) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <span class="material-symbols-outlined text-primary text-5xl">person</span>
+                                    @endif
+                                </div>
+                                <h3 class="font-title-lg text-title-lg text-primary">{{ $member->name }}</h3>
+                                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $member->role }}</p>
+                                <p class="font-body-md text-body-md text-on-surface-variant">{{ $member->description }}</p>
+                            </div>
+                        @empty
+                            <div class="col-span-full text-center py-8 text-gray-400 bg-white border border-dashed border-outline-variant rounded-xl">
+                                <span class="material-symbols-outlined text-3xl mb-1 text-gray-300">group_off</span>
+                                <p class="text-xs">Belum ada data anggota tim penyusun yang dimasukkan.</p>
+                            </div>
+                        @endforelse
                     </div>
-                    <h3 class="font-title-lg text-title-lg text-primary">{{ $member->name }}</h3>
-                    <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $member->role }}</p>
-                    <p class="font-body-md text-body-md text-on-surface-variant">{{ $member->description }}</p>
                 </div>
-            @empty
-                <div class="col-span-full text-center py-8 text-gray-400">
-                    <span class="material-symbols-outlined text-4xl mb-2">group_off</span>
-                    <p class="text-sm">Belum ada data anggota tim penyusun yang dimasukkan.</p>
-                </div>
-            @endforelse
-        </div>
-    </div>
-</section>
 
+                <div>
+                    <h2 class="text-primary font-headline-lg text-headline-lg mb-md border-b border-outline-variant/40 pb-2">Tim Pengembang Teknologi</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                        @forelse($developers as $dev)
+                            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center shadow-sm">
+                                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-secondary shadow-sm bg-gray-200 flex items-center justify-center shadow-inner">
+                                    @if($dev->photo)
+                                        <img src="{{ asset('storage/' . $dev->photo) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <span class="material-symbols-outlined text-secondary text-5xl">code</span>
+                                    @endif
+                                </div>
+                                <h3 class="font-title-lg text-title-lg text-primary">{{ $dev->name }}</h3>
+                                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $dev->role }}</p>
+                                <p class="font-body-md text-body-md text-on-surface-variant">{{ $dev->description }}</p>
+                            </div>
+                        @empty
+                            <div class="col-span-full text-center py-8 text-gray-400 bg-white border border-dashed border-outline-variant rounded-xl">
+                                <span class="material-symbols-outlined text-3xl mb-1 text-gray-300">code_off</span>
+                                <p class="text-xs">Belum ada data tim pengembang teknologi yang dimasukkan.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+            </div>
+        </section>
     </main>
 
     <footer class="w-full py-lg px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-sm bg-tertiary">
@@ -241,17 +265,23 @@
     </footer>
 
     <script>
-        // Efek mikro interaksi zoom avatar tim ketika di-hover
         document.querySelectorAll('.bento-card').forEach(card => {
             card.addEventListener('mouseenter', () => {
+                const img = card.querySelector('img');
                 const icon = card.querySelector('.material-symbols-outlined');
+                if(img) {
+                    img.style.transform = 'scale(1.08)';
+                    img.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                }
                 if(icon) {
                     icon.style.transform = 'scale(1.15)';
                     icon.style.transition = 'transform 0.3s ease';
                 }
             });
             card.addEventListener('mouseleave', () => {
+                const img = card.querySelector('img');
                 const icon = card.querySelector('.material-symbols-outlined');
+                if(img) img.style.transform = 'scale(1)';
                 if(icon) icon.style.transform = 'scale(1)';
             });
         });

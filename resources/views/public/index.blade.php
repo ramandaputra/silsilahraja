@@ -128,32 +128,32 @@
     @endif
 
     <!-- Sejarah Section -->
-    <section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start mb-xl">
-            <div class="md:col-span-7 space-y-md">
-                <h2 class="text-2xl md:text-4xl font-extrabold text-primary leading-tight">
-                    {{ \App\Models\Setting::get('history_title', 'Sejarah & Warisan Agung Keluarga Raja') }}
-                </h2>
-                <p class="text-base text-on-surface-variant leading-relaxed text-justify">
-                    {{ \App\Models\Setting::get('history_body_1', 'Perjalanan sejarah keluarga raja bukan sekadar silsilah nama, melainkan sebuah narasi agung tentang kepemimpinan dan identitas budaya.') }}
-                </p>
-            </div>
-            <div class="md:col-span-5 md:sticky md:top-24">
-                <div class="bg-surface-container-low p-lg border border-outline-variant rounded-xl shadow-sm">
-                    <h3 class="text-lg font-bold text-secondary mb-sm border-b border-outline-variant/60 pb-xs tracking-wide">Pilar Pelestarian</h3>
-                    <ul class="space-y-sm">
-                        <li class="flex gap-xs items-start text-on-surface-variant">
-                            <span class="material-symbols-outlined text-secondary text-xl shrink-0">check_circle</span>
-                            <span class="text-sm md:text-base">Sistem Kekerabatan Adat Melayu Riau</span>
-                        </li>
-                        <li class="flex gap-xs items-start text-on-surface-variant">
-                            <span class="material-symbols-outlined text-secondary text-xl shrink-0">check_circle</span>
-                            <span class="text-sm md:text-base">Visualisasi Garis Keturunan & Trah</span>
-                        </li>
-                    </ul>
-                </div>
+   <section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start mb-xl">
+        <div class="md:col-span-7 space-y-md">
+            <h2 class="text-2xl md:text-4xl font-extrabold text-primary leading-tight">
+                {{ \App\Models\Setting::get('about_history_title', 'Sejarah & Warisan Agung Keluarga Raja') }}
+            </h2>
+            <p class="text-base text-on-surface-variant leading-relaxed text-justify">
+                {{ \App\Models\Setting::get('about_history_body_1', 'Perjalanan sejarah keluarga raja bukan sekadar silsilah nama, melainkan sebuah narasi agung tentang kepemimpinan dan identitas budaya.') }}
+            </p>
+        </div>
+        <div class="md:col-span-5 md:sticky md:top-24">
+            <div class="bg-surface-container-low p-lg border border-outline-variant rounded-xl shadow-sm">
+                <h3 class="text-lg font-bold text-secondary mb-sm border-b border-outline-variant/60 pb-xs tracking-wide">Pilar Pelestarian</h3>
+                <ul class="space-y-sm">
+                    <li class="flex gap-xs items-start text-on-surface-variant">
+                        <span class="material-symbols-outlined text-secondary text-xl shrink-0">check_circle</span>
+                        <span class="text-sm md:text-base">Sistem Kekerabatan Adat Melayu Riau</span>
+                    </li>
+                    <li class="flex gap-xs items-start text-on-surface-variant">
+                        <span class="material-symbols-outlined text-secondary text-xl shrink-0">check_circle</span>
+                        <span class="text-sm md:text-base">Visualisasi Garis Keturunan & Trah</span>
+                    </li>
+                </ul>
             </div>
         </div>
+    </div>
 
         <!-- Statistik Counter -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-gutter mt-lg">

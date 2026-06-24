@@ -9,11 +9,14 @@ use Illuminate\Http\Request;
 
 class AboutController extends Controller
 {
+    /**
+     * Menampilkan halaman Tentang Kami untuk publik.
+     */
     public function index()
     {
         /*
         |--------------------------------------------------------------------------
-        | 1. SETTINGS (DINAMIS)
+        | 1. SETTINGS (Dinamis dengan Teks Fallback Default)
         |--------------------------------------------------------------------------
         */
         $settings = [
@@ -40,7 +43,7 @@ class AboutController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | 2. STATISTIK
+        | 2. STATISTIK (Menghitung Jumlah Data Silsilah)
         |--------------------------------------------------------------------------
         */
         $totalFamilies = Person::count();
@@ -48,21 +51,28 @@ class AboutController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | 3. DATA TIM
+        | 3. DATA TIM (Dipisah Berdasarkan Kategori & Diurutkan Berdasar Posisi)
         |--------------------------------------------------------------------------
         */
-        $teams = Team::orderBy('order_position')->get();
+        $ahli = Team::where('category', 'ahli')
+                    ->orderBy('order_position')
+                    ->get();
+
+        $developers = Team::where('category', 'developer')
+                          ->orderBy('order_position')
+                          ->get();
 
         /*
         |--------------------------------------------------------------------------
-        | 4. VIEW
+        | 4. VIEW (Mengarahkan ke folder resources/views/public/about.blade.php)
         |--------------------------------------------------------------------------
         */
         return view('public.about', compact(
             'settings',
             'totalFamilies',
             'totalNodes',
-            'teams'
+            'ahli',
+            'developers'
         ));
     }
 }

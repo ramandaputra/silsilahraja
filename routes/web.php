@@ -52,7 +52,7 @@ Route::middleware(['auth', 'verified'])
 
 /*
 |--------------------------------------------------------------------------
-| 3. ADMIN ROUTES (Bisa Diakses Admin & Operator)
+| 3. ADMIN ROUTES (Hanya Bisa Diakses Admin & Operator Ber-login)
 |--------------------------------------------------------------------------
 */
 
@@ -71,24 +71,26 @@ Route::middleware(['auth', 'cek_operator'])
         Route::get('/cms', [CmsController::class, 'index'])->name('cms.index');
         Route::post('/cms', [CmsController::class, 'update'])->name('cms.update');
 
-        // Pengaturan Situs Satu Pintu (Mengelola Beranda & about.blade.php)
+        // Pengaturan Situs Satu Pintu (Mengelola Beranda & Teks About)
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
 
-        // Pengaturan Slot Tim Ahli Dinamis
+        // Manajemen Slot Tim Dinamis (Sudah Masuk Proteksi Admin & Sesuai Target Form JavaScript)
         Route::post('/settings/team', [SettingController::class, 'storeTeam'])->name('settings.team.store');
-        Route::delete('/settings/team/{team}', [SettingController::class, 'destroyTeam'])->name('settings.team.destroy');
+        Route::put('/settings/team/{id}', [SettingController::class, 'updateTeam'])->name('settings.team.update');
+        Route::delete('/settings/team/{id}', [SettingController::class, 'destroyTeam'])->name('settings.team.destroy');
 
         /*
         |--------------------------------------------------------------------------
         | KHUSUS ADMIN UTAMA (USER MANAGEMENT)
         |--------------------------------------------------------------------------
-        */
+        |*/
         Route::middleware(['cek_admin'])->group(function () {
             Route::get('/users', [UserController::class, 'index'])->name('users.index');
             Route::post('/users', [UserController::class, 'store'])->name('users.store');
             Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
             Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+            
         });
 
     });

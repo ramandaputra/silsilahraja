@@ -12,7 +12,7 @@ class SettingController extends Controller
 {
     /**
      * Menampilkan halaman satu atap untuk seluruh pengaturan situs.
-     * Menggabungkan data untuk halaman Beranda, Tentang Kami, dan Daftar Tim Ahli.
+     * Menggabungkan data untuk halaman Beranda, Tentang Kami, dan Daftar Tim Ahli/Pengembang.
      */
     public function index()
     {
@@ -30,7 +30,7 @@ class SettingController extends Controller
             'about_history_body_2'   => Setting::get('about_history_body_2', 'Melalui metodologi yang diadaptasi dari standar arsip nasional, setiap fitur dalam aplikasi ini dirancang untuk meminimalisir redundansi data dan memastikan hubungan antar-generasi tercatat secara logis. Fokus kami adalah memberikan kemudahan bagi setiap keluarga Indonesia untuk membangun repositori sejarah mereka sendiri dengan standar profesional.'),
         ];
 
-        // Mengambil seluruh data slot tim ahli dinamis untuk dikelola di halaman yang sama
+        // Mengambil seluruh data slot tim (Ahli & Pengembang) untuk dikelola bersama
         $teams = Team::orderBy('order_position', 'asc')->get();
 
         return view('admin.settings.index', compact('settings', 'teams'));
@@ -87,40 +87,74 @@ class SettingController extends Controller
     }
 
     /**
-     * Menyimpan slot data anggota tim ahli baru beserta unggahan fotonya.
+     * Menyimpan data anggota baru (Ahli atau Developer) beserta unggahan fotonya.
      */
     public function storeTeam(Request $request) 
     {
         $request->validate([
             'name'        => 'required|string|max:255',
             'role'        => 'required|string|max:255',
+            'category'    => 'required|in:ahli,developer', // Validasi kategori pemisah
             'description' => 'nullable|string',
             'photo'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Maksimal berkas 2MB
         ]);
 
-        $data = $request->only(['name', 'role', 'description']);
+        $data = $request->only(['name', 'role', 'category', 'description']);
 
         if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('teams', 'public');
-            $data['photo'] = $path;
+            $data['photo'] = $request->file('photo')->store('teams', 'public');
         }
 
         Team::create($data);
 
-        return redirect()->back()->with('success', 'Anggota tim baru berhasil ditambahkan ke dalam daftar slot!');
+        return redirect()->back()->with('success', 'Anggota tim baru berhasil ditambahkan!');
     }
 
     /**
-     * Menghapus slot anggota tim ahli dan membersihkan berkas gambar terkait di storage.
+     * Mengubah/Edit data, deskripsi, kategori, dan melakukan rotasi gambar yang sudah ada.
      */
-    public function destroyTeam(Team $team)
+    public function updateTeam(Request $request, Team $team)
     {
-        if ($team->photo && Storage::disk('public')->exists($team->photo)) {
-            Storage::disk('public')->delete($team->photo);
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'role'        => 'required|string|max:255',
+            'category'    => 'required|in:ahli,developer',
+            'description' => 'nullable|string',
+            'photo'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $data = $request->only(['name', 'role', 'category', 'description']);
+
+        if ($request->hasFile('photo')) {
+            // Hapus foto lama dari storage disk jika admin mengunggah berkas gambar baru
+            if ($team->photo && Storage::disk('public')->exists($team->photo)) {
+                Storage::disk('public')->delete($team->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('teams', 'public');
         }
 
+        $team->update($data);
+
+        return redirect()->back()->with('success', 'Data tim dan berkas komponen gambar berhasil diperbarui!');
+    }
+
+    /**
+     * Menghapus slot anggota tim (Ahli/Developer) dan membersihkan berkas gambar dari storage.
+     */
+    public function destroyTeam($id)
+    {
+        // 1. Cari data tim berdasarkan ID, jika tidak ada langsung gagalkan
+        $team = \App\Models\Team::findOrFail($id);
+
+        // 2. Hapus file foto dari penyimpanan jika foto tersebut ada
+        if ($team->photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($team->photo)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($team->photo);
+        }
+
+        // 3. Hapus data dari database
         $team->delete();
 
-        return redirect()->back()->with('success', 'Slot anggota tim berhasil dihapus dari halaman.');
+        // 4. Kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('success', 'Anggota tim berhasil dihapus!');
     }
 }
