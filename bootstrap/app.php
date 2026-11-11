@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         
+        // Percaya semua reverse proxy / SSL termination (misal Cloudflare, Nginx, cPanel SSL)
+        $middleware->trustProxies(at: '*');
+
         // ALIAS MIDDLEWARE UNTUK ROLE: superadmin & admin
         $middleware->alias([
             'cek_superadmin' => function ($request, $next) {
