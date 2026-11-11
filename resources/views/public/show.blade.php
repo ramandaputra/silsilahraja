@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -118,9 +119,13 @@
 
     @php
         // 1. Cari Saudara Kandung
-        $saudaraKandung = [];
+        $saudaraKandung = collect();
         if(!empty($person->father_id)) {
             $saudaraKandung = \App\Models\Person::where('father_id', $person->father_id)
+                                                ->where('id', '!=', $person->id)
+                                                ->get();
+        } elseif(!empty($person->mother_id)) {
+            $saudaraKandung = \App\Models\Person::where('mother_id', $person->mother_id)
                                                 ->where('id', '!=', $person->id)
                                                 ->get();
         } elseif(!empty($person->nama_ibu_non_raja)) {
@@ -129,31 +134,22 @@
                                                 ->get();
         }
 
-        // 2. Cari Anak Kandung
-        $anakKandung = \App\Models\Person::where('father_id', $person->id)->get();
+        // 2. Cari Anak Kandung (baik jika subjek adalah Ayah maupun Ibu)
+        $anakKandung = \App\Models\Person::where('father_id', $person->id)
+                                        ->orWhere('mother_id', $person->id)
+                                        ->get();
     @endphp
 
-    <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop bg-surface/90 backdrop-blur-sm border-b border-primary h-20">
-        <div class="flex items-center gap-xs">
-            <span class="material-symbols-outlined text-primary text-3xl">account_tree</span>
-            <span class="font-headline-md text-headline-md font-bold text-primary">Silsilah Keluarga</span>
-        </div>
-        <div class="hidden md:flex items-center gap-lg">
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="{{ route('home') }}">Beranda</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="{{ route('relation.index') }}">Cari Relasi</a>
-            <a class="font-body-md text-body-md text-secondary border-b-2 border-secondary pb-1 font-bold" href="{{ route('about') }}">Tentang Kami</a>
-        </div>
-        <div class="flex items-center gap-sm">
-            <a href="{{ route('login') }}" class="material-symbols-outlined text-primary p-xs hover:bg-surface-container-highest rounded-full transition-all">account_circle</a>
-        </div>
-    </nav>
+    @include('public.partials.navbar')
 
     <main class="flex-grow max-w-7xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-md">
         
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm mb-lg">
-            <a href="{{ route('home') }}" class="flex items-center gap-xs text-primary font-medium hover:underline transition-all">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
-                <span class="font-label-md text-label-md">Kembali ke Pencarian</span>
+            <a href="{{ route('home') }}" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all">
+                <span class="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center text-white group-hover:-translate-x-0.5 transition-transform">
+                    <span class="material-symbols-outlined text-[14px]">arrow_back</span>
+                </span>
+                <span>Kembali ke Pencarian</span>
             </a>
         </div>
 
@@ -169,11 +165,25 @@
                 <div class="flex-grow text-center md:text-left text-white">
                     <div class="flex flex-wrap items-center justify-center md:justify-start gap-xs mb-base">
                         <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold">{{ $person->nama_lengkap }}</h1>
+                        @if(!empty($person->gelar_pembeda))
+                            <span class="px-2 py-0.5 rounded-lg text-xs font-bold bg-white/20 text-white border border-white/30">
+                                {{ $person->gelar_pembeda }}
+                            </span>
+                        @endif
                         <span class="material-symbols-outlined text-secondary-fixed-dim text-3xl" style="font-variation-settings: 'FILL' 1;" title="Terverifikasi">verified</span>
                     </div>
+                    @if($person->nasab)
+                        <p class="text-sm md:text-base font-semibold text-white/90 -mt-1 mb-2">
+                            {{ $person->nasab }}
+                        </p>
+                    @endif
                     <div class="flex flex-wrap justify-center md:justify-start gap-sm mt-sm">
-                        <span class="bg-primary-container/50 border border-inverse-primary/30 px-md py-xs rounded-full font-label-md text-label-md">
-                            {{ $person->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}
+                        <span class="bg-primary-container/50 border border-inverse-primary/30 px-md py-xs rounded-full font-label-md text-label-md inline-flex items-center gap-1.5">
+                            @if($person->jenis_kelamin == 'L')
+                                <i class="bi bi-gender-male"></i> Laki-laki
+                            @else
+                                <i class="bi bi-gender-female"></i> Perempuan
+                            @endif
                         </span>
                         @if($person->tanggal_wafat)
                             <span class="bg-error border border-error-container/30 px-md py-xs rounded-full font-label-md text-label-md">Wafat</span>
@@ -182,6 +192,23 @@
                         @endif
                         <span class="bg-primary-container/50 border border-white/20 px-md py-xs rounded-full font-label-md text-label-md">ID: #{{ str_pad($person->id, 4, '0', STR_PAD_LEFT) }}</span>
                     </div>
+
+                    @if($person->has_duplicate_name && $person->tokoh_nama_sama->isNotEmpty())
+                        <div class="mt-4 p-3 rounded-xl bg-amber-500/20 border border-amber-300/40 text-xs text-white text-left">
+                            <div class="flex items-center gap-1.5 font-bold mb-1.5 text-amber-200">
+                                <span class="material-symbols-outlined text-sm">info</span>
+                                <span>Perhatian Genealogi: Terdapat tokoh lain dengan nama yang sama persis:</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($person->tokoh_nama_sama as $samePerson)
+                                    <a href="{{ route('person.detail', $samePerson->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all text-xs font-semibold">
+                                        <span>{{ $samePerson->nama_nasab }}</span>
+                                        <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                     <p class="mt-md font-body-lg text-body-lg text-white/80 max-w-2xl italic">
                         "{{ $person->biografi ? Str::limit($person->biografi, 120) : 'Belum ada ringkasan biografi tertulis untuk tokoh ini.' }}"
                     </p>
@@ -232,7 +259,13 @@
                             </div>
                             <div>
                                 <label class="font-label-md text-label-md text-on-tertiary-fixed-variant block mb-xs">Jenis Kelamin</label>
-                                <p class="font-body-lg text-body-lg">{{ $person->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
+                                <p class="font-body-lg text-body-lg inline-flex items-center gap-1.5">
+                                    @if($person->jenis_kelamin == 'L')
+                                        <i class="bi bi-gender-male text-secondary"></i> Laki-laki
+                                    @else
+                                        <i class="bi bi-gender-female text-rose-600"></i> Perempuan
+                                    @endif
+                                </p>
                             </div>
                             <div>
                                 <label class="font-label-md text-label-md text-on-tertiary-fixed-variant block mb-xs">Status Pernikahan</label>
@@ -287,7 +320,7 @@
                                             </p>
                                         @elseif($person->mother)
                                             <a href="{{ route('person.detail', $person->mother->id) }}" class="font-body-md text-body-md font-bold text-primary hover:text-secondary hover:underline">
-                                                {{ $person->mother->nama_lengkap }}
+                                                {{ $person->mother->has_duplicate_name ? $person->mother->nama_nasab : $person->mother->nama_lengkap }}
                                             </a>
                                         @else
                                             <p class="font-body-md text-body-md italic text-outline">Tidak terdata</p>
@@ -303,7 +336,7 @@
                                         <p class="font-label-md text-label-md text-outline">Ayah Kandung</p>
                                         @if($person->father)
                                             <a href="{{ route('person.detail', $person->father->id) }}" class="font-body-md text-body-md font-bold text-primary hover:text-secondary hover:underline">
-                                                {{ $person->father->nama_lengkap }}
+                                                {{ $person->father->has_duplicate_name ? $person->father->nama_nasab : $person->father->nama_lengkap }}
                                             </a>
                                         @else
                                             <p class="font-body-md text-body-md italic text-outline">Tidak terdata</p>
@@ -325,8 +358,14 @@
                                                 <span class="material-symbols-outlined text-primary text-sm">person</span>
                                             </div>
                                             <div>
-                                                <p class="font-body-md text-body-md font-bold text-primary group-hover:text-secondary group-hover:underline">{{ $sibling->nama_lengkap }}</p>
-                                                <p class="font-label-md text-label-md text-outline">{{ $sibling->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
+                                                <p class="font-body-md text-body-md font-bold text-primary group-hover:text-secondary group-hover:underline">{{ $sibling->has_duplicate_name ? $sibling->nama_nasab : $sibling->nama_lengkap }}</p>
+                                                <p class="font-label-md text-label-md text-outline inline-flex items-center gap-1">
+                                                    @if($sibling->jenis_kelamin == 'L')
+                                                        <i class="bi bi-gender-male text-secondary"></i> Laki-laki
+                                                    @else
+                                                        <i class="bi bi-gender-female text-rose-600"></i> Perempuan
+                                                    @endif
+                                                </p>
                                             </div>
                                         </a>
                                     @endforeach
@@ -348,8 +387,14 @@
                                                 <span class="material-symbols-outlined text-primary text-sm">child_care</span>
                                             </div>
                                             <div>
-                                                <p class="font-body-md text-body-md font-bold text-primary group-hover:text-secondary group-hover:underline">{{ $child->nama_lengkap }}</p>
-                                                <p class="font-label-md text-label-md text-outline">{{ $child->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
+                                                <p class="font-body-md text-body-md font-bold text-primary group-hover:text-secondary group-hover:underline">{{ $child->has_duplicate_name ? $child->nama_nasab : $child->nama_lengkap }}</p>
+                                                <p class="font-label-md text-label-md text-outline inline-flex items-center gap-1">
+                                                    @if($child->jenis_kelamin == 'L')
+                                                        <i class="bi bi-gender-male text-secondary"></i> Laki-laki
+                                                    @else
+                                                        <i class="bi bi-gender-female text-rose-600"></i> Perempuan
+                                                    @endif
+                                                </p>
                                             </div>
                                         </a>
                                     @endforeach

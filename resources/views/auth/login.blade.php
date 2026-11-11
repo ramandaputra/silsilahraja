@@ -69,6 +69,15 @@
 
     <section class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop bg-surface">
         <div class="w-full max-w-md space-y-lg">
+            <div class="block md:hidden mb-2">
+                <a href="{{ route('home') }}" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all">
+                    <span class="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center text-white group-hover:-translate-x-0.5 transition-transform">
+                        <span class="material-symbols-outlined text-[14px]">arrow_back</span>
+                    </span>
+                    <span>Kembali ke Beranda</span>
+                </a>
+            </div>
+
             <div class="md:hidden flex flex-col items-center mb-lg space-y-xs">
                 <span class="material-symbols-outlined text-primary text-[40px]">account_tree</span>
                 <h2 class="font-headline-md text-headline-md text-primary font-bold">Silsilah Keluarga</h2>

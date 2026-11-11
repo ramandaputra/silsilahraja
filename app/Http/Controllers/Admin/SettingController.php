@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Models\Team;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -83,6 +84,8 @@ class SettingController extends Controller
             );
         }
 
+        ActivityLog::record('UPDATE', 'Pengaturan Situs', 'Memperbarui konfigurasi teks beranda dan halaman Tentang Kami.');
+
         return redirect()->back()->with('success', 'Seluruh konfigurasi halaman berhasil diperbarui!');
     }
 
@@ -105,7 +108,9 @@ class SettingController extends Controller
             $data['photo'] = $request->file('photo')->store('teams', 'public');
         }
 
-        Team::create($data);
+        $newTeam = Team::create($data);
+
+        ActivityLog::record('CREATE', 'Tim Silsilah', "Menambahkan anggota tim baru: {$newTeam->name} ({$newTeam->role})");
 
         return redirect()->back()->with('success', 'Anggota tim baru berhasil ditambahkan!');
     }
@@ -135,6 +140,8 @@ class SettingController extends Controller
 
         $team->update($data);
 
+        ActivityLog::record('UPDATE', 'Tim Silsilah', "Memperbarui data anggota tim: {$team->name}");
+
         return redirect()->back()->with('success', 'Data tim dan berkas komponen gambar berhasil diperbarui!');
     }
 
@@ -151,8 +158,11 @@ class SettingController extends Controller
             \Illuminate\Support\Facades\Storage::disk('public')->delete($team->photo);
         }
 
+        $teamName = $team->name;
         // 3. Hapus data dari database
         $team->delete();
+
+        ActivityLog::record('DELETE', 'Tim Silsilah', "Menghapus anggota tim: {$teamName}");
 
         // 4. Kembali ke halaman sebelumnya dengan pesan sukses
         return redirect()->back()->with('success', 'Anggota tim berhasil dihapus!');

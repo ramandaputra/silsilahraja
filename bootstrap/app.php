@@ -12,17 +12,24 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         
-        // PASTIKAN BLOK ALIAS INI ADA DAN SUDAH TERSIMPAN:
+        // ALIAS MIDDLEWARE UNTUK ROLE: superadmin & admin
         $middleware->alias([
-            'cek_admin' => function ($request, $next) {
-                if (!auth()->check() || auth()->user()->role !== 'admin') {
-                    abort(403, 'Hanya Administrator Utama yang diizinkan mengakses halaman ini.');
+            'cek_superadmin' => function ($request, $next) {
+                if (!auth()->check() || auth()->user()->role !== 'superadmin') {
+                    abort(403, 'Hanya Superadmin yang diizinkan mengakses halaman ini.');
                 }
                 return $next($request);
             },
+            'cek_admin' => function ($request, $next) {
+                if (!auth()->check() || !in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+                    abort(403, 'Akses ditolak. Halaman ini hanya untuk Administrator.');
+                }
+                return $next($request);
+            },
+            // Fallback alias jika masih ada route/pemanggilan cek_operator
             'cek_operator' => function ($request, $next) {
-                if (!auth()->check() || !in_array(auth()->user()->role, ['admin', 'operator'])) {
-                    abort(403, 'Akses ditolak. Halaman ini hanya untuk pengelola silsilah.');
+                if (!auth()->check() || !in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+                    abort(403, 'Akses ditolak. Halaman ini hanya untuk Administrator.');
                 }
                 return $next($request);
             }

@@ -13,20 +13,20 @@ class UserRoleSeeder extends Seeder
         // Hapus data user lama agar bersih (Opsional)
         User::truncate();
 
-        // 1. Buat Satu-satunya Akun Admin Utama
+        // 1. Buat Satu-satunya Akun Superadmin
         User::create([
-            'name' => 'Admin Silsilah',
+            'name' => 'Superadmin Silsilah',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password123'), // Ganti dengan password pilihan Anda
-            'role' => 'admin',
+            'role' => 'superadmin',
         ]);
 
-        // 2. Buat Akun Operator
+        // 2. Buat Akun Admin
         User::create([
-            'name' => 'Operator Silsilah',
-            'email' => 'operator@gmail.com',
+            'name' => 'Admin Silsilah',
+            'email' => 'admin2@gmail.com',
             'password' => Hash::make('password123'),
-            'role' => 'operator',
+            'role' => 'admin',
         ]);
     }
 }

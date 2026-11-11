@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <script id="tailwind-config">
         tailwind.config = {
@@ -105,81 +106,130 @@
 </head>
 <body class="bg-background font-body-md text-on-surface flex overflow-hidden h-screen">
 
-    <aside class="hidden md:flex flex-col p-md gap-xs bg-surface-container dark:bg-tertiary h-screen w-64 left-0 top-0 border-r border-outline-variant dark:border-on-tertiary-container z-40 fixed">
-        <div class="mb-lg px-xs">
-            <h1 class="font-headline-md text-[20px] font-black text-primary">Silsilah Keluarga</h1>
-            <div class="mt-md flex items-center gap-sm">
-                <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-white font-bold uppercase text-xs">
-                    {{ Str::substr(auth()->user()->name ?? 'A', 0, 1) }}
-                </div>
-                <div>
-                    <p class="font-headline-md text-[14px] font-bold text-primary">Pusat Kendali Admin</p>
-                    <p class="font-label-md text-label-md text-on-surface-variant truncate max-w-[140px]">{{ auth()->user()->name ?? 'Administrator' }}</p>
+    <aside id="admin-sidebar" class="hidden md:flex flex-col p-4 md:p-md gap-xs bg-surface-container dark:bg-tertiary h-screen w-64 left-0 top-0 border-r border-outline-variant dark:border-on-tertiary-container z-40 fixed overflow-y-auto custom-scrollbar">
+        <div class="mb-4 md:mb-lg px-xs flex items-center justify-between">
+            <div class="min-w-0">
+                <h1 class="font-headline-md text-lg md:text-[20px] font-black text-primary truncate">Silsilah Keluarga</h1>
+                <div class="mt-2 flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white font-bold uppercase text-xs shrink-0">
+                        {{ Str::substr(auth()->user()->name ?? 'A', 0, 1) }}
+                    </div>
+                    <div class="min-w-0">
+                        <p class="font-headline-md text-xs font-bold text-primary">Pusat Kendali</p>
+                        <p class="font-label-md text-[11px] text-on-surface-variant truncate max-w-[130px]">{{ auth()->user()->name ?? 'Administrator' }}</p>
+                    </div>
                 </div>
             </div>
+            <!-- Tombol Tutup Sidebar Khusus Mobile -->
+            <button type="button" onclick="toggleSidebar()" class="md:hidden p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-colors" title="Tutup Menu">
+                <span class="material-symbols-outlined text-[22px]">close</span>
+            </button>
         </div>
         
-        <nav class="flex-1 flex flex-col gap-xs">
-            <a class="flex items-center gap-sm px-md py-sm {{ request()->is('admin/dashboard') ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-xl transition-all" href="/admin/dashboard">
-                <span class="material-symbols-outlined" style="{{ request()->is('admin/dashboard') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">dashboard</span>
-                <span class="font-label-md text-label-md">Dashboard</span>
+        <nav class="flex-1 flex flex-col gap-1">
+            <a onclick="if(window.innerWidth < 768) toggleSidebar()" class="flex items-center gap-2.5 px-3 py-2.5 {{ request()->is('admin/dashboard') ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-xl transition-all" href="/admin/dashboard">
+                <span class="material-symbols-outlined text-[20px]" style="{{ request()->is('admin/dashboard') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">dashboard</span>
+                <span class="font-label-md text-xs md:text-sm">Dashboard</span>
             </a>
-            <a class="flex items-center gap-sm px-md py-sm {{ request()->is('admin/people*') ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-xl transition-all" href="{{ route('admin.people.index') }}">
-                <span class="material-symbols-outlined" style="{{ request()->is('admin/people*') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">groups</span>
-                <span class="font-label-md text-label-md">Data Anggota</span>
+            <a onclick="if(window.innerWidth < 768) toggleSidebar()" class="flex items-center gap-2.5 px-3 py-2.5 {{ request()->is('admin/people*') ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-xl transition-all" href="{{ route('admin.people.index') }}">
+                <span class="material-symbols-outlined text-[20px]" style="{{ request()->is('admin/people*') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">groups</span>
+                <span class="font-label-md text-xs md:text-sm">Data Anggota</span>
             </a>
-            <a href="{{ route('admin.settings.index') }}" 
-            class="flex items-center gap-xs px-4 py-3 rounded-xl transition-all group {{ request()->routeIs('admin.settings.*') ? 'bg-secondary text-white font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }}">
-            <span class="material-symbols-outlined shrink-0" style="{{ request()->routeIs('admin.settings.*') ? 'font-variation-settings: \'FILL\' 1; color: white;' : '' }}">settings</span>
-            <span class="text-sm tracking-wide">Pengaturan Aplikasi</span>
+            <a onclick="if(window.innerWidth < 768) toggleSidebar()" href="{{ route('admin.settings.index') }}" 
+            class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all group {{ request()->routeIs('admin.settings.*') ? 'bg-secondary text-white font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }}">
+                <span class="material-symbols-outlined text-[20px] shrink-0" style="{{ request()->routeIs('admin.settings.*') ? 'font-variation-settings: \'FILL\' 1; color: white;' : '' }}">settings</span>
+                <span class="font-label-md text-xs md:text-sm">Pengaturan Aplikasi</span>
+            </a>
+            @if(auth()->check() && auth()->user()->role === 'superadmin')
+            <a onclick="if(window.innerWidth < 768) toggleSidebar()" class="flex items-center gap-2.5 px-3 py-2.5 {{ request()->is('admin/users*') ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-xl transition-all" href="{{ route('admin.users.index') }}">
+                <span class="material-symbols-outlined text-[20px]" style="{{ request()->is('admin/users*') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">manage_accounts</span>
+                <span class="font-label-md text-xs md:text-sm">Kelola Pengguna</span>
+            </a>
+            <a onclick="if(window.innerWidth < 768) toggleSidebar()" class="flex items-center gap-2.5 px-3 py-2.5 {{ request()->is('admin/logs*') ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-xl transition-all" href="{{ route('admin.logs.index') }}">
+                <span class="material-symbols-outlined text-[20px]" style="{{ request()->is('admin/logs*') ? 'font-variation-settings: \'FILL\' 1;' : '' }}">history</span>
+                <span class="font-label-md text-xs md:text-sm">Log Aktivitas</span>
+            </a>
+            @endif
+            
+            <div class="h-px bg-outline-variant/40 my-1"></div>
+            
+            <a href="{{ route('home') }}" class="flex items-center gap-2.5 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-xl transition-all" title="Buka Halaman Depan">
+                <span class="material-symbols-outlined text-[20px]">open_in_new</span>
+                <span class="font-label-md text-xs md:text-sm">Lihat Website</span>
             </a>
         </nav>
 
-        <div class="mt-auto">
-            <a href="{{ route('admin.people.create') }}" class="w-full bg-secondary text-on-secondary py-sm rounded-xl font-bold flex items-center justify-center gap-xs hover:opacity-90 active:scale-95 transition-all shadow-xl text-center text-xs">
-                <span class="material-symbols-outlined">add</span>
+        <div class="mt-auto pt-3">
+            <a onclick="if(window.innerWidth < 768) toggleSidebar()" href="{{ route('admin.people.create') }}" class="w-full bg-primary hover:bg-secondary text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-md text-center text-xs">
+                <span class="material-symbols-outlined text-[18px]">add</span>
                 <span class="font-label-md">Tambah Data Baru</span>
             </a>
         </div>
     </aside>
 
+    <!-- Overlay Backdrop Sidebar Mobile -->
+    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden backdrop-blur-xs transition-opacity"></div>
+
     <main class="flex-1 md:ml-64 overflow-y-auto h-screen bg-surface-bright custom-scrollbar flex flex-col justify-between">
         <div class="w-full flex-1">
-            <header class="sticky top-0 z-30 flex items-center justify-between px-margin-desktop py-md bg-surface/80 backdrop-blur-md border-b-2 border-primary">
-                <div>
-                    <h2 class="font-headline-md text-[20px] font-bold text-primary">@yield('page-title', 'Pusat Kendali')</h2>
-                    <span class="inline-flex items-center px-xs py-0.5 rounded-full bg-primary-container text-on-primary-container text-[11px] font-bold uppercase tracking-wider mt-xs">Otoritas Tunggal</span>
+            <header class="sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 md:px-8 py-3 bg-surface/90 backdrop-blur-md border-b-2 border-primary">
+                <div class="flex items-center gap-2 min-w-0">
+                    <!-- Tombol Toggle Sidebar Mobile -->
+                    <button type="button" onclick="toggleSidebar()" class="md:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary border border-outline-variant/60 shadow-xs active:scale-95 transition-all shrink-0" title="Menu Navigasi">
+                        <span class="material-symbols-outlined text-[20px]">menu</span>
+                    </button>
+                    <div class="min-w-0">
+                        <h2 class="font-headline-md text-sm sm:text-base md:text-[18px] font-bold text-primary truncate">{{ $page_title ?? (${'page-title'} ?? ($__data['page-title'] ?? (View::yieldContent('page-title') ?: 'Pusat Kendali'))) }}</h2>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
+                            {{ auth()->user()?->role === 'superadmin' ? 'Superadmin' : 'Admin' }}
+                        </span>
+                    </div>
                 </div>
-                <div class="flex items-center gap-md">
+                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="text-xs text-error font-semibold hover:underline flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">logout</span> Keluar
+                        <button type="submit" class="text-xs text-error font-semibold hover:underline flex items-center gap-1 p-1" title="Keluar">
+                            <span class="material-symbols-outlined text-sm">logout</span> <span class="hidden sm:inline">Keluar</span>
                         </button>
                     </form>
-                    <div class="h-8 w-px bg-outline-variant"></div>
-                    <div class="flex items-center gap-xs text-on-surface-variant">
-                        <span class="font-label-md text-label-md">{{ Carbon\Carbon::now()->isoFormat('dddd, D MMMM Y') }}</span>
-                        <span class="material-symbols-outlined text-primary">calendar_today</span>
+                    <div class="hidden lg:block h-6 w-px bg-outline-variant"></div>
+                    <div class="hidden lg:flex items-center gap-1.5 text-on-surface-variant text-xs">
+                        <span class="material-symbols-outlined text-primary text-[16px]">calendar_today</span>
+                        <span>{{ Carbon\Carbon::now()->isoFormat('D MMM Y') }}</span>
                     </div>
                 </div>
             </header>
 
-            <div class="p-margin-desktop">
+            <div class="p-3 sm:p-5 md:p-8">
                 {{ $slot }}
             </div>
         </div>
 
-        <footer class="w-full py-xl px-margin-desktop grid grid-cols-1 md:grid-cols-2 justify-between items-center bg-primary text-on-primary mt-auto">
+        <footer class="w-full py-4 sm:py-6 px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4 bg-primary text-on-primary mt-auto text-center sm:text-left">
             <div>
-                <h4 class="font-headline-md text-[16px] font-bold mb-xs">Silsilah Keluarga</h4>
-                <p class="font-body-md text-[13px] text-on-primary/80">© {{ date('Y') }} Silsilah Keluarga (PDDIKTI Style) - Pusat Data Genealogi Digital</p>
+                <h4 class="font-headline-md text-sm font-bold">Silsilah Keluarga</h4>
+                <p class="font-body-md text-xs text-on-primary/80">© {{ date('Y') }} Silsilah Keluarga - Pusat Data Genealogi Digital</p>
             </div>
-            <div class="flex md:justify-end gap-lg mt-md md:mt-0 text-[13px]">
-                <span class="font-label-md text-secondary bg-secondary-fixed px-xs py-0.5 rounded-full font-bold">Status: Admin Aktif</span>
+            <div class="flex items-center gap-2 text-xs">
+                <span class="font-label-md text-secondary bg-secondary-fixed px-2.5 py-0.5 rounded-full font-bold">Status: {{ auth()->user()?->role === 'superadmin' ? 'Superadmin Aktif' : 'Admin Aktif' }}</span>
             </div>
         </footer>
     </main>
 
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('admin-sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex', 'z-50');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex', 'z-50');
+                backdrop.classList.add('hidden');
+            }
+        }
+    </script>
 </body>
 </html>

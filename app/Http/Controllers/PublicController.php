@@ -36,10 +36,14 @@ class PublicController extends Controller
         // 2. Ambil data anak-anak dari tokoh ini (menggunakan relasi children yang sudah kita perbaiki)
         $children = $person->children;
 
-        // 3. Cari Leluhur Paling Atas (Untuk kebutuhan bagan multi-generasi Anda sebelumnya)
+        // 3. Cari Leluhur Paling Atas (Dengan safety check jika id tidak ditemukan)
         $rootAncestor = $person;
         while ($rootAncestor->father_id !== null) {
-            $rootAncestor = Person::findOrFail($rootAncestor->father_id);
+            $parent = Person::find($rootAncestor->father_id);
+            if (!$parent) {
+                break;
+            }
+            $rootAncestor = $parent;
         }
         $rootAncestor->load('children');
 

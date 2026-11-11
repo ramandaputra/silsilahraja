@@ -16,10 +16,10 @@ use App\Http\Controllers\AboutController;
 
 // Auth & Admin
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\PersonController as AdminPersonController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ActivityLogController;
 
 
 /*
@@ -52,11 +52,11 @@ Route::middleware(['auth', 'verified'])
 
 /*
 |--------------------------------------------------------------------------
-| 3. ADMIN ROUTES (Hanya Bisa Diakses Admin & Operator Ber-login)
+| 3. ADMIN ROUTES (Hanya Bisa Diakses Superadmin & Admin Ber-login)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'cek_operator'])
+Route::middleware(['auth', 'cek_admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -66,10 +66,6 @@ Route::middleware(['auth', 'cek_operator'])
 
         // Manajemen Data Keturunan (CRUD Silsilah)
         Route::resource('people', AdminPersonController::class);
-
-        // Pengatur Konten Teks Beranda (CMS Lama)
-        Route::get('/cms', [CmsController::class, 'index'])->name('cms.index');
-        Route::post('/cms', [CmsController::class, 'update'])->name('cms.update');
 
         // Pengaturan Situs Satu Pintu (Mengelola Beranda & Teks About)
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
@@ -82,15 +78,18 @@ Route::middleware(['auth', 'cek_operator'])
 
         /*
         |--------------------------------------------------------------------------
-        | KHUSUS ADMIN UTAMA (USER MANAGEMENT)
+        | KHUSUS SUPERADMIN (USER MANAGEMENT)
         |--------------------------------------------------------------------------
         |*/
-        Route::middleware(['cek_admin'])->group(function () {
+        Route::middleware(['cek_superadmin'])->group(function () {
             Route::get('/users', [UserController::class, 'index'])->name('users.index');
             Route::post('/users', [UserController::class, 'store'])->name('users.store');
             Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
             Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
             
+            // Log Aktivitas Sistem
+            Route::get('/logs', [ActivityLogController::class, 'index'])->name('logs.index');
+            Route::delete('/logs/clear', [ActivityLogController::class, 'clear'])->name('logs.clear');
         });
 
     });

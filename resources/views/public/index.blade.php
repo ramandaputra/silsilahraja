@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
@@ -43,26 +44,20 @@
         .bento-card:hover { box-shadow: 0 12px 24px -10px rgba(0, 51, 102, 0.12); transform: translateY(-2px); }
         .hero-gradient { background: linear-gradient(135deg, #001e40 0%, #0059bb 100%); }
         .glass-nav { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        /* Animasi Pop / Pulse saat Rolling Selesai */
+        @keyframes counterPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .counter-pulse {
+            animation: counterPulse 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
     </style>
 </head>
 <body class="bg-background text-on-background font-sans antialiased overflow-x-hidden">
 
-<header class="fixed top-0 left-0 w-full z-50 bg-surface/80 glass-nav border-b border-primary/20">
-    <nav class="max-w-7xl mx-auto flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20">
-        <div class="flex items-center gap-xs">
-            <span class="material-symbols-outlined text-primary text-3xl">account_tree</span>
-            <span class="text-xl md:text-2xl font-bold text-primary tracking-tight">Silsilah Keluarga</span>
-        </div>
-        <div class="hidden md:flex items-center gap-lg">
-            <a class="text-sm tracking-wide transition-colors duration-200 {{ request()->routeIs('home') ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary' }}" href="{{ route('home') }}">Beranda</a>
-            <a class="text-sm tracking-wide transition-colors duration-200 {{ request()->routeIs('relation.*') ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary' }}" href="{{ route('relation.index') }}">Cari Relasi</a>
-            <a class="text-sm tracking-wide transition-colors duration-200 {{ request()->routeIs('about') ? 'text-secondary border-b-2 border-secondary pb-1 font-bold' : 'text-on-surface-variant hover:text-secondary' }}" href="{{ route('about') }}">Tentang Kami</a>
-        </div>
-        <div class="flex items-center gap-sm">
-            <a href="{{ route('login') }}" class="material-symbols-outlined text-primary p-xs hover:bg-surface-container-highest rounded-full transition-all" title="Login / Akun">account_circle</a>
-        </div>
-    </nav>
-</header>
+@include('public.partials.navbar')
 
 <main class="pt-20">
     <!-- Hero Section dengan Gambar Latar Belakang Kustom Admin -->
@@ -104,10 +99,25 @@
                 <a href="{{ route('person.detail', $res->id) }}" class="block p-5 bg-white border border-outline-variant rounded-xl hover:border-secondary hover:shadow-md transition-all group">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-md">
                         <div>
-                            <span class="font-bold text-on-surface text-lg block mb-2 group-hover:text-secondary transition-colors">{{ $res->nama_lengkap }}</span>
+                            <div class="flex items-center gap-2 flex-wrap mb-2">
+                                <span class="font-bold text-on-surface text-lg group-hover:text-secondary transition-colors">
+                                    {{ $res->nama_lengkap }}
+                                    @if($res->has_duplicate_name && $res->nasab)
+                                        <span class="text-secondary font-semibold">{{ $res->nasab }}</span>
+                                    @elseif(!empty($res->gelar_pembeda))
+                                        <span class="text-primary font-semibold">{{ $res->gelar_pembeda }}</span>
+                                    @endif
+                                </span>
+                            </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-on-surface-variant">
                                 <div><span class="font-medium">Asal Lahir:</span> {{ $res->tempat_lahir ?? '-' }}</div>
-                                <div><span class="font-medium">Jenis Kelamin:</span> {{ $res->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
+                                <div><span class="font-medium">Jenis Kelamin:</span> 
+                                    @if($res->jenis_kelamin == 'L')
+                                        <span class="inline-flex items-center gap-1"><i class="bi bi-gender-male text-secondary"></i> Laki-laki</span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1"><i class="bi bi-gender-female text-rose-600"></i> Perempuan</span>
+                                    @endif
+                                </div>
                                 <div><span class="font-medium">Nama Ayah:</span> {{ $res->father->nama_lengkap ?? '-' }}</div>
                                 <div><span class="font-medium">Nama Ibu:</span> {{ $res->nama_ibu_non_raja ?? ($res->mother->nama_lengkap ?? '-') }}</div>
                             </div>
@@ -155,19 +165,15 @@
         </div>
     </div>
 
-        <!-- Statistik Counter -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-gutter mt-lg">
-            <div class="p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center">
-                <span class="block text-3xl md:text-4xl font-black text-secondary mb-1">{{ $totalNodes }}</span>
-                <span class="text-xs font-bold text-on-surface-variant tracking-wider uppercase text-center">Total Keturunan</span>
+        <!-- Statistik Counter dengan Animasi Rolling -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter mt-lg">
+            <div class="p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center hover:border-secondary hover:shadow-md transition-all group cursor-pointer" onclick="rerollCounters()" title="Klik untuk memutar ulang animasi angka">
+                <span class="rolling-counter block text-3xl md:text-4xl font-black text-secondary mb-1 tabular-nums" data-target="{{ $totalNodes }}">{{ $totalNodes }}</span>
+                <span class="text-xs font-bold text-on-surface-variant tracking-wider uppercase text-center group-hover:text-secondary transition-colors">Total Keturunan</span>
             </div>
-            <div class="p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center">
-                <span class="block text-3xl md:text-4xl font-black text-secondary mb-1">{{ $totalLeluhur }}</span>
-                <span class="text-xs font-bold text-on-surface-variant tracking-wider uppercase text-center">Leluhur Utama</span>
-            </div>
-            <div class="p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center">
-                <span class="block text-3xl md:text-4xl font-black text-emerald-600 mb-1">Online</span>
-                <span class="text-xs font-bold text-on-surface-variant tracking-wider uppercase text-center">Akses Publik</span>
+            <div class="p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center hover:border-secondary hover:shadow-md transition-all group cursor-pointer" onclick="rerollCounters()" title="Klik untuk memutar ulang animasi angka">
+                <span class="rolling-counter block text-3xl md:text-4xl font-black text-secondary mb-1 tabular-nums" data-target="{{ $totalLeluhur }}">{{ $totalLeluhur }}</span>
+                <span class="text-xs font-bold text-on-surface-variant tracking-wider uppercase text-center group-hover:text-secondary transition-colors">Leluhur Utama</span>
             </div>
         </div>
     </section>
@@ -215,6 +221,70 @@
         </div>
     </div>
 </footer>
+
+<script>
+    function setupRollingCounters() {
+        const counters = document.querySelectorAll('.rolling-counter');
+        if (!counters.length) return;
+
+        function animateCounter(el) {
+            const target = parseInt(el.getAttribute('data-target'), 10) || 0;
+            // Durasi: untuk angka satuan (4) 800ms, untuk puluhan/ratusan 1200ms
+            const duration = target < 10 ? 800 : 1200;
+            const startTime = performance.now();
+            el.classList.remove('counter-pulse');
+
+            function step(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // easeOutExpo: berputar cepat di awal lalu melambat halus tepat di target
+                const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                const current = Math.floor(target * ease);
+
+                el.textContent = current;
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    el.textContent = target;
+                    el.classList.add('counter-pulse');
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        // Jalankan saat elemen masuk viewport
+        let hasAnimated = false;
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasAnimated) {
+                        hasAnimated = true;
+                        counters.forEach(c => animateCounter(c));
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            counters.forEach(c => observer.observe(c));
+        } else {
+            counters.forEach(c => animateCounter(c));
+        }
+
+        // Pengunjung bisa klik kartu untuk memutar ulang animasi
+        window.rerollCounters = function() {
+            counters.forEach(c => animateCounter(c));
+        };
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupRollingCounters);
+    } else {
+        setupRollingCounters();
+    }
+</script>
 
 </body>
 </html>

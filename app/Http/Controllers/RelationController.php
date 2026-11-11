@@ -20,7 +20,7 @@ class RelationController extends Controller
 
     public function index()
     {
-        $people = Person::orderBy('nama_lengkap', 'asc')->get();
+        $people = Person::with(['father', 'mother'])->orderBy('nama_lengkap', 'asc')->get();
         return view('public.relation.index', compact('people'));
     }
 
@@ -40,7 +40,7 @@ class RelationController extends Controller
 
         $relationLabel = $this->determineRelationBFS($personA, $personB);
 
-        $people = Person::orderBy('nama_lengkap', 'asc')->get();
+        $people = Person::with(['father', 'mother'])->orderBy('nama_lengkap', 'asc')->get();
         return view('public.relation.index', compact('people', 'personA', 'personB', 'relationLabel'));
     }
 

@@ -26,7 +26,7 @@
                             <h6 class="text-uppercase small mb-1">Laki-Laki</h6>
                             <h3 class="fw-bold mb-0">{{ \App\Models\Person::where('jenis_kelamin', 'L')->count() }}</h3>
                         </div>
-                        <i class="fa-solid fa-mars fa-2x opacity-50"></i>
+                        <i class="bi bi-gender-male fs-2 opacity-50"></i>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                             <h6 class="text-uppercase small mb-1">Perempuan</h6>
                             <h3 class="fw-bold mb-0">{{ \App\Models\Person::where('jenis_kelamin', 'P')->count() }}</h3>
                         </div>
-                        <i class="fa-solid fa-venus fa-2x opacity-50"></i>
+                        <i class="bi bi-gender-female fs-2 opacity-50"></i>
                     </div>
                 </div>
             </div>

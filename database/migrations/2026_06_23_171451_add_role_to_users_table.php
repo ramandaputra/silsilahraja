@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Menambahkan kolom role setelah kolom password, default-nya adalah operator
-            $table->string('role', 20)->default('operator')->after('password');
+            // Menambahkan kolom role setelah kolom password, default-nya adalah admin
+            $table->string('role', 20)->default('admin')->after('password');
         });
     }
 

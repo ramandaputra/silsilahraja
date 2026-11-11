@@ -142,24 +142,21 @@
         }
     </style>
 </head>
-<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col pt-16">
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col pt-20">
 
-   <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop bg-surface/90 backdrop-blur-sm border-b border-primary h-20">
-        <div class="flex items-center gap-xs">
-            <span class="material-symbols-outlined text-primary text-3xl">account_tree</span>
-            <span class="font-headline-md text-headline-md font-bold text-primary">Silsilah Keluarga</span>
-        </div>
-        <div class="hidden md:flex items-center gap-lg">
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="{{ route('home') }}">Beranda</a>
-            <a class="font-body-md text-body-md text-secondary border-b-2 border-secondary pb-1 font-bold" href="{{ route('relation.index') }}">Cari Relasi</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="{{ route('about') }}">Tentang Kami</a>
-        </div>
-        <div class="flex items-center gap-sm">
-            <a href="{{ route('login') }}" class="material-symbols-outlined text-primary p-xs hover:bg-surface-container-highest rounded-full transition-all">account_circle</a>
-        </div>
-    </nav>
+@include('public.partials.navbar')
 
     <main class="flex-grow container mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+        
+        <!-- Tombol Kembali Mobile -->
+        <div class="block md:hidden mb-4">
+            <a href="{{ route('home') }}" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all">
+                <span class="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center text-white group-hover:-translate-x-0.5 transition-transform">
+                    <span class="material-symbols-outlined text-[14px]">arrow_back</span>
+                </span>
+                <span>Kembali ke Beranda</span>
+            </a>
+        </div>
         
         <header class="mb-xl text-center max-w-3xl mx-auto">
             <h1 class="font-headline-lg text-headline-lg text-primary mb-sm">Pencari Relasi Hubungan</h1>
@@ -192,7 +189,7 @@
                                     <option value="">-- Pilih Tokoh Utama --</option>
                                     @foreach($people as $p)
                                         <option value="{{ $p->id }}" {{ isset($personA) && $personA->id == $p->id ? 'selected' : '' }}>
-                                            {{ $p->nama_lengkap }} ({{ $p->jenis_kelamin == 'L' ? 'L' : 'P' }})
+                                            {{ $p->nama_nasab }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -212,7 +209,7 @@
                                     <option value="">-- Pilih Tokoh Kedua --</option>
                                     @foreach($people as $p)
                                         <option value="{{ $p->id }}" {{ isset($personB) && $personB->id == $p->id ? 'selected' : '' }}>
-                                            {{ $p->nama_lengkap }} ({{ $p->jenis_kelamin == 'L' ? 'L' : 'P' }})
+                                            {{ $p->nama_nasab }}
                                         </option>
                                     @endforeach
                                 </select>
