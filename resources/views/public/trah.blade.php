@@ -272,21 +272,12 @@
                     
                     <!-- KELOMPOK INDIVIDU / PASANGAN LELUHUR PUNCAK -->
                     <div class="inline-flex items-center gap-2">
-                        @php
-                            $rootRelInfo = $relatives[$rootAncestor->id] ?? null;
-                            $rootRelText = ($rootRelInfo && !empty($rootRelInfo['relation']) && $rootRelInfo['relation'] !== 'Subjek Fokus')
-                                ? $rootRelInfo['relation']
-                                : ($rootAncestor->id == $person->id ? '' : 'Leluhur Awal');
-                        @endphp
                         <a href="{{ route('person.trah', $rootAncestor->id) }}" class="trah-card {{ $rootAncestor->id == $person->id ? 'active' : '' }}">
-                            <small class="text-gray-400 block text-[10px] tracking-wider uppercase font-semibold mb-0.5">
+                            <small class="text-gray-400 block text-[10px] mb-0.5">
                                 @if($rootAncestor->jenis_kelamin == 'L')
                                     <i class="bi bi-gender-male text-blue-500"></i>
                                 @else
                                     <i class="bi bi-gender-female text-rose-500"></i>
-                                @endif
-                                @if(!empty($rootRelText))
-                                    <span>{{ $rootRelText }}</span>
                                 @endif
                             </small>
                             <span class="block font-bold">{{ $rootAncestor->nama_lengkap }}</span>
@@ -300,13 +291,12 @@
                         @if($rootAncestor->status_pernikahan == 'Menikah' && $rootAncestor->nama_pasangan)
                             <div class="text-red-500 text-xs"><i class="fa-solid fa-heart"></i></div>
                             <div class="trah-card bg-gray-50 border-dashed">
-                                <small class="text-gray-400 block text-[10px] tracking-wider uppercase font-medium mb-0.5">
+                                <small class="text-gray-400 block text-[10px] mb-0.5">
                                     @if($rootAncestor->jenis_kelamin == 'L')
                                         <i class="bi bi-gender-female text-rose-500"></i>
                                     @else
                                         <i class="bi bi-gender-male text-blue-500"></i>
                                     @endif
-                                    <span>Pasangan</span>
                                 </small>
                                 <span class="block text-gray-600 text-xs font-normal">{!! str_replace(',', '<br>', $rootAncestor->nama_pasangan) !!}</span>
                             </div>
@@ -331,39 +321,7 @@
                 </div>
             </div>
 
-            <!-- Keterangan Relasi -->
-            <div class="mt-8 pt-6 border-t border-gray-100 text-xs text-gray-600">
-                <div class="flex items-center gap-2 font-semibold text-primary mb-2">
-                    <span class="material-symbols-outlined text-base">info</span>
-                    <span>Panduan Relasi Kekerabatan Terpilih:</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <span class="font-bold text-gray-800 block mb-1">Garis Langsung (1 Generasi)</span>
-                        <ul class="list-disc list-inside space-y-0.5 text-gray-600">
-                            <li>Orang Tua (Ayah / Ibu)</li>
-                            <li>Keturunan Langsung (Anak)</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <span class="font-bold text-gray-800 block mb-1">Garis Dekat (2 Generasi)</span>
-                        <ul class="list-disc list-inside space-y-0.5 text-gray-600">
-                            <li>Kakek / Nenek</li>
-                            <li>Saudara Kandung</li>
-                            <li>Cucu</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <span class="font-bold text-gray-800 block mb-1">Garis Kerabat (3 Generasi)</span>
-                        <ul class="list-disc list-inside space-y-0.5 text-gray-600">
-                            <li>Kakek/Nenek Buyut</li>
-                            <li>Paman / Bibi</li>
-                            <li>Keponakan</li>
-                            <li>Cicit</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </main>
 
