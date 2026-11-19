@@ -127,12 +127,9 @@
             transform: translateY(-1px);
         }
         
-        /* WARNA FOKUS UTAMA YANG KONTRAS & BERSIH */
+        /* WARNA FOKUS UTAMA DISERAGAMKAN DENGAN KARTU LAINNYA */
         .trah-card.active {
-            background: linear-gradient(135deg, #001e40 0%, #003366 100%);
-            color: #ffffff !important;
-            border-color: #001e40;
-            box-shadow: 0 4px 8px rgba(0, 30, 64, 0.15);
+            /* Seragam dengan .trah-card biasa */
         }
 
         /* GAYA KHUSUS CETAK (PRINT STYLESHEET) */
@@ -204,14 +201,6 @@
                 print-color-adjust: exact !important;
             }
 
-            .trah-card.active {
-                background: #001e40 !important;
-                color: #ffffff !important;
-                border-color: #001e40 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
             .trah-node {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
@@ -274,7 +263,7 @@
                 <p class="hidden print:block text-[11px] text-gray-500 mt-1">Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }} WIB</p>
                 <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full text-xs font-medium mt-2.5 shadow-xs">
                     <span class="material-symbols-outlined text-sm">account_tree</span>
-                    <span>Bagan Silsilah Kekerabatan Terdekat dari Subjek Fokus</span>
+                    <span>Bagan Silsilah Kekerabatan Terdekat</span>
                 </div>
             </div>
             
@@ -283,35 +272,30 @@
                     
                     <!-- KELOMPOK INDIVIDU / PASANGAN LELUHUR PUNCAK -->
                     <div class="inline-flex items-center gap-2">
-                        @if($rootAncestor->id == $person->id)
-                            <div class="trah-card active">
-                                <small class="text-amber-400 block text-[10px] tracking-wider uppercase font-semibold mb-0.5">
-                                    @if($rootAncestor->jenis_kelamin == 'L')
-                                        <i class="bi bi-gender-male text-amber-300"></i>
-                                    @else
-                                        <i class="bi bi-gender-female text-amber-300"></i>
-                                    @endif
-                                    <span>Subjek Fokus</span>
-                                </small>
-                                <span class="block">{{ $rootAncestor->nama_lengkap }}</span>
-                            </div>
-                        @else
-                            @php
-                                $rootRelInfo = $relatives[$rootAncestor->id] ?? null;
-                                $rootRelText = $rootRelInfo['relation'] ?? 'Leluhur Awal';
-                            @endphp
-                            <a href="{{ route('person.trah', $rootAncestor->id) }}" class="trah-card">
-                                <small class="text-gray-400 block text-[10px] tracking-wider uppercase font-semibold mb-0.5">
-                                    @if($rootAncestor->jenis_kelamin == 'L')
-                                        <i class="bi bi-gender-male text-blue-500"></i>
-                                    @else
-                                        <i class="bi bi-gender-female text-rose-500"></i>
-                                    @endif
+                        @php
+                            $rootRelInfo = $relatives[$rootAncestor->id] ?? null;
+                            $rootRelText = ($rootRelInfo && !empty($rootRelInfo['relation']) && $rootRelInfo['relation'] !== 'Subjek Fokus')
+                                ? $rootRelInfo['relation']
+                                : ($rootAncestor->id == $person->id ? '' : 'Leluhur Awal');
+                        @endphp
+                        <a href="{{ route('person.trah', $rootAncestor->id) }}" class="trah-card {{ $rootAncestor->id == $person->id ? 'active' : '' }}">
+                            <small class="text-gray-400 block text-[10px] tracking-wider uppercase font-semibold mb-0.5">
+                                @if($rootAncestor->jenis_kelamin == 'L')
+                                    <i class="bi bi-gender-male text-blue-500"></i>
+                                @else
+                                    <i class="bi bi-gender-female text-rose-500"></i>
+                                @endif
+                                @if(!empty($rootRelText))
                                     <span>{{ $rootRelText }}</span>
-                                </small>
-                                <span class="block">{{ $rootAncestor->nama_lengkap }}</span>
-                            </a>
-                        @endif
+                                @endif
+                            </small>
+                            <span class="block font-bold">{{ $rootAncestor->nama_lengkap }}</span>
+                            @if(!empty($rootAncestor->gelar_pembeda))
+                                <span class="block text-[10px] text-primary font-semibold">{{ $rootAncestor->gelar_pembeda }}</span>
+                            @elseif($rootAncestor->has_duplicate_name && $rootAncestor->nasab)
+                                <span class="block text-[9px] text-amber-700 font-semibold">{{ $rootAncestor->nasab }}</span>
+                            @endif
+                        </a>
                         
                         @if($rootAncestor->status_pernikahan == 'Menikah' && $rootAncestor->nama_pasangan)
                             <div class="text-red-500 text-xs"><i class="fa-solid fa-heart"></i></div>
@@ -454,7 +438,7 @@
         window.addEventListener('beforeprint', preparePrintScale);
         window.addEventListener('afterprint', resetPrintScale);
 
-        // Auto-center ke subjek fokus saat halaman dibuka
+        // Auto-center ke tokoh saat halaman dibuka
         window.addEventListener('DOMContentLoaded', () => {
             const container = document.querySelector('.trah-container');
             const activeCard = document.querySelector('.trah-card.active');

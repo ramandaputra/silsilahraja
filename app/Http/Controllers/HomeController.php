@@ -150,7 +150,7 @@ class HomeController extends Controller
         $visited = [
             $personId => [
                 'degree' => 0,
-                'relation' => 'Subjek Fokus',
+                'relation' => '',
                 'path' => []
             ]
         ];
@@ -213,7 +213,7 @@ class HomeController extends Controller
         $gender = $person ? $person->jenis_kelamin : 'L';
 
         if (empty($path)) {
-            return 'Subjek Fokus';
+            return '';
         }
 
         // Garis Lurus Ke Atas (UP)
