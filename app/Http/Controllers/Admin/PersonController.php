@@ -41,6 +41,10 @@ class PersonController extends Controller
             'status_pernikahan' => 'required|in:Belum Menikah,Menikah',
             'nama_pasangan' => 'nullable|string|max:255',
             'nama_ibu_non_raja' => 'nullable|string|max:255',
+            'tempat_lahir' => 'nullable|string|max:255',
+            'tanggal_lahir' => 'nullable|date',
+            'tanggal_wafat' => 'nullable|date',
+            'biografi' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'father_id' => 'nullable|exists:people,id',
             'mother_id' => 'nullable|exists:people,id',
@@ -49,6 +53,13 @@ class PersonController extends Controller
         ]);
 
         $data = $request->except(['children_ids', '_token']);
+
+        // Ubah string kosong menjadi NULL untuk kolom nullable
+        foreach (['gelar_pembeda', 'tempat_lahir', 'tanggal_lahir', 'tanggal_wafat', 'biografi', 'father_id', 'mother_id', 'nama_pasangan', 'nama_ibu_non_raja'] as $field) {
+            if (array_key_exists($field, $data) && is_string($data[$field]) && trim($data[$field]) === '') {
+                $data[$field] = null;
+            }
+        }
 
         // Proses upload foto jika ada
         if ($request->hasFile('foto')) {
@@ -97,6 +108,10 @@ class PersonController extends Controller
             'status_pernikahan' => 'required|in:Belum Menikah,Menikah',
             'nama_pasangan' => 'nullable|string|max:255',
             'nama_ibu_non_raja' => 'nullable|string|max:255',
+            'tempat_lahir' => 'nullable|string|max:255',
+            'tanggal_lahir' => 'nullable|date',
+            'tanggal_wafat' => 'nullable|date',
+            'biografi' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'father_id' => 'nullable|exists:people,id',
             'mother_id' => 'nullable|exists:people,id',
@@ -105,6 +120,13 @@ class PersonController extends Controller
         ]);
 
         $data = $request->except(['children_ids', 'sync_children', '_token', '_method']);
+
+        // Ubah string kosong menjadi NULL untuk kolom nullable
+        foreach (['gelar_pembeda', 'tempat_lahir', 'tanggal_lahir', 'tanggal_wafat', 'biografi', 'father_id', 'mother_id', 'nama_pasangan', 'nama_ibu_non_raja'] as $field) {
+            if (array_key_exists($field, $data) && is_string($data[$field]) && trim($data[$field]) === '') {
+                $data[$field] = null;
+            }
+        }
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('people_photos', 'public');

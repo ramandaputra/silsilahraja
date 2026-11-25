@@ -28,6 +28,34 @@ class Person extends Model
     ];
 
     /**
+     * The "booted" method of the model.
+     * Otomatis mengonversi string kosong ('') pada kolom nullable menjadi NULL sebelum disimpan ke database.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function ($person) {
+            $nullableFields = [
+                'gelar_pembeda',
+                'tempat_lahir',
+                'tanggal_lahir',
+                'tanggal_wafat',
+                'biografi',
+                'foto',
+                'father_id',
+                'mother_id',
+                'nama_pasangan',
+                'nama_ibu_non_raja',
+            ];
+
+            foreach ($nullableFields as $field) {
+                if (array_key_exists($field, $person->attributes) && is_string($person->attributes[$field]) && trim($person->attributes[$field]) === '') {
+                    $person->attributes[$field] = null;
+                }
+            }
+        });
+    }
+
+    /**
      * Cache internal request untuk daftar nama yang memiliki duplikasi (kembar).
      */
     protected static ?array $cachedDuplicateNames = null;
