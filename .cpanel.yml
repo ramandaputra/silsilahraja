@@ -1,0 +1,4 @@
+---
+deployment:
+  tasks:
+    - /bin/echo "Deployment Silsilah Raja berhasil dijalankan."
