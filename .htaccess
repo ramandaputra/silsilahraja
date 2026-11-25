@@ -1,8 +1,9 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Prevent loop if already pointed to public
+    # Only rewrite to public if public directory exists (document root is project root)
     RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{DOCUMENT_ROOT}/public -d
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
 
