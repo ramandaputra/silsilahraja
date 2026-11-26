@@ -214,11 +214,11 @@
             white-space: nowrap !important;
         }
 
-        /* GAYA KHUSUS CETAK (PRINT STYLESHEET A4 LANDSCAPE) */
+        /* GAYA KHUSUS CETAK (PRINT STYLESHEET A4 LANDSCAPE - PAS 1 HALAMAN & SANGAT TERBACA) */
         @media print {
             @page {
-                size: landscape;
-                margin: 6mm;
+                size: A4 landscape;
+                margin: 4mm 5mm;
             }
 
             nav,
@@ -227,11 +227,15 @@
                 display: none !important;
             }
 
-            body {
+            html, body {
+                width: 100% !important;
+                height: 100% !important;
+                max-height: 100vh !important;
+                overflow: hidden !important;
                 background: #ffffff !important;
                 background-color: #ffffff !important;
                 color: #000000 !important;
-                padding-top: 0 !important;
+                padding: 0 !important;
                 margin: 0 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
@@ -240,21 +244,35 @@
             main {
                 max-width: 100% !important;
                 width: 100% !important;
+                height: 100% !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                overflow: hidden !important;
             }
 
             .trah-main-card {
                 border: none !important;
                 box-shadow: none !important;
                 padding: 0 !important;
-                overflow: visible !important;
+                margin: 0 !important;
+                height: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                overflow: hidden !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
             }
 
             .trah-container {
                 overflow: visible !important;
-                display: block !important;
-                width: auto !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
+                flex-grow: 1 !important;
                 padding: 0 !important;
                 margin: 0 auto !important;
                 background: #ffffff !important;
@@ -267,30 +285,80 @@
                 white-space: nowrap !important;
             }
 
-            .trah-person-box,
-            .trah-name,
-            .trah-gelar,
-            .trah-nasab,
-            .trah-spouse {
+            /* Pengaturan Kompak & Tajam untuk Teks Saat Dicetak */
+            .trah-person-box {
+                padding: 1.5px 5px !important;
+                line-height: 1.18 !important;
                 white-space: nowrap !important;
             }
 
-            .trah-single-connector,
-            .trah-node-horizontal::before,
-            .trah-node-horizontal::after {
+            .trah-name {
+                font-size: 10.5px !important;
+                font-weight: 700 !important;
+                color: #000000 !important;
+                letter-spacing: 0.015em !important;
+                white-space: nowrap !important;
+                -webkit-font-smoothing: antialiased !important;
+            }
+
+            .trah-person-box.active .trah-name {
+                font-size: 11px !important;
+                font-weight: 900 !important;
+                color: #000000 !important;
+            }
+
+            .trah-gelar {
+                font-size: 8.5px !important;
+                font-weight: 600 !important;
+                color: #111111 !important;
+                white-space: nowrap !important;
+            }
+
+            .trah-nasab {
+                font-size: 8px !important;
+                font-weight: 600 !important;
+                color: #222222 !important;
+                white-space: nowrap !important;
+            }
+
+            .trah-spouse {
+                font-size: 8.5px !important;
+                font-weight: 500 !important;
+                color: #111111 !important;
+                white-space: nowrap !important;
+            }
+
+            /* Garis Pohon yang Presisi, Bersih, dan Kompak Saat Cetak */
+            .trah-single-connector {
+                height: 10px !important;
+                border-left-width: 1.2px !important;
                 border-color: #000000 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+            }
+
+            .trah-node-horizontal {
+                padding: 10px 4px 0 4px !important;
+            }
+
+            .trah-node-horizontal::before,
+            .trah-node-horizontal::after {
+                height: 10px !important;
+                border-top-width: 1.2px !important;
+                border-left-width: 1.2px !important;
+                border-color: #000000 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .trah-leaf-stack {
+                gap: 1.5px !important;
             }
 
             .trah-person-box.active {
                 border: 1px solid transparent !important;
                 background-color: transparent !important;
                 box-shadow: none !important;
-            }
-            .trah-person-box.active .trah-name {
-                font-weight: 900 !important;
-                color: #000000 !important;
             }
         }
     </style>
@@ -342,17 +410,17 @@
         <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-6 sm:p-8 trah-main-card">
             
             <!-- Header Judul Silsilah Zuriat (Format Tradisional) -->
-            <div class="text-left border-b border-gray-200 pb-4 mb-6">
-                <div class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+            <div class="text-left border-b border-gray-200 pb-4 mb-6 print:pb-1.5 print:mb-2 print:border-b-gray-400">
+                <div class="text-[11px] print:text-[8.5px] font-bold text-gray-400 uppercase tracking-widest mb-1 print:mb-0.5">
                     Bagan Silsilah Keturunan Diraja &bull; Garis Nasab Menuju Leluhur Puncak: {{ $rootAncestor->nama_lengkap }}
                 </div>
-                <h2 class="text-xl sm:text-2xl font-extrabold tracking-wide uppercase text-gray-900 font-serif">
+                <h2 class="text-xl sm:text-2xl print:text-base font-extrabold tracking-wide uppercase text-gray-900 font-serif leading-tight">
                     ZURIAT {{ $person->nama_lengkap }}
                     @if(!empty($person->nama_pasangan))
                         DAN {{ explode(',', $person->nama_pasangan)[0] }}
                     @endif
                 </h2>
-                <div class="hidden print:block text-[10px] text-gray-500 mt-1 font-mono">
+                <div class="hidden print:block text-[8px] text-gray-500 mt-0.5 font-mono">
                     Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }} WIB
                 </div>
             </div>
@@ -372,12 +440,12 @@
             </div>
 
             <!-- Catatan & Sumber (Format Buku Silsilah) -->
-            <div class="mt-12 pt-4 border-t border-gray-300 text-left font-mono text-xs text-gray-700 space-y-1">
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <div class="mt-12 pt-4 print:mt-2 print:pt-1.5 border-t border-gray-300 print:border-t-gray-400 text-left font-mono text-xs print:text-[8px] text-gray-700 space-y-1 print:space-y-0.5">
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 print:gap-x-3 print:gap-y-0.5">
                     <div><strong>CATATAN :</strong></div>
-                    <div class="inline-flex items-center gap-1"><i class="bi bi-gender-male text-black text-sm"></i> LAKI-LAKI</div>
-                    <div class="inline-flex items-center gap-1"><i class="bi bi-gender-female text-black text-sm"></i> PEREMPUAN</div>
-                    <div class="inline-flex items-center gap-1"><i class="bi bi-link-45deg text-sm"></i> MENIKAH / KAWIN DENGAN</div>
+                    <div class="inline-flex items-center gap-1"><i class="bi bi-gender-male text-black text-sm print:text-[8.5px]"></i> LAKI-LAKI</div>
+                    <div class="inline-flex items-center gap-1"><i class="bi bi-gender-female text-black text-sm print:text-[8.5px]"></i> PEREMPUAN</div>
+                    <div class="inline-flex items-center gap-1"><i class="bi bi-link-45deg text-sm print:text-[8.5px]"></i> MENIKAH / KAWIN DENGAN</div>
                 </div>
                 <div><strong>LELUHUR PUNCAK :</strong> {{ strtoupper($rootAncestor->nama_lengkap) }}{{ !empty($rootAncestor->gelar_pembeda) ? ' ('.strtoupper($rootAncestor->gelar_pembeda).')' : '' }}</div>
                 <div><strong>SUMBER  :</strong> Silsilah Keturunan Kesultanan Riau-Lingga</div>
@@ -433,34 +501,60 @@
 
         function preparePrintScale() {
             const tree = document.getElementById('trah-tree-root');
+            const container = document.querySelector('.trah-container');
             if (!tree) return;
 
-            // Reset transform sementara untuk mengukur lebar elemen yang sebenarnya
+            // Reset transform sementara untuk mengukur dimensi elemen yang sebenarnya
             tree.style.transform = '';
             tree.style.transformOrigin = '';
             if ('zoom' in tree.style) {
                 tree.style.zoom = '';
             }
+            if (container) {
+                container.style.height = '';
+                container.style.overflow = '';
+            }
 
             const treeWidth = tree.scrollWidth || tree.offsetWidth;
-            const printableWidth = 1060;
+            const treeHeight = tree.scrollHeight || tree.offsetHeight;
 
-            if (treeWidth > printableWidth) {
-                const scale = Math.floor((printableWidth / treeWidth) * 100) / 100;
-                if ('zoom' in tree.style) {
-                    tree.style.zoom = scale;
-                } else {
-                    tree.style.transform = `scale(${scale})`;
-                    tree.style.transformOrigin = 'top center';
-                }
+            // Area cetak A4 Landscape (287mm x 202mm pada 96 DPI):
+            // Lebar: ~1080px. Tinggi diagram setelah dikurangi header & footer: ~665px
+            const printableWidth = 1080;
+            const printableHeight = 665;
+
+            const scaleX = printableWidth / treeWidth;
+            const scaleY = printableHeight / treeHeight;
+
+            // Skala yang menjamin bagan pas 1 halaman penuh (horizontal dan vertikal)
+            let scale = Math.min(scaleX, scaleY, 1.0);
+            scale = Math.floor(scale * 100) / 100;
+
+            if ('zoom' in tree.style) {
+                tree.style.zoom = scale;
+            } else {
+                tree.style.transform = `scale(${scale})`;
+                tree.style.transformOrigin = 'top center';
+            }
+
+            if (container) {
+                container.style.height = Math.ceil(treeHeight * scale) + 'px';
+                container.style.overflow = 'hidden';
             }
         }
 
         function resetPrintScale() {
             const tree = document.getElementById('trah-tree-root');
+            const container = document.querySelector('.trah-container');
             if (!tree) return;
             if ('zoom' in tree.style) {
                 tree.style.zoom = '';
+            }
+            tree.style.transform = '';
+            tree.style.transformOrigin = '';
+            if (container) {
+                container.style.height = '';
+                container.style.overflow = '';
             }
             applyZoom(currentZoom);
         }
