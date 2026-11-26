@@ -20,7 +20,10 @@
                 $spouses = array_filter(array_map('trim', explode(',', $node->nama_pasangan)));
             @endphp
             @foreach($spouses as $sp)
-                <span class="trah-spouse text-left">(+) {{ strtoupper($sp) }}</span>
+                <span class="trah-spouse text-left">
+                    <i class="bi bi-link-45deg text-sm text-gray-500 shrink-0"></i>
+                    <span>{{ strtoupper($sp) }}</span>
+                </span>
             @endforeach
         @endif
     </a>
@@ -60,7 +63,10 @@
                                     $leafSpouses = array_filter(array_map('trim', explode(',', $leafChild->nama_pasangan)));
                                 @endphp
                                 @foreach($leafSpouses as $lsp)
-                                    <span class="trah-spouse text-left">(+) {{ strtoupper($lsp) }}</span>
+                                    <span class="trah-spouse text-left">
+                                        <i class="bi bi-link-45deg text-sm text-gray-500 shrink-0"></i>
+                                        <span>{{ strtoupper($lsp) }}</span>
+                                    </span>
                                 @endforeach
                             @endif
                         </a>

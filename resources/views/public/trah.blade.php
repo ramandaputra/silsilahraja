@@ -124,7 +124,9 @@
             font-weight: 500;
             color: #475569;
             margin-top: 1.5px;
-            display: block;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
             text-align: left;
             white-space: nowrap !important;
         }
@@ -368,7 +370,10 @@
 
             <!-- Catatan & Sumber (Format Buku Silsilah) -->
             <div class="mt-12 pt-4 border-t border-gray-300 text-left font-mono text-xs text-gray-700 space-y-1">
-                <div><strong>CATATAN :</strong> (+) KAWIN DENGAN</div>
+                <div class="flex items-center gap-1.5">
+                    <strong>CATATAN :</strong> 
+                    <span class="inline-flex items-center gap-1"><i class="bi bi-link-45deg text-sm"></i> MENIKAH / KAWIN DENGAN</span>
+                </div>
                 <div><strong>SUMBER  :</strong> Silsilah Keturunan Kesultanan Riau-Lingga</div>
             </div>
 
