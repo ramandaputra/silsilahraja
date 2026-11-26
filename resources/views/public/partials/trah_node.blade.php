@@ -8,29 +8,39 @@
     <a href="{{ route('person.trah', $node->id) }}" 
        class="trah-person-box text-left {{ $node->id == $currentPersonId ? 'active' : '' }}" 
        title="{{ $node->nama_lengkap }}{{ !empty($node->gelar_pembeda) ? ' ('.$node->gelar_pembeda.')' : '' }}{{ $node->nasab ? ' - '.$node->nasab : '' }}">
-        <div class="flex items-center gap-1">
-            @if($node->jenis_kelamin == 'L')
-                <i class="bi bi-gender-male text-black text-xs shrink-0" title="Laki-laki"></i>
-            @elseif($node->jenis_kelamin == 'P')
-                <i class="bi bi-gender-female text-black text-xs shrink-0" title="Perempuan"></i>
-            @endif
+        <div class="flex items-center gap-1.5 leading-tight">
+            <span class="w-3.5 flex items-center justify-center shrink-0">
+                @if($node->jenis_kelamin == 'L')
+                    <i class="bi bi-gender-male text-black text-xs shrink-0" title="Laki-laki"></i>
+                @elseif($node->jenis_kelamin == 'P')
+                    <i class="bi bi-gender-female text-black text-xs shrink-0" title="Perempuan"></i>
+                @endif
+            </span>
             <span class="trah-name text-left">{{ strtoupper($node->nama_lengkap) }}</span>
         </div>
         @if(!empty($node->gelar_pembeda))
-            <span class="trah-gelar text-left">{{ strtoupper($node->gelar_pembeda) }}</span>
+            <div class="flex items-center gap-1.5 leading-tight mt-0.5">
+                <span class="w-3.5 shrink-0"></span>
+                <span class="trah-gelar text-left">{{ strtoupper($node->gelar_pembeda) }}</span>
+            </div>
         @endif
         @if($node->has_duplicate_name && $node->nasab)
-            <span class="trah-nasab text-left">{{ $node->nasab }}</span>
+            <div class="flex items-center gap-1.5 leading-tight mt-0.5">
+                <span class="w-3.5 shrink-0"></span>
+                <span class="trah-nasab text-left">{{ $node->nasab }}</span>
+            </div>
         @endif
         @if(!empty($node->nama_pasangan))
             @php
                 $spouses = array_filter(array_map('trim', explode(',', $node->nama_pasangan)));
             @endphp
             @foreach($spouses as $sp)
-                <span class="trah-spouse text-left">
-                    <i class="bi bi-link-45deg text-sm text-gray-500 shrink-0"></i>
-                    <span>{{ strtoupper($sp) }}</span>
-                </span>
+                <div class="flex items-center gap-1.5 leading-tight mt-0.5">
+                    <span class="w-3.5 flex items-center justify-center shrink-0">
+                        <i class="bi bi-link-45deg text-sm text-gray-500 shrink-0" title="Pasangan"></i>
+                    </span>
+                    <span class="trah-spouse text-left">{{ strtoupper($sp) }}</span>
+                </div>
             @endforeach
         @endif
     </a>
@@ -58,29 +68,39 @@
                         <a href="{{ route('person.trah', $leafChild->id) }}" 
                            class="trah-person-box text-left {{ $leafChild->id == $currentPersonId ? 'active' : '' }}" 
                            title="{{ $leafChild->nama_lengkap }}">
-                            <div class="flex items-center gap-1">
-                                @if($leafChild->jenis_kelamin == 'L')
-                                    <i class="bi bi-gender-male text-black text-xs shrink-0" title="Laki-laki"></i>
-                                @elseif($leafChild->jenis_kelamin == 'P')
-                                    <i class="bi bi-gender-female text-black text-xs shrink-0" title="Perempuan"></i>
-                                @endif
+                            <div class="flex items-center gap-1.5 leading-tight">
+                                <span class="w-3.5 flex items-center justify-center shrink-0">
+                                    @if($leafChild->jenis_kelamin == 'L')
+                                        <i class="bi bi-gender-male text-black text-xs shrink-0" title="Laki-laki"></i>
+                                    @elseif($leafChild->jenis_kelamin == 'P')
+                                        <i class="bi bi-gender-female text-black text-xs shrink-0" title="Perempuan"></i>
+                                    @endif
+                                </span>
                                 <span class="trah-name text-left">{{ strtoupper($leafChild->nama_lengkap) }}</span>
                             </div>
                             @if(!empty($leafChild->gelar_pembeda))
-                                <span class="trah-gelar text-left">{{ strtoupper($leafChild->gelar_pembeda) }}</span>
+                                <div class="flex items-center gap-1.5 leading-tight mt-0.5">
+                                    <span class="w-3.5 shrink-0"></span>
+                                    <span class="trah-gelar text-left">{{ strtoupper($leafChild->gelar_pembeda) }}</span>
+                                </div>
                             @endif
                             @if($leafChild->has_duplicate_name && $leafChild->nasab)
-                                <span class="trah-nasab text-left">{{ $leafChild->nasab }}</span>
+                                <div class="flex items-center gap-1.5 leading-tight mt-0.5">
+                                    <span class="w-3.5 shrink-0"></span>
+                                    <span class="trah-nasab text-left">{{ $leafChild->nasab }}</span>
+                                </div>
                             @endif
                             @if(!empty($leafChild->nama_pasangan))
                                 @php
                                     $leafSpouses = array_filter(array_map('trim', explode(',', $leafChild->nama_pasangan)));
                                 @endphp
                                 @foreach($leafSpouses as $lsp)
-                                    <span class="trah-spouse text-left">
-                                        <i class="bi bi-link-45deg text-sm text-gray-500 shrink-0"></i>
-                                        <span>{{ strtoupper($lsp) }}</span>
-                                    </span>
+                                    <div class="flex items-center gap-1.5 leading-tight mt-0.5">
+                                        <span class="w-3.5 flex items-center justify-center shrink-0">
+                                            <i class="bi bi-link-45deg text-sm text-gray-500 shrink-0" title="Pasangan"></i>
+                                        </span>
+                                        <span class="trah-spouse text-left">{{ strtoupper($lsp) }}</span>
+                                    </div>
                                 @endforeach
                             @endif
                         </a>

@@ -104,7 +104,6 @@
             font-size: 9.5px;
             font-weight: 600;
             color: #334155;
-            margin-top: 1.5px;
             display: block;
             text-align: left;
             white-space: nowrap !important;
@@ -113,7 +112,6 @@
             font-size: 8.5px;
             font-weight: 600;
             color: #b45309;
-            margin-top: 1.5px;
             display: block;
             text-align: left;
             white-space: nowrap !important;
@@ -123,10 +121,7 @@
             font-style: italic;
             font-weight: 500;
             color: #475569;
-            margin-top: 1.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
+            display: block;
             text-align: left;
             white-space: nowrap !important;
         }
