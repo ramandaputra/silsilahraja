@@ -105,6 +105,49 @@
         .trah-node:first-child::after {
             border-radius: 4px 0 0 0;
         }
+
+        /* PERCABANGAN VERTIKAL: Untuk cabang yang tidak menunjukkan keturunan lebih lanjut agar tidak melebar ke samping */
+        .trah-branch-vertical {
+            display: block !important;
+            position: relative;
+            padding: 20px 0 10px 0 !important;
+            margin: 0 auto !important;
+            list-style: none !important;
+        }
+        .trah-branch-vertical::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 50% !important;
+            bottom: 20px !important;
+            border-left: 1.5px solid #001e40 !important;
+            width: 0 !important;
+            height: auto !important;
+            margin-left: -0.75px !important;
+        }
+        .trah-node-vertical {
+            position: relative !important;
+            display: block !important;
+            margin-left: 50% !important;
+            padding: 4px 0 4px 16px !important;
+            list-style: none !important;
+            white-space: nowrap !important;
+            text-align: left !important;
+        }
+        .trah-node-vertical::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 0 !important;
+            width: 16px !important;
+            height: 0 !important;
+            border-top: 1.5px solid #001e40 !important;
+            border-left: 0 !important;
+            right: auto !important;
+        }
+        .trah-node-vertical::after {
+            display: none !important;
+        }
         
         /* DESAIN KARTU NODE SUPER CLEAN */
         .trah-card {
@@ -347,14 +390,34 @@
 
                     <!-- Keturunan -->
                     @if(!$rootChildren->isEmpty())
-                        <ul>
+                        @php
+                            $rootHasGrandChildren = false;
+                            foreach ($rootChildren as $c) {
+                                if (!empty($childrenMap[$c->id])) {
+                                    $rootHasGrandChildren = true;
+                                    break;
+                                }
+                            }
+                            $rootContainsCurrentPerson = false;
+                            foreach ($rootChildren as $c) {
+                                if ($c->id == $person->id) {
+                                    $rootContainsCurrentPerson = true;
+                                    break;
+                                }
+                            }
+                            $rootIsVertical = (!$rootHasGrandChildren && !$rootContainsCurrentPerson && count($rootChildren) > 1)
+                                              || (!$rootHasGrandChildren && count($rootChildren) > 6);
+                        @endphp
+                        <ul class="{{ $rootIsVertical ? 'trah-branch-vertical' : 'trah-branch-horizontal' }}">
                             @foreach($rootChildren as $child)
                                 @include('public.partials.trah_node', [
                                     'node' => $child,
                                     'currentPersonId' => $person->id,
                                     'childrenMap' => $childrenMap,
                                     'relatives' => $relatives,
-                                    'peopleById' => $peopleById ?? []
+                                    'peopleById' => $peopleById ?? [],
+                                    'isVerticalParent' => $rootIsVertical,
+                                    'unexpandedChildrenCount' => $unexpandedChildrenCount ?? []
                                 ])
                             @endforeach
                         </ul>

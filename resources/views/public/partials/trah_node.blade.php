@@ -1,4 +1,4 @@
-<li class="trah-node">
+<li class="{{ ($isVerticalParent ?? false) ? 'trah-node-vertical' : 'trah-node' }}">
     <!-- JALUR INDIVIDU / PASANGAN BERDAMPINGAN TANPA BORDER BOX SAMA SEKALI -->
     <div class="inline-flex items-center gap-2">
         
@@ -18,6 +18,12 @@
                     @if($node->has_duplicate_name && $node->nasab)
                         <span class="text-[9px] text-amber-700 font-semibold leading-tight mt-0.5 text-left">
                             {{ $node->nasab }}
+                        </span>
+                    @endif
+                    @if(!empty($unexpandedChildrenCount[$node->id]))
+                        <span class="inline-flex items-center gap-1 text-[9px] text-gray-500 bg-gray-100 hover:bg-gray-200 border border-gray-200 px-1.5 py-0.5 rounded font-normal mt-1 w-fit" title="Memiliki {{ $unexpandedChildrenCount[$node->id] }} keturunan (klik untuk membuka bagan)">
+                            <i class="fa-solid fa-users text-[8px]"></i>
+                            <span>{{ $unexpandedChildrenCount[$node->id] }} anak</span>
                         </span>
                     @endif
                 </div>
@@ -42,17 +48,37 @@
 
     @php
         $directChildren = $childrenMap[$node->id] ?? [];
+        $hasGrandChildren = false;
+        foreach ($directChildren as $c) {
+            if (!empty($childrenMap[$c->id])) {
+                $hasGrandChildren = true;
+                break;
+            }
+        }
+        $containsCurrentPerson = false;
+        foreach ($directChildren as $c) {
+            if ($c->id == $currentPersonId) {
+                $containsCurrentPerson = true;
+                break;
+            }
+        }
+        // Susun vertikal jika anak-anak tidak menunjukkan keturunan lagi ($hasGrandChildren == false)
+        // dan bukan kelompok saudara kandung subjek fokus, atau jika anaknya sangat banyak (> 6)
+        $isVertical = (!$hasGrandChildren && !$containsCurrentPerson && count($directChildren) > 1) 
+                      || (!$hasGrandChildren && count($directChildren) > 6);
     @endphp
 
     @if(!empty($directChildren))
-        <ul>
+        <ul class="{{ $isVertical ? 'trah-branch-vertical' : 'trah-branch-horizontal' }}">
             @foreach($directChildren as $subChild)
                 @include('public.partials.trah_node', [
                     'node' => $subChild,
                     'currentPersonId' => $currentPersonId,
                     'childrenMap' => $childrenMap,
                     'relatives' => $relatives,
-                    'peopleById' => $peopleById ?? []
+                    'peopleById' => $peopleById ?? [],
+                    'isVerticalParent' => $isVertical,
+                    'unexpandedChildrenCount' => $unexpandedChildrenCount ?? []
                 ])
             @endforeach
         </ul>

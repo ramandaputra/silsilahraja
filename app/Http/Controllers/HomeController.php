@@ -101,33 +101,79 @@ class HomeController extends Controller
 
         // 6. Susun struktur childrenMap untuk pohon trah
         $sortedPeople = $allPeople->sortBy('tanggal_lahir');
-        $childrenMap = [];
+        $rawChildrenMap = [];
 
-        // A. Untuk kerabat derajat <= 3, kumpulkan anak-anak yang juga berada dalam derajat 3
+        // A. Kumpulkan seluruh hubungan orang tua -> anak di antara kerabat derajat <= 3
         foreach ($sortedPeople as $child) {
             if (!isset($relatives[$child->id])) {
                 continue;
             }
             if ($child->father_id && isset($relatives[$child->father_id])) {
-                $childrenMap[$child->father_id][] = $child;
+                $rawChildrenMap[$child->father_id][] = $child;
             } elseif ($child->mother_id && isset($relatives[$child->mother_id])) {
-                $childrenMap[$child->mother_id][] = $child;
+                $rawChildrenMap[$child->mother_id][] = $child;
             }
         }
 
-        // B. Untuk garis nasab dari Leluhur Utama sampai ke batas derajat 3,
+        // B. Filter percabangan agar tidak melebar ke samping jika tidak menunjukkan keturunannya:
+        // Cabang anak ditampilkan jika:
+        // 1. Orang tua berada di jalur nasab langsung ($ancestryIds)
+        // 2. Orang tua adalah subjek fokus ($person->id) atau keturunan langsung subjek fokus
+        // 3. Orang tua adalah ayah/ibu langsung dari subjek fokus (agar saudara kandung subjek tampil)
+        // 4. Untuk kerabat lainnya (paman/bibi/sepupu), HANYA kembangkan anak jika cabangnya menunjukkan keturunan berlanjut
+        $ancestryIds = collect($ancestryLine)->pluck('id')->all();
+        $focalParents = array_filter([$person->father_id, $person->mother_id]);
+        $childrenMap = [];
+
+        foreach ($rawChildrenMap as $parentId => $kids) {
+            $isOnAncestry = in_array($parentId, $ancestryIds);
+            $isFocal = ($parentId == $person->id);
+            $isFocalParent = in_array($parentId, $focalParents);
+
+            if ($isOnAncestry || $isFocal || $isFocalParent) {
+                $childrenMap[$parentId] = $kids;
+            } else {
+                // Kerabat menyamping: hanya cabang jika salah satu anaknya memiliki keturunan lagi di bagan
+                $showsDescendants = false;
+                foreach ($kids as $k) {
+                    if (!empty($rawChildrenMap[$k->id])) {
+                        $showsDescendants = true;
+                        break;
+                    }
+                }
+                if ($showsDescendants) {
+                    $childrenMap[$parentId] = $kids;
+                }
+            }
+        }
+
+        // C. Untuk garis nasab dari Leluhur Utama sampai ke batas derajat 3,
         // hubungkan dalam satu jalur vertikal langsung (jalur keturunan utama)
         for ($i = 0; $i < count($ancestryLine) - 1; $i++) {
             $parentInSpine = $ancestryLine[$i];
             $childInSpine = $ancestryLine[$i + 1];
 
             if ($parentInSpine->id === $degree3Ancestor->id) {
-                // Sudah mencapai wilayah derajat 3, percabangan anak sudah diatur di langkah A
+                // Sudah mencapai wilayah derajat 3, percabangan anak sudah diatur di langkah A/B
                 break;
             }
 
             // Hubungkan garis lurus satu anak langsung
             $childrenMap[$parentInSpine->id] = [$childInSpine];
+        }
+
+        // D. Hitung jumlah anak di database untuk tokoh yang tidak dipercabangkan di bagan saat ini
+        $unexpandedChildrenCount = [];
+        foreach ($allPeople as $p) {
+            $pId = $p->id;
+            if (empty($childrenMap[$pId])) {
+                $countInDb = $allPeople->filter(function($item) use ($pId) {
+                    return $item->father_id == $pId || $item->mother_id == $pId;
+                })->count();
+                if ($countInDb > 0) {
+                    $unexpandedChildrenCount[$pId] = $countInDb;
+                }
+            }
         }
 
         // Puncak pohon silsilah adalah Leluhur Utama
@@ -144,7 +190,8 @@ class HomeController extends Controller
             'rootChildren',
             'childrenMap',
             'relatives',
-            'peopleById'
+            'peopleById',
+            'unexpandedChildrenCount'
         ));
     }
 
