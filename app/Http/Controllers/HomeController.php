@@ -66,17 +66,13 @@ class HomeController extends Controller
         $allPeople = Person::all();
         $peopleById = $allPeople->keyBy('id');
 
-        // 3. Telusuri garis nasab lurus ke atas (Ancestry Spine) dari subjek fokus sampai ke Leluhur Puncak
-        // Mengikuti tradisi naskah silsilah zuriat (maksimal 4 generasi ke atas: Buyut / Moyang)
+        // 3. Telusuri garis nasab lurus ke atas (Ancestry Spine) dari subjek fokus sampai ke Leluhur Puncak / Utama
         $ancestryLine = [];
         $curr = $person;
         while ($curr) {
             array_unshift($ancestryLine, $curr);
             $parentId = $curr->father_id ?? $curr->mother_id;
             $curr = $parentId ? ($peopleById[$parentId] ?? null) : null;
-            if (count($ancestryLine) >= 4) {
-                break;
-            }
         }
         $rootAncestor = $ancestryLine[0];
 

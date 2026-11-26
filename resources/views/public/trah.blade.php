@@ -341,7 +341,7 @@
             <!-- Header Judul Silsilah Zuriat (Format Tradisional) -->
             <div class="text-left border-b border-gray-200 pb-4 mb-6">
                 <div class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-                    Bagan Silsilah Keturunan Diraja
+                    Bagan Silsilah Keturunan Diraja &bull; Garis Nasab Menuju Leluhur Puncak: {{ $rootAncestor->nama_lengkap }}
                 </div>
                 <h2 class="text-xl sm:text-2xl font-extrabold tracking-wide uppercase text-gray-900 font-serif">
                     ZURIAT {{ $person->nama_lengkap }}
@@ -376,6 +376,7 @@
                     <div class="inline-flex items-center gap-1"><i class="bi bi-gender-female text-black text-sm"></i> PEREMPUAN</div>
                     <div class="inline-flex items-center gap-1"><i class="bi bi-link-45deg text-sm"></i> MENIKAH / KAWIN DENGAN</div>
                 </div>
+                <div><strong>LELUHUR PUNCAK :</strong> {{ strtoupper($rootAncestor->nama_lengkap) }}{{ !empty($rootAncestor->gelar_pembeda) ? ' ('.strtoupper($rootAncestor->gelar_pembeda).')' : '' }}</div>
                 <div><strong>SUMBER  :</strong> Silsilah Keturunan Kesultanan Riau-Lingga</div>
             </div>
 
