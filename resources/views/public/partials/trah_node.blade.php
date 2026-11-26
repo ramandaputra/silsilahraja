@@ -4,23 +4,23 @@
 @endphp
 
 <div class="trah-node-wrapper">
-    <!-- Kotak Nama Tokoh (Format Manuskrip Silsilah) -->
+    <!-- Kotak Nama Tokoh (Format Manuskrip Silsilah - Rata Kiri) -->
     <a href="{{ route('person.trah', $node->id) }}" 
-       class="trah-person-box {{ $node->id == $currentPersonId ? 'active' : '' }}" 
+       class="trah-person-box text-left {{ $node->id == $currentPersonId ? 'active' : '' }}" 
        title="{{ $node->nama_lengkap }}{{ !empty($node->gelar_pembeda) ? ' ('.$node->gelar_pembeda.')' : '' }}{{ $node->nasab ? ' - '.$node->nasab : '' }}">
-        <span class="trah-name">{{ strtoupper($node->nama_lengkap) }}</span>
+        <span class="trah-name text-left">{{ strtoupper($node->nama_lengkap) }}</span>
         @if(!empty($node->gelar_pembeda))
-            <span class="trah-gelar">{{ strtoupper($node->gelar_pembeda) }}</span>
+            <span class="trah-gelar text-left">{{ strtoupper($node->gelar_pembeda) }}</span>
         @endif
         @if($node->has_duplicate_name && $node->nasab)
-            <span class="trah-nasab">{{ $node->nasab }}</span>
+            <span class="trah-nasab text-left">{{ $node->nasab }}</span>
         @endif
         @if(!empty($node->nama_pasangan))
             @php
                 $spouses = array_filter(array_map('trim', explode(',', $node->nama_pasangan)));
             @endphp
             @foreach($spouses as $sp)
-                <span class="trah-spouse">(+) {{ strtoupper($sp) }}</span>
+                <span class="trah-spouse text-left">(+) {{ strtoupper($sp) }}</span>
             @endforeach
         @endif
     </a>
@@ -40,27 +40,27 @@
             ])
 
         @elseif($branchType === 'vertical_stack')
-            <!-- Anak-anak Terminal Leaves: Daftar Vertikal Merapat ke Bawah -->
+            <!-- Anak-anak Terminal Leaves: Daftar Vertikal Merapat ke Bawah (Rata Kiri) -->
             <div class="trah-single-connector"></div>
-            <ul class="trah-leaf-stack">
+            <ul class="trah-leaf-stack items-start">
                 @foreach($directChildren as $leafChild)
-                    <li class="trah-leaf-item">
+                    <li class="trah-leaf-item text-left w-full">
                         <a href="{{ route('person.trah', $leafChild->id) }}" 
-                           class="trah-person-box {{ $leafChild->id == $currentPersonId ? 'active' : '' }}" 
+                           class="trah-person-box text-left {{ $leafChild->id == $currentPersonId ? 'active' : '' }}" 
                            title="{{ $leafChild->nama_lengkap }}">
-                            <span class="trah-name">{{ strtoupper($leafChild->nama_lengkap) }}</span>
+                            <span class="trah-name text-left">{{ strtoupper($leafChild->nama_lengkap) }}</span>
                             @if(!empty($leafChild->gelar_pembeda))
-                                <span class="trah-gelar">{{ strtoupper($leafChild->gelar_pembeda) }}</span>
+                                <span class="trah-gelar text-left">{{ strtoupper($leafChild->gelar_pembeda) }}</span>
                             @endif
                             @if($leafChild->has_duplicate_name && $leafChild->nasab)
-                                <span class="trah-nasab">{{ $leafChild->nasab }}</span>
+                                <span class="trah-nasab text-left">{{ $leafChild->nasab }}</span>
                             @endif
                             @if(!empty($leafChild->nama_pasangan))
                                 @php
                                     $leafSpouses = array_filter(array_map('trim', explode(',', $leafChild->nama_pasangan)));
                                 @endphp
                                 @foreach($leafSpouses as $lsp)
-                                    <span class="trah-spouse">(+) {{ strtoupper($lsp) }}</span>
+                                    <span class="trah-spouse text-left">(+) {{ strtoupper($lsp) }}</span>
                                 @endforeach
                             @endif
                         </a>

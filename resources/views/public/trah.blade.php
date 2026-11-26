@@ -61,19 +61,19 @@
             position: relative;
         }
 
-        /* Kotak Tokoh (Format Manuskrip Klasik & Berwibawa) */
+        /* Kotak Tokoh (Format Manuskrip Klasik & Berwibawa - Rata Kiri) */
         .trah-person-box {
             display: inline-flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             padding: 3px 8px;
             text-decoration: none;
             color: #111827;
             border-radius: 4px;
-            text-align: center;
+            text-align: left;
             transition: all 0.15s ease-in-out;
-            max-width: 175px;
+            max-width: 185px;
             border: 1px solid transparent;
             line-height: 1.25;
         }
@@ -93,6 +93,7 @@
             letter-spacing: 0.025em;
             color: #0f172a;
             display: block;
+            text-align: left;
             white-space: normal;
             word-break: break-word;
         }
@@ -105,6 +106,7 @@
             color: #334155;
             margin-top: 1.5px;
             display: block;
+            text-align: left;
             white-space: normal;
             word-break: break-word;
         }
@@ -114,6 +116,7 @@
             color: #b45309;
             margin-top: 1.5px;
             display: block;
+            text-align: left;
             white-space: normal;
         }
         .trah-spouse {
@@ -123,6 +126,7 @@
             color: #475569;
             margin-top: 1.5px;
             display: block;
+            text-align: left;
             white-space: normal;
             word-break: break-word;
         }
@@ -188,11 +192,11 @@
             display: none;
         }
 
-        /* Daftar Daun Vertikal (Leaf Stack - Sesuai Format Buku Silsilah) */
+        /* Daftar Daun Vertikal (Leaf Stack - Sesuai Format Buku Silsilah - Rata Kiri) */
         .trah-leaf-stack {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             list-style: none;
             margin: 0;
             padding: 0;
@@ -200,9 +204,15 @@
             white-space: nowrap;
         }
         .trah-leaf-item {
-            text-align: center;
+            text-align: left;
             line-height: 1.25;
             list-style: none;
+            width: 100%;
+        }
+        .trah-leaf-item .trah-person-box {
+            align-items: flex-start;
+            text-align: left;
+            width: 100%;
         }
 
         /* GAYA KHUSUS CETAK (PRINT STYLESHEET A4 LANDSCAPE) */
