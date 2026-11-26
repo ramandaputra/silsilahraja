@@ -94,24 +94,32 @@ class Person extends Model
 
     /**
      * Nasab tokoh berdasarkan garis keturunan (bin / binti).
-     * Contoh: "bin Raja Haji Fisabilillah" atau "binti Raja Ali".
+     * Sesuai syariat Islam, nama setelah Bin/Binti WAJIB laki-laki (patrilineal).
+     * Contoh: "Bin Raja Haji Fisabilillah" atau "binti Raja Ali".
      */
     public function getNasabAttribute(): ?string
     {
         $partikel = ($this->jenis_kelamin === 'P') ? 'binti' : 'Bin';
 
-        if ($this->father && !empty($this->father->nama_lengkap)) {
+        // 1. Ayah kandung yang sah (wajib laki-laki sesuai syariat Islam)
+        if ($this->father && $this->father->jenis_kelamin === 'L' && !empty($this->father->nama_lengkap)) {
             return "{$partikel} {$this->father->nama_lengkap}";
         }
 
-        if (!empty($this->nama_ibu_non_raja)) {
-            return "{$partikel} {$this->nama_ibu_non_raja}";
+        // 2. Jika ayah belum terhubung sebagai relasi model, tapi ibu memiliki suami laki-laki yang tercatat di nama_pasangan
+        if (!$this->father && $this->mother && !empty($this->mother->nama_pasangan)) {
+            $spouses = array_filter(array_map('trim', explode(',', $this->mother->nama_pasangan)));
+            if (count($spouses) === 1) {
+                $suami = $spouses[0];
+                // Pastikan nama suami bukan tokoh perempuan
+                $isFemale = static::where('nama_lengkap', $suami)->where('jenis_kelamin', 'P')->exists();
+                if (!$isFemale) {
+                    return "{$partikel} {$suami}";
+                }
+            }
         }
 
-        if ($this->mother && !empty($this->mother->nama_lengkap)) {
-            return "{$partikel} {$this->mother->nama_lengkap}";
-        }
-
+        // Menurut syariat Islam, nasab TIDAK BOLEH dinisbatkan kepada ibu/perempuan (tidak boleh "Bin/binti [Nama Ibu]")
         return null;
     }
 

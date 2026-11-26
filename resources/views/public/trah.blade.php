@@ -179,19 +179,16 @@
         .trah-node-horizontal:last-child::after {
             border-top: 0 none;
         }
-        .trah-node-horizontal:last-child::before {
-            border-right: 1.5px solid #111827;
-        }
         .trah-node-horizontal:only-child::before,
         .trah-node-horizontal:only-child::after {
             display: none;
         }
 
-        /* Daftar Daun Vertikal (Leaf Stack - Sesuai Format Buku Silsilah - Rata Kiri) */
+        /* Daftar Daun Vertikal (Leaf Stack - Kontainer Rata Tengah dengan Garis, Teks di dalam Rata Kiri) */
         .trah-leaf-stack {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
             list-style: none;
             margin: 0;
             padding: 0;
@@ -199,12 +196,17 @@
             white-space: nowrap;
         }
         .trah-leaf-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: left;
             line-height: 1.25;
             list-style: none;
             width: auto;
         }
         .trah-leaf-item .trah-person-box {
+            display: inline-flex;
+            flex-direction: column;
             align-items: flex-start;
             text-align: left;
             width: auto;
