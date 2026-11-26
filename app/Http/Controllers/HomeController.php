@@ -64,52 +64,83 @@ class HomeController extends Controller
 
         // 2. Ambil seluruh data anggota untuk pemetaan graf relasi kekerabatan
         $allPeople = Person::all();
-
-        // 3. Hitung relasi derajat <= 3 dari subjek fokus menggunakan BFS
-        $relatives = $this->getRelativesWithinDegree($person->id, $allPeople, 3);
-
-        // 4. Lacak ke atas mencari leluhur awal pohon (maksimal 3 generasi ke atas / Kakek-Nenek Buyut)
-        $rootAncestor = $person;
-        $current = $person;
-        for ($i = 0; $i < 3; $i++) {
-            $parentId = $current->father_id ?? $current->mother_id;
-            if (!$parentId) {
-                break;
-            }
-            $parent = $allPeople->firstWhere('id', $parentId);
-            if (!$parent || !isset($relatives[$parent->id])) {
-                break;
-            }
-            $rootAncestor = $parent;
-            $current = $parent;
-        }
-
-        // 5. Susun struktur childrenMap (hanya anak yang berada dalam derajat <= 3)
-        $relativeIds = array_keys($relatives);
-        $childrenMap = [];
         $peopleById = $allPeople->keyBy('id');
 
-        // Urutkan tokoh berdasarkan tanggal lahir agar susunan cabang anak konsisten
-        $sortedPeople = $allPeople->sortBy('tanggal_lahir');
+        // 3. Telusuri garis nasab lurus ke atas dari subjek fokus sampai ke Leluhur Puncak (Ultimate Ancestor)
+        $ancestryLine = [];
+        $curr = $person;
+        while ($curr) {
+            array_unshift($ancestryLine, $curr);
+            $parentId = $curr->father_id ?? $curr->mother_id;
+            $curr = $parentId ? ($peopleById[$parentId] ?? null) : null;
+        }
+        $ultimateAncestor = $ancestryLine[0];
 
+        // 4. Hitung relasi derajat <= 3 dari subjek fokus menggunakan BFS
+        $relatives = $this->getRelativesWithinDegree($person->id, $allPeople, 3);
+
+        // 5. Tentukan batas leluhur tertinggi pada garis nasab yang masih masuk dalam derajat 3
+        $degree3Ancestor = $person;
+        foreach ($ancestryLine as $ancestor) {
+            if (isset($relatives[$ancestor->id])) {
+                $degree3Ancestor = $ancestor;
+                break;
+            }
+        }
+
+        // Pastikan seluruh tokoh di garis nasab (dari ultimateAncestor sampai person) terdaftar di $relatives
+        foreach ($ancestryLine as $ancestor) {
+            if (!isset($relatives[$ancestor->id])) {
+                $relatives[$ancestor->id] = [
+                    'degree' => 0,
+                    'relation' => 'Leluhur Garis Utama',
+                    'path' => []
+                ];
+            }
+        }
+
+        // 6. Susun struktur childrenMap untuk pohon trah
+        $sortedPeople = $allPeople->sortBy('tanggal_lahir');
+        $childrenMap = [];
+
+        // A. Untuk kerabat derajat <= 3, kumpulkan anak-anak yang juga berada dalam derajat 3
         foreach ($sortedPeople as $child) {
             if (!isset($relatives[$child->id])) {
                 continue;
             }
-            if ($child->father_id && in_array($child->father_id, $relativeIds)) {
+            if ($child->father_id && isset($relatives[$child->father_id])) {
                 $childrenMap[$child->father_id][] = $child;
-            } elseif ($child->mother_id && in_array($child->mother_id, $relativeIds)) {
+            } elseif ($child->mother_id && isset($relatives[$child->mother_id])) {
                 $childrenMap[$child->mother_id][] = $child;
             }
         }
 
-        // Ambil keturunan langsung dari leluhur awal yang terpilih
+        // B. Untuk garis nasab dari Leluhur Utama sampai ke batas derajat 3,
+        // hubungkan dalam satu jalur vertikal langsung (jalur keturunan utama)
+        for ($i = 0; $i < count($ancestryLine) - 1; $i++) {
+            $parentInSpine = $ancestryLine[$i];
+            $childInSpine = $ancestryLine[$i + 1];
+
+            if ($parentInSpine->id === $degree3Ancestor->id) {
+                // Sudah mencapai wilayah derajat 3, percabangan anak sudah diatur di langkah A
+                break;
+            }
+
+            // Hubungkan garis lurus satu anak langsung
+            $childrenMap[$parentInSpine->id] = [$childInSpine];
+        }
+
+        // Puncak pohon silsilah adalah Leluhur Utama
+        $rootAncestor = $ultimateAncestor;
         $rootChildren = collect($childrenMap[$rootAncestor->id] ?? []);
 
-        // 6. Kirim data ke halaman bagan silsilah
+        // 7. Kirim data ke halaman bagan silsilah
         return view('public.trah', compact(
             'person',
             'rootAncestor',
+            'ultimateAncestor',
+            'degree3Ancestor',
+            'ancestryLine',
             'rootChildren',
             'childrenMap',
             'relatives',
