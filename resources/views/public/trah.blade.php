@@ -214,7 +214,7 @@
             white-space: nowrap !important;
         }
 
-        /* GAYA KHUSUS CETAK (PRINT STYLESHEET A4 LANDSCAPE - PAS 1 HALAMAN & SANGAT TERBACA) */
+        /* GAYA KHUSUS CETAK (PRINT STYLESHEET A4 LANDSCAPE - MENGISI 1 HALAMAN SECARA MAKSIMAL & JELAS) */
         @media print {
             @page {
                 size: A4 landscape;
@@ -272,87 +272,87 @@
                 align-items: center !important;
                 justify-content: center !important;
                 width: 100% !important;
-                flex-grow: 1 !important;
+                flex: 1 1 auto !important;
                 padding: 0 !important;
-                margin: 0 auto !important;
+                margin: auto auto !important;
                 background: #ffffff !important;
                 white-space: nowrap !important;
             }
 
             #trah-tree-root {
                 display: inline-block !important;
-                transform-origin: top center !important;
+                transform-origin: center center !important;
                 white-space: nowrap !important;
             }
 
-            /* Pengaturan Kompak & Tajam untuk Teks Saat Dicetak */
+            /* Pengaturan Tipografi yang Jelas, Tajam, dan Proporsional Saat Cetak */
             .trah-person-box {
-                padding: 1.5px 5px !important;
-                line-height: 1.18 !important;
+                padding: 2.5px 7px !important;
+                line-height: 1.25 !important;
                 white-space: nowrap !important;
             }
 
             .trah-name {
-                font-size: 10.5px !important;
+                font-size: 11.5px !important;
                 font-weight: 700 !important;
                 color: #000000 !important;
-                letter-spacing: 0.015em !important;
+                letter-spacing: 0.02em !important;
                 white-space: nowrap !important;
                 -webkit-font-smoothing: antialiased !important;
             }
 
             .trah-person-box.active .trah-name {
-                font-size: 11px !important;
+                font-size: 12px !important;
                 font-weight: 900 !important;
                 color: #000000 !important;
             }
 
             .trah-gelar {
-                font-size: 8.5px !important;
+                font-size: 9.5px !important;
                 font-weight: 600 !important;
                 color: #111111 !important;
                 white-space: nowrap !important;
             }
 
             .trah-nasab {
-                font-size: 8px !important;
+                font-size: 8.5px !important;
                 font-weight: 600 !important;
                 color: #222222 !important;
                 white-space: nowrap !important;
             }
 
             .trah-spouse {
-                font-size: 8.5px !important;
+                font-size: 9.5px !important;
                 font-weight: 500 !important;
                 color: #111111 !important;
                 white-space: nowrap !important;
             }
 
-            /* Garis Pohon yang Presisi, Bersih, dan Kompak Saat Cetak */
+            /* Garis Penghubung & Percabangan yang Proporsional & Mantap Saat Cetak */
             .trah-single-connector {
-                height: 10px !important;
-                border-left-width: 1.2px !important;
+                height: 16px !important;
+                border-left-width: 1.5px !important;
                 border-color: #000000 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
 
             .trah-node-horizontal {
-                padding: 10px 4px 0 4px !important;
+                padding: 16px 8px 0 8px !important;
             }
 
             .trah-node-horizontal::before,
             .trah-node-horizontal::after {
-                height: 10px !important;
-                border-top-width: 1.2px !important;
-                border-left-width: 1.2px !important;
+                height: 16px !important;
+                border-top-width: 1.5px !important;
+                border-left-width: 1.5px !important;
                 border-color: #000000 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
 
             .trah-leaf-stack {
-                gap: 1.5px !important;
+                gap: 2.5px !important;
             }
 
             .trah-person-box.active {
@@ -518,23 +518,25 @@
             const treeWidth = tree.scrollWidth || tree.offsetWidth;
             const treeHeight = tree.scrollHeight || tree.offsetHeight;
 
-            // Area cetak A4 Landscape (287mm x 202mm pada 96 DPI):
-            // Lebar: ~1080px. Tinggi diagram setelah dikurangi header & footer: ~665px
-            const printableWidth = 1080;
-            const printableHeight = 665;
+            // Area cetak A4 Landscape efektif (standar 96 DPI):
+            // Lebar: ~1060px (margin 5mm). Tinggi diagram efektif: ~645px
+            const printableWidth = 1060;
+            const printableHeight = 645;
 
             const scaleX = printableWidth / treeWidth;
             const scaleY = printableHeight / treeHeight;
 
-            // Skala yang menjamin bagan pas 1 halaman penuh (horizontal dan vertikal)
-            let scale = Math.min(scaleX, scaleY, 1.0);
+            // Skala yang mengisi lembar secara maksimal agar tidak banyak ruang kosong,
+            // huruf & garis boleh membesar (upscale hingga 1.5x), dan tetap pas dalam 1 halaman
+            let scale = Math.min(scaleX, scaleY);
+            scale = Math.min(scale, 1.50); // Batas maksimal pembesaran proporsional
             scale = Math.floor(scale * 100) / 100;
 
             if ('zoom' in tree.style) {
                 tree.style.zoom = scale;
             } else {
                 tree.style.transform = `scale(${scale})`;
-                tree.style.transformOrigin = 'top center';
+                tree.style.transformOrigin = 'center center';
             }
 
             if (container) {
