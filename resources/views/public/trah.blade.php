@@ -61,7 +61,7 @@
             position: relative;
         }
 
-        /* Kotak Tokoh (Format Manuskrip Klasik & Berwibawa - Rata Kiri) */
+        /* Kotak Tokoh (Format Manuskrip Klasik & Berwibawa - 1 Baris Rata Kiri) */
         .trah-person-box {
             display: inline-flex;
             flex-direction: column;
@@ -73,9 +73,10 @@
             border-radius: 4px;
             text-align: left;
             transition: all 0.15s ease-in-out;
-            max-width: 185px;
+            max-width: none;
             border: 1px solid transparent;
-            line-height: 1.25;
+            line-height: 1.3;
+            white-space: nowrap !important;
         }
         .trah-person-box:hover {
             background-color: #f8fafc;
@@ -94,8 +95,7 @@
             color: #0f172a;
             display: block;
             text-align: left;
-            white-space: normal;
-            word-break: break-word;
+            white-space: nowrap !important;
         }
         .trah-person-box.active .trah-name {
             color: #001e40;
@@ -107,8 +107,7 @@
             margin-top: 1.5px;
             display: block;
             text-align: left;
-            white-space: normal;
-            word-break: break-word;
+            white-space: nowrap !important;
         }
         .trah-nasab {
             font-size: 8.5px;
@@ -117,7 +116,7 @@
             margin-top: 1.5px;
             display: block;
             text-align: left;
-            white-space: normal;
+            white-space: nowrap !important;
         }
         .trah-spouse {
             font-size: 9.5px;
@@ -127,8 +126,7 @@
             margin-top: 1.5px;
             display: block;
             text-align: left;
-            white-space: normal;
-            word-break: break-word;
+            white-space: nowrap !important;
         }
 
         /* Garis Penghubung Tunggal (Single Connector) */
@@ -207,19 +205,20 @@
             text-align: left;
             line-height: 1.25;
             list-style: none;
-            width: 100%;
+            width: auto;
         }
         .trah-leaf-item .trah-person-box {
             align-items: flex-start;
             text-align: left;
-            width: 100%;
+            width: auto;
+            white-space: nowrap !important;
         }
 
         /* GAYA KHUSUS CETAK (PRINT STYLESHEET A4 LANDSCAPE) */
         @media print {
             @page {
                 size: landscape;
-                margin: 8mm;
+                margin: 6mm;
             }
 
             nav,
@@ -255,15 +254,25 @@
             .trah-container {
                 overflow: visible !important;
                 display: block !important;
-                width: 100% !important;
+                width: auto !important;
                 padding: 0 !important;
                 margin: 0 auto !important;
                 background: #ffffff !important;
+                white-space: nowrap !important;
             }
 
             #trah-tree-root {
                 display: inline-block !important;
                 transform-origin: top center !important;
+                white-space: nowrap !important;
+            }
+
+            .trah-person-box,
+            .trah-name,
+            .trah-gelar,
+            .trah-nasab,
+            .trah-spouse {
+                white-space: nowrap !important;
             }
 
             .trah-single-connector,
