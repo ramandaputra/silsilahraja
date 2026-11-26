@@ -7,7 +7,7 @@
     
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -84,21 +84,23 @@
             color: #0059bb;
         }
         .trah-person-box.active {
-            border: 1.5px solid #001e40;
-            background-color: #f0f7ff;
-            box-shadow: 0 1px 4px rgba(0, 30, 64, 0.12);
+            border: 1px solid transparent;
+            background-color: transparent;
+            box-shadow: none;
         }
         .trah-name {
             font-size: 11.5px;
-            font-weight: 700;
-            letter-spacing: 0.025em;
+            font-weight: 600;
+            letter-spacing: 0.02em;
             color: #0f172a;
             display: block;
             text-align: left;
             white-space: nowrap !important;
         }
         .trah-person-box.active .trah-name {
-            color: #001e40;
+            font-weight: 900 !important;
+            letter-spacing: 0.025em;
+            color: #0f172a;
         }
         .trah-gelar {
             font-size: 9.5px;
@@ -282,8 +284,13 @@
             }
 
             .trah-person-box.active {
-                border: 1.5px solid #000000 !important;
-                background-color: #f3f4f6 !important;
+                border: 1px solid transparent !important;
+                background-color: transparent !important;
+                box-shadow: none !important;
+            }
+            .trah-person-box.active .trah-name {
+                font-weight: 900 !important;
+                color: #000000 !important;
             }
         }
     </style>
