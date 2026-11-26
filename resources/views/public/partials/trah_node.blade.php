@@ -8,7 +8,14 @@
     <a href="{{ route('person.trah', $node->id) }}" 
        class="trah-person-box text-left {{ $node->id == $currentPersonId ? 'active' : '' }}" 
        title="{{ $node->nama_lengkap }}{{ !empty($node->gelar_pembeda) ? ' ('.$node->gelar_pembeda.')' : '' }}{{ $node->nasab ? ' - '.$node->nasab : '' }}">
-        <span class="trah-name text-left">{{ strtoupper($node->nama_lengkap) }}</span>
+        <div class="flex items-center gap-1">
+            @if($node->jenis_kelamin == 'L')
+                <i class="bi bi-gender-male text-black text-xs shrink-0" title="Laki-laki"></i>
+            @elseif($node->jenis_kelamin == 'P')
+                <i class="bi bi-gender-female text-black text-xs shrink-0" title="Perempuan"></i>
+            @endif
+            <span class="trah-name text-left">{{ strtoupper($node->nama_lengkap) }}</span>
+        </div>
         @if(!empty($node->gelar_pembeda))
             <span class="trah-gelar text-left">{{ strtoupper($node->gelar_pembeda) }}</span>
         @endif
@@ -51,7 +58,14 @@
                         <a href="{{ route('person.trah', $leafChild->id) }}" 
                            class="trah-person-box text-left {{ $leafChild->id == $currentPersonId ? 'active' : '' }}" 
                            title="{{ $leafChild->nama_lengkap }}">
-                            <span class="trah-name text-left">{{ strtoupper($leafChild->nama_lengkap) }}</span>
+                            <div class="flex items-center gap-1">
+                                @if($leafChild->jenis_kelamin == 'L')
+                                    <i class="bi bi-gender-male text-black text-xs shrink-0" title="Laki-laki"></i>
+                                @elseif($leafChild->jenis_kelamin == 'P')
+                                    <i class="bi bi-gender-female text-black text-xs shrink-0" title="Perempuan"></i>
+                                @endif
+                                <span class="trah-name text-left">{{ strtoupper($leafChild->nama_lengkap) }}</span>
+                            </div>
                             @if(!empty($leafChild->gelar_pembeda))
                                 <span class="trah-gelar text-left">{{ strtoupper($leafChild->gelar_pembeda) }}</span>
                             @endif
