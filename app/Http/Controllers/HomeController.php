@@ -64,56 +64,108 @@ class HomeController extends Controller
 
         // 2. Ambil seluruh data anggota untuk pemetaan graf relasi kekerabatan
         $allPeople = Person::all();
-
-        // 3. Hitung relasi derajat <= 3 dari subjek fokus menggunakan BFS
-        $relatives = $this->getRelativesWithinDegree($person->id, $allPeople, 3);
-
-        // 4. Lacak ke atas mencari leluhur awal pohon (maksimal 3 generasi ke atas / Kakek-Nenek Buyut)
-        $rootAncestor = $person;
-        $current = $person;
-        for ($i = 0; $i < 3; $i++) {
-            $parentId = $current->father_id ?? $current->mother_id;
-            if (!$parentId) {
-                break;
-            }
-            $parent = $allPeople->firstWhere('id', $parentId);
-            if (!$parent || !isset($relatives[$parent->id])) {
-                break;
-            }
-            $rootAncestor = $parent;
-            $current = $parent;
-        }
-
-        // 5. Susun struktur childrenMap (hanya anak yang berada dalam derajat <= 3)
-        $relativeIds = array_keys($relatives);
-        $childrenMap = [];
         $peopleById = $allPeople->keyBy('id');
 
-        // Urutkan tokoh berdasarkan tanggal lahir agar susunan cabang anak konsisten
+        // 3. Telusuri garis nasab lurus ke atas (Ancestry Spine) dari subjek fokus sampai ke Leluhur Puncak
+        // Mengikuti tradisi naskah silsilah zuriat (maksimal 4 generasi ke atas: Buyut / Moyang)
+        $ancestryLine = [];
+        $curr = $person;
+        while ($curr) {
+            array_unshift($ancestryLine, $curr);
+            $parentId = $curr->father_id ?? $curr->mother_id;
+            $curr = $parentId ? ($peopleById[$parentId] ?? null) : null;
+            if (count($ancestryLine) >= 4) {
+                break;
+            }
+        }
+        $rootAncestor = $ancestryLine[0];
+
+        // 4. Hitung relasi derajat <= 3 dari subjek fokus menggunakan BFS
+        $relatives = $this->getRelativesWithinDegree($person->id, $allPeople, 3);
+
+        // Pastikan seluruh tokoh di garis nasab (dari rootAncestor sampai person) masuk dalam pohon
+        foreach ($ancestryLine as $ancestor) {
+            if (!isset($relatives[$ancestor->id])) {
+                $relatives[$ancestor->id] = [
+                    'degree' => 0,
+                    'relation' => 'Leluhur Garis Utama',
+                    'path' => []
+                ];
+            }
+        }
+
+        // 5. Susun struktur childrenMap (hanya kerabat yang terhubung)
+        $childrenMap = [];
         $sortedPeople = $allPeople->sortBy('tanggal_lahir');
 
         foreach ($sortedPeople as $child) {
             if (!isset($relatives[$child->id])) {
                 continue;
             }
-            if ($child->father_id && in_array($child->father_id, $relativeIds)) {
+            if ($child->father_id && isset($relatives[$child->father_id])) {
                 $childrenMap[$child->father_id][] = $child;
-            } elseif ($child->mother_id && in_array($child->mother_id, $relativeIds)) {
+            } elseif ($child->mother_id && isset($relatives[$child->mother_id])) {
                 $childrenMap[$child->mother_id][] = $child;
             }
         }
 
-        // Ambil keturunan langsung dari leluhur awal yang terpilih
+        // Pastikan jalur vertikal ancestry line dari rootAncestor sampai person tersambung
+        for ($i = 0; $i < count($ancestryLine) - 1; $i++) {
+            $parentInSpine = $ancestryLine[$i];
+            $childInSpine = $ancestryLine[$i + 1];
+
+            if (empty($childrenMap[$parentInSpine->id])) {
+                $childrenMap[$parentInSpine->id] = [$childInSpine];
+            } else {
+                $found = false;
+                foreach ($childrenMap[$parentInSpine->id] as $k) {
+                    if ($k->id === $childInSpine->id) {
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $childrenMap[$parentInSpine->id][] = $childInSpine;
+                }
+            }
+        }
+
+        // 6. Hitung branchTypeMap untuk setiap orang tua sesuai kaidah naskah silsilah diraja:
+        // - 'none': tidak ada anak
+        // - 'single': tepat 1 anak -> garis vertikal lurus ke bawah
+        // - 'vertical_stack': anak > 1 dan SEMUA anaknya tidak memiliki keturunan lagi di bagan (terminal leaves)!
+        // - 'horizontal': anak > 1 dan minimal salah satu anaknya memiliki keturunan lagi di bagan
+        $branchTypeMap = [];
+        foreach ($childrenMap as $parentId => $kids) {
+            $count = count($kids);
+            if ($count === 0) {
+                $branchTypeMap[$parentId] = 'none';
+            } elseif ($count === 1) {
+                $branchTypeMap[$parentId] = 'single';
+            } else {
+                $anyChildHasKids = false;
+                foreach ($kids as $k) {
+                    if (!empty($childrenMap[$k->id])) {
+                        $anyChildHasKids = true;
+                        break;
+                    }
+                }
+                $branchTypeMap[$parentId] = $anyChildHasKids ? 'horizontal' : 'vertical_stack';
+            }
+        }
+
         $rootChildren = collect($childrenMap[$rootAncestor->id] ?? []);
 
-        // 6. Kirim data ke halaman bagan silsilah
+        // 7. Kirim data ke halaman bagan silsilah
         return view('public.trah', compact(
             'person',
             'rootAncestor',
             'rootChildren',
             'childrenMap',
+            'branchTypeMap',
             'relatives',
-            'peopleById'
+            'peopleById',
+            'ancestryLine'
         ));
     }
 

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pohon Silsilah - {{ $person->nama_lengkap }}</title>
+    <title>Pohon Silsilah (Zuriat) - {{ $person->nama_lengkap }}</title>
     
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -20,133 +20,196 @@
                     "colors": {
                         "primary": "#001e40",
                         "secondary": "#0059bb",
-                        "background": "#fbf9f8",
-                        "surface": "#fbf9f8",
-                        "surface-container-high": "#eae8e7",
-                        "surface-container-highest": "#e4e2e2",
-                        "surface-container-low": "#f5f3f3",
-                        "primary-container": "#003366",
-                        "on-primary-container": "#799dd6",
-                        "on-surface": "#1b1c1c",
-                        "on-surface-variant": "#43474f",
-                        "outline-variant": "#c3c6d1",
-                        "surface-variant": "#e4e2e2"
+                        "background": "#f8f7f5",
+                        "surface": "#ffffff"
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fbf9f8; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f7f5; }
         
-        /* STRUKTUR DIAGRAM TRAH: RAPI, MERAPAT, & FLEKSIBEL */
+        /* ========================================================
+           BAGAN SILSILAH MANUSKRIP DIRAJA (ZURIAT TRADISIONAL)
+           ======================================================== */
         .trah-container {
             display: block;
             text-align: center;
             overflow-x: auto;
             overflow-y: hidden;
-            padding: 16px 8px;
+            padding: 24px 16px;
             white-space: nowrap;
             -webkit-overflow-scrolling: touch;
             cursor: grab;
             position: relative;
+            background-color: #ffffff;
         }
         .trah-container.is-grabbing {
             cursor: grabbing !important;
             user-select: none;
         }
-        .trah-container ul {
-            padding-top: 14px;
-            position: relative;
-            margin: 0;
-            padding-left: 0;
-        }
-        .trah-container ul::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            border-left: 1.5px solid #001e40;
-            width: 0;
-            height: 14px;
-            margin-left: -0.75px;
-        }
-        .trah-node {
+        #trah-tree-root {
             display: inline-block;
-            vertical-align: top;
             text-align: center;
-            list-style-type: none;
-            position: relative;
-            padding: 14px 2.5px 0 2.5px;
+            margin: 0 auto;
         }
-        .trah-node::before, .trah-node::after {
+        .trah-node-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Kotak Tokoh (Format Manuskrip Klasik & Berwibawa) */
+        .trah-person-box {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3px 8px;
+            text-decoration: none;
+            color: #111827;
+            border-radius: 4px;
+            text-align: center;
+            transition: all 0.15s ease-in-out;
+            max-width: 175px;
+            border: 1px solid transparent;
+            line-height: 1.25;
+        }
+        .trah-person-box:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0059bb;
+        }
+        .trah-person-box.active {
+            border: 1.5px solid #001e40;
+            background-color: #f0f7ff;
+            box-shadow: 0 1px 4px rgba(0, 30, 64, 0.12);
+        }
+        .trah-name {
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+            color: #0f172a;
+            display: block;
+            white-space: normal;
+            word-break: break-word;
+        }
+        .trah-person-box.active .trah-name {
+            color: #001e40;
+        }
+        .trah-gelar {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #334155;
+            margin-top: 1.5px;
+            display: block;
+            white-space: normal;
+            word-break: break-word;
+        }
+        .trah-nasab {
+            font-size: 8.5px;
+            font-weight: 600;
+            color: #b45309;
+            margin-top: 1.5px;
+            display: block;
+            white-space: normal;
+        }
+        .trah-spouse {
+            font-size: 9.5px;
+            font-style: italic;
+            font-weight: 500;
+            color: #475569;
+            margin-top: 1.5px;
+            display: block;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        /* Garis Penghubung Tunggal (Single Connector) */
+        .trah-single-connector {
+            width: 0;
+            height: 18px;
+            border-left: 1.5px solid #111827;
+            margin: 0 auto;
+        }
+
+        /* Percabangan Horizontal Crossbar */
+        .trah-branch-horizontal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .trah-branch-horizontal {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            white-space: nowrap;
+        }
+        .trah-node-horizontal {
+            position: relative;
+            padding: 18px 12px 0 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            list-style: none;
+        }
+        .trah-node-horizontal::before,
+        .trah-node-horizontal::after {
             content: '';
             position: absolute;
             top: 0;
             right: 50%;
-            border-top: 1.5px solid #001e40;
+            border-top: 1.5px solid #111827;
             width: 50%;
-            height: 14px;
+            height: 18px;
         }
-        .trah-node::after {
+        .trah-node-horizontal::after {
             right: auto;
             left: 50%;
-            border-left: 1.5px solid #001e40;
+            border-left: 1.5px solid #111827;
         }
-        .trah-node:only-child::after, .trah-node:only-child::before {
+        .trah-node-horizontal:first-child::before {
+            border-top: 0 none;
+        }
+        .trah-node-horizontal:last-child::after {
+            border-top: 0 none;
+        }
+        .trah-node-horizontal:last-child::before {
+            border-right: 1.5px solid #111827;
+        }
+        .trah-node-horizontal:only-child::before,
+        .trah-node-horizontal:only-child::after {
             display: none;
         }
-        .trah-node:only-child {
-            padding-top: 0;
+
+        /* Daftar Daun Vertikal (Leaf Stack - Sesuai Format Buku Silsilah) */
+        .trah-leaf-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 3.5px;
+            white-space: nowrap;
         }
-        .trah-node:first-child::before, .trah-node:last-child::after {
-            border: 0 none;
-        }
-        .trah-node:last-child::before {
-            border-right: 1.5px solid #001e40;
-            border-radius: 0 4px 0 0;
-        }
-        .trah-node:first-child::after {
-            border-radius: 4px 0 0 0;
-        }
-        
-        /* DESAIN KARTU NODE: KOMPAK, MERAPAT, & FLEKSIBEL */
-        .trah-card {
-            border: 1px solid #c3c6d1;
-            padding: 5px 8px;
-            text-decoration: none;
-            color: #1b1c1c;
-            font-size: 11.5px;
-            font-weight: 500;
-            display: inline-block;
-            border-radius: 6px;
-            background-color: #ffffff;
-            transition: all 0.15s ease-in-out;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-            min-width: 90px;
-            max-width: 155px;
-            text-align: left;
-            white-space: normal;
-            vertical-align: middle;
-        }
-        .trah-card:hover {
-            border-color: #0059bb;
-            box-shadow: 0 2px 5px rgba(0, 89, 187, 0.12);
-            transform: translateY(-1px);
-        }
-        
-        /* INDIKATOR SUBJEK AKTIF RAPI & ELEGAN */
-        .trah-card.active {
-            border: 1.5px solid #0059bb;
-            background-color: #f7faff;
-            box-shadow: 0 0 0 1.5px rgba(0, 89, 187, 0.18);
+        .trah-leaf-item {
+            text-align: center;
+            line-height: 1.25;
+            list-style: none;
         }
 
-        /* GAYA KHUSUS CETAK (PRINT STYLESHEET) */
+        /* GAYA KHUSUS CETAK (PRINT STYLESHEET A4 LANDSCAPE) */
         @media print {
             @page {
                 size: landscape;
-                margin: 6mm;
+                margin: 8mm;
             }
 
             nav,
@@ -181,12 +244,11 @@
 
             .trah-container {
                 overflow: visible !important;
-                overflow-x: visible !important;
                 display: block !important;
                 width: 100% !important;
                 padding: 0 !important;
                 margin: 0 auto !important;
-                white-space: nowrap !important;
+                background: #ffffff !important;
             }
 
             #trah-tree-root {
@@ -194,35 +256,22 @@
                 transform-origin: top center !important;
             }
 
-            .trah-container ul::before,
-            .trah-node::before,
-            .trah-node::after {
-                border-color: #001e40 !important;
+            .trah-single-connector,
+            .trah-node-horizontal::before,
+            .trah-node-horizontal::after {
+                border-color: #000000 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
 
-            .trah-card {
-                box-shadow: none !important;
-                border: 1px solid #9ca3af !important;
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .trah-node {
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-            }
-
-            .overflow-hidden {
-                overflow: visible !important;
+            .trah-person-box.active {
+                border: 1.5px solid #000000 !important;
+                background-color: #f3f4f6 !important;
             }
         }
     </style>
 </head>
-<body class="bg-[#fbf9f8] text-gray-900 min-h-screen flex flex-col pt-24">
+<body class="bg-[#f8f7f5] text-gray-900 min-h-screen flex flex-col pt-24">
 
     <!-- Navbar -->
     @include('public.partials.navbar')
@@ -230,6 +279,7 @@
     <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto w-full px-4 py-6">
         
+        <!-- Toolbar Navigasi & Zoom -->
         <div class="flex flex-wrap justify-between items-center gap-3 mb-4 no-print">
             <a href="{{ route('person.detail', $person->id) }}" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all">
                 <span class="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center text-white group-hover:-translate-x-0.5 transition-transform">
@@ -237,8 +287,9 @@
                 </span>
                 <span>Kembali ke Profil</span>
             </a>
+            
             <div class="flex flex-wrap items-center gap-2">
-                <!-- Kontrol Zoom & Ukuran Layar Fleksibel -->
+                <!-- Kontrol Zoom & Ukuran Layar -->
                 <div class="inline-flex items-center bg-white border border-gray-200 rounded-lg shadow-xs overflow-hidden">
                     <button type="button" onclick="zoomTree(-0.1)" class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-primary transition" title="Perkecil Tampilan">
                         <i class="fa-solid fa-minus text-xs"></i>
@@ -263,81 +314,44 @@
             </div>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-4 sm:p-6 trah-main-card">
-            <div class="text-center mb-5">
-                <h4 class="text-xl sm:text-2xl font-bold text-primary">Bagan Silsilah Keturunan (Trah)</h4>
-                <p class="text-xs sm:text-sm text-gray-500 mt-1">
-                    Generasi Hubungan dari Keluarga <strong>{{ $person->nama_lengkap }}</strong>
-                    @if(!empty($person->gelar_pembeda))
-                        <span class="text-xs text-primary font-semibold">{{ $person->gelar_pembeda }}</span>
-                    @elseif($person->has_duplicate_name && $person->nasab)
-                        <span class="text-xs text-amber-700 font-semibold">{{ $person->nasab }}</span>
+        <!-- Kartu Bagan Silsilah Manuskrip -->
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-6 sm:p-8 trah-main-card">
+            
+            <!-- Header Judul Silsilah Zuriat (Format Tradisional) -->
+            <div class="text-left border-b border-gray-200 pb-4 mb-6">
+                <div class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                    Bagan Silsilah Keturunan Diraja
+                </div>
+                <h2 class="text-xl sm:text-2xl font-extrabold tracking-wide uppercase text-gray-900 font-serif">
+                    ZURIAT {{ $person->nama_lengkap }}
+                    @if(!empty($person->nama_pasangan))
+                        DAN {{ explode(',', $person->nama_pasangan)[0] }}
                     @endif
-                </p>
-                <p class="hidden print:block text-[11px] text-gray-500 mt-1">Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }} WIB</p>
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full text-xs font-medium mt-2 shadow-xs">
-                    <span class="material-symbols-outlined text-sm">account_tree</span>
-                    <span>Bagan Silsilah Kekerabatan Terdekat</span>
+                </h2>
+                <div class="hidden print:block text-[10px] text-gray-500 mt-1 font-mono">
+                    Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }} WIB
                 </div>
             </div>
             
+            <!-- Area Diagram Pohon -->
             <div class="trah-container">
                 <div id="trah-tree-root" style="display: inline-block;">
-                    
-                    <!-- KELOMPOK INDIVIDU / PASANGAN LELUHUR PUNCAK -->
-                    <div class="inline-flex items-center gap-1.5">
-                        <a href="{{ route('person.trah', $rootAncestor->id) }}" class="trah-card {{ $rootAncestor->id == $person->id ? 'active' : '' }}" title="{{ $rootAncestor->nama_lengkap }}{{ !empty($rootAncestor->gelar_pembeda) ? ' ('.$rootAncestor->gelar_pembeda.')' : '' }}{{ $rootAncestor->nasab ? ' - '.$rootAncestor->nasab : '' }}">
-                            <div class="flex items-start gap-1.5">
-                                @if($rootAncestor->jenis_kelamin == 'L')
-                                    <i class="bi bi-gender-male text-blue-500 text-xs shrink-0 mt-0.5"></i>
-                                @else
-                                    <i class="bi bi-gender-female text-rose-500 text-xs shrink-0 mt-0.5"></i>
-                                @endif
-                                <div class="flex flex-col text-left min-w-0 flex-1">
-                                    <span class="font-bold leading-tight break-words text-[11.5px] text-gray-900">{{ $rootAncestor->nama_lengkap }}</span>
-                                    @if(!empty($rootAncestor->gelar_pembeda))
-                                        <span class="text-[9px] text-primary font-semibold leading-tight mt-0.5 text-left break-words">{{ $rootAncestor->gelar_pembeda }}</span>
-                                    @endif
-                                    @if($rootAncestor->has_duplicate_name && $rootAncestor->nasab)
-                                        <span class="text-[8.5px] text-amber-700 font-semibold leading-tight mt-0.5 text-left break-words">{{ $rootAncestor->nasab }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </a>
-                        
-                        @if($rootAncestor->status_pernikahan == 'Menikah' && $rootAncestor->nama_pasangan)
-                            <div class="text-rose-500 text-[10px] shrink-0" title="Pasangan"><i class="fa-solid fa-heart"></i></div>
-                            <div class="trah-card bg-gray-50/90 border-dashed max-w-[130px] p-1.5">
-                                <div class="flex items-start gap-1 text-gray-600 text-[10.5px] font-normal">
-                                    @if($rootAncestor->jenis_kelamin == 'L')
-                                        <i class="bi bi-gender-female text-rose-500 text-xs shrink-0 mt-0.5"></i>
-                                    @else
-                                        <i class="bi bi-gender-male text-blue-500 text-xs shrink-0 mt-0.5"></i>
-                                    @endif
-                                    <span class="break-words leading-tight text-left">{!! str_replace(',', '<br>', $rootAncestor->nama_pasangan) !!}</span>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Keturunan -->
-                    @if(!$rootChildren->isEmpty())
-                        <ul>
-                            @foreach($rootChildren as $child)
-                                @include('public.partials.trah_node', [
-                                    'node' => $child,
-                                    'currentPersonId' => $person->id,
-                                    'childrenMap' => $childrenMap,
-                                    'relatives' => $relatives,
-                                    'peopleById' => $peopleById ?? []
-                                ])
-                            @endforeach
-                        </ul>
-                    @endif
-
+                    @include('public.partials.trah_node', [
+                        'node' => $rootAncestor,
+                        'currentPersonId' => $person->id,
+                        'childrenMap' => $childrenMap,
+                        'branchTypeMap' => $branchTypeMap,
+                        'relatives' => $relatives,
+                        'peopleById' => $peopleById ?? []
+                    ])
                 </div>
             </div>
 
+            <!-- Catatan & Sumber (Format Buku Silsilah) -->
+            <div class="mt-12 pt-4 border-t border-gray-300 text-left font-mono text-xs text-gray-700 space-y-1">
+                <div><strong>CATATAN :</strong> (+) KAWIN DENGAN</div>
+                <div><strong>SUMBER  :</strong> Silsilah Keturunan Kesultanan Riau-Lingga</div>
+            </div>
 
         </div>
     </main>
@@ -434,7 +448,7 @@
         // Auto-center ke tokoh saat halaman dibuka
         window.addEventListener('DOMContentLoaded', () => {
             const container = document.querySelector('.trah-container');
-            const activeCard = document.querySelector('.trah-card.active');
+            const activeCard = document.querySelector('.trah-person-box.active');
             if (container && activeCard) {
                 const cardLeft = activeCard.getBoundingClientRect().left;
                 const containerLeft = container.getBoundingClientRect().left;
