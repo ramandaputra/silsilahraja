@@ -184,32 +184,31 @@
             display: none;
         }
 
-        /* Daftar Daun Vertikal (Leaf Stack - Kontainer Rata Tengah dengan Garis, Teks di dalam Rata Kiri) */
+        /* Daftar Daun Vertikal (Leaf Stack - Kontainer Rata Tengah dengan Garis, Nama Adik Beradik Rata Kiri) */
         .trah-leaf-stack {
-            display: flex;
+            display: inline-flex;
             flex-direction: column;
-            align-items: center;
+            align-items: stretch;
             list-style: none;
-            margin: 0;
+            margin: 0 auto;
             padding: 0;
             gap: 3.5px;
             white-space: nowrap;
+            width: max-content;
         }
         .trah-leaf-item {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: left;
-            line-height: 1.25;
+            width: 100%;
             list-style: none;
-            width: auto;
+            margin: 0;
+            padding: 0;
         }
         .trah-leaf-item .trah-person-box {
             display: inline-flex;
             flex-direction: column;
             align-items: flex-start;
             text-align: left;
-            width: auto;
+            width: 100%;
             white-space: nowrap !important;
         }
 

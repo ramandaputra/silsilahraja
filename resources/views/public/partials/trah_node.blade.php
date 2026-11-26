@@ -60,11 +60,11 @@
             ])
 
         @elseif($branchType === 'vertical_stack')
-            <!-- Anak-anak Terminal Leaves: Daftar Vertikal Merapat ke Bawah (Kontainer Rata Tengah dengan Garis, Teks Rata Kiri) -->
+            <!-- Anak-anak Terminal Leaves: Kontainer Rata Tengah dengan Garis, Nama Adik Beradik Rata Kiri (Hanya Anak Pertama Mengikuti Garis) -->
             <div class="trah-single-connector"></div>
-            <ul class="trah-leaf-stack items-center">
+            <ul class="trah-leaf-stack">
                 @foreach($directChildren as $leafChild)
-                    <li class="trah-leaf-item flex flex-col items-center">
+                    <li class="trah-leaf-item">
                         <a href="{{ route('person.trah', $leafChild->id) }}" 
                            class="trah-person-box text-left {{ $leafChild->id == $currentPersonId ? 'active' : '' }}" 
                            title="{{ $leafChild->nama_lengkap }}">
