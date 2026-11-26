@@ -363,17 +363,23 @@
         }
     </style>
 </head>
-<body class="bg-[#f8f7f5] text-gray-900 min-h-screen flex flex-col pt-24">
+<body class="bg-[#f8f7f5] text-gray-900 min-h-screen flex flex-col pt-16 sm:pt-20">
 
     <!-- Navbar -->
     @include('public.partials.navbar')
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto w-full px-4 py-6">
+    <main class="flex-grow max-w-7xl mx-auto w-full px-3 sm:px-4 py-3 sm:py-6">
         
+        <!-- Hint Interaktif Khusus Mobile -->
+        <div class="sm:hidden flex items-center gap-2 p-2.5 bg-blue-50/90 border border-blue-200/70 rounded-xl text-xs text-primary mb-3 shadow-xs no-print">
+            <span class="material-symbols-outlined text-secondary text-base shrink-0">touch_app</span>
+            <span>Sentuh &amp; geser layar untuk menelusuri bagan. Gunakan tombol <strong>Paskan</strong> untuk melihat seluruh pohon.</span>
+        </div>
+
         <!-- Toolbar Navigasi & Zoom -->
-        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 no-print">
-            <a href="{{ route('person.detail', $person->id) }}" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all">
+        <div class="flex flex-wrap justify-between items-center gap-2.5 mb-4 no-print">
+            <a href="{{ route('person.detail', $person->id) }}" class="group inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all min-h-[38px]">
                 <span class="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center text-white group-hover:-translate-x-0.5 transition-transform">
                     <span class="material-symbols-outlined text-[14px]">arrow_back</span>
                 </span>
@@ -382,24 +388,24 @@
             
             <div class="flex flex-wrap items-center gap-2">
                 <!-- Kontrol Zoom & Ukuran Layar -->
-                <div class="inline-flex items-center bg-white border border-gray-200 rounded-lg shadow-xs overflow-hidden">
-                    <button type="button" onclick="zoomTree(-0.1)" class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-primary transition" title="Perkecil Tampilan">
+                <div class="inline-flex items-center bg-white border border-gray-200 rounded-lg shadow-xs overflow-hidden min-h-[38px]">
+                    <button type="button" onclick="zoomTree(-0.1)" class="w-9 h-9 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-primary transition" title="Perkecil Tampilan" aria-label="Perkecil">
                         <i class="fa-solid fa-minus text-xs"></i>
                     </button>
                     <span id="zoom-badge" class="px-2 py-1 text-xs font-semibold text-gray-700 min-w-[48px] text-center select-none border-x border-gray-100">100%</span>
-                    <button type="button" onclick="zoomTree(0.1)" class="px-2.5 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-primary transition" title="Perbesar Tampilan">
+                    <button type="button" onclick="zoomTree(0.1)" class="w-9 h-9 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-primary transition" title="Perbesar Tampilan" aria-label="Perbesar">
                         <i class="fa-solid fa-plus text-xs"></i>
                     </button>
-                    <button type="button" onclick="fitTreeToScreen()" class="px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 hover:text-primary border-l border-gray-100 transition inline-flex items-center gap-1" title="Sesuaikan Tampilan dengan Lebar Layar">
+                    <button type="button" onclick="fitTreeToScreen()" class="px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-primary border-l border-gray-100 transition inline-flex items-center gap-1 min-h-[38px]" title="Sesuaikan Tampilan dengan Lebar Layar">
                         <i class="fa-solid fa-expand text-[10px] text-gray-500"></i>
                         <span>Paskan</span>
                     </button>
-                    <button type="button" onclick="resetZoom()" class="px-2.5 py-1.5 text-xs text-gray-500 hover:bg-gray-100 hover:text-primary border-l border-gray-100 transition" title="Reset Ukuran (100%)">
+                    <button type="button" onclick="resetZoom()" class="px-2.5 py-1.5 text-xs text-gray-500 hover:bg-gray-100 hover:text-primary border-l border-gray-100 transition min-h-[38px]" title="Reset Ukuran (100%)">
                         Reset
                     </button>
                 </div>
 
-                <button type="button" onclick="printFamilyTree()" class="bg-primary text-white px-3.5 py-1.5 rounded-lg text-xs shadow-xs hover:bg-secondary inline-flex items-center gap-1.5 transition font-medium">
+                <button type="button" onclick="printFamilyTree()" class="bg-primary text-white px-3.5 py-2 rounded-lg text-xs shadow-xs hover:bg-secondary inline-flex items-center gap-1.5 transition font-semibold min-h-[38px]">
                     <i class="fa-solid fa-print"></i>
                     <span>Cetak Bagan</span>
                 </button>
@@ -407,14 +413,14 @@
         </div>
 
         <!-- Kartu Bagan Silsilah Manuskrip -->
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-6 sm:p-8 trah-main-card">
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-4 sm:p-6 md:p-8 trah-main-card">
             
             <!-- Header Judul Silsilah Zuriat (Format Tradisional) -->
-            <div class="text-left border-b border-gray-200 pb-4 mb-6 print:pb-1.5 print:mb-2 print:border-b-gray-400">
-                <div class="text-[11px] print:text-[8.5px] font-bold text-gray-400 uppercase tracking-widest mb-1 print:mb-0.5">
+            <div class="text-left border-b border-gray-200 pb-3 sm:pb-4 mb-4 sm:mb-6 print:pb-1.5 print:mb-2 print:border-b-gray-400">
+                <div class="text-[10px] sm:text-[11px] print:text-[8.5px] font-bold text-gray-400 uppercase tracking-widest mb-1 print:mb-0.5">
                     Bagan Silsilah Keturunan Diraja &bull; Garis Nasab Menuju Leluhur Puncak: {{ $rootAncestor->nama_lengkap }}
                 </div>
-                <h2 class="text-xl sm:text-2xl print:text-base font-extrabold tracking-wide uppercase text-gray-900 font-serif leading-tight">
+                <h2 class="text-lg sm:text-xl md:text-2xl print:text-base font-extrabold tracking-wide uppercase text-gray-900 font-serif leading-tight">
                     ZURIAT {{ $person->nama_lengkap }}
                     @if(!empty($person->nama_pasangan))
                         DAN {{ explode(',', $person->nama_pasangan)[0] }}
@@ -453,6 +459,20 @@
 
         </div>
     </main>
+
+    <footer class="w-full mt-auto py-8 sm:py-xl px-4 sm:px-margin-mobile md:px-margin-desktop bg-primary text-white border-t-4 border-secondary no-print">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6 sm:gap-lg">
+            <div>
+                <div class="text-lg sm:text-xl md:text-2xl font-bold mb-1 tracking-tight">Silsilah Keluarga Raja</div>
+                <p class="opacity-70 text-xs sm:text-sm max-w-md leading-relaxed">
+                    Pusat Data Genealogi Digital untuk pelestarian sejarah keturunan nusantara dan warisan agung leluhur.
+                </p>
+            </div>
+            <div class="text-xs opacity-60 font-medium">
+                &copy; 2026 Silsilah Keluarga Digital. Hak Cipta Dilindungi.
+            </div>
+        </div>
+    </footer>
 
     <script>
         let currentZoom = 1;

@@ -127,21 +127,21 @@
 
 @include('public.partials.navbar')
 
-    <main class="pt-20">
+    <main class="pt-16 sm:pt-20">
         <!-- Tombol Kembali Mobile -->
-        <div class="block md:hidden px-margin-mobile py-2.5 bg-surface-container-lowest border-b border-outline-variant/40">
-            <a href="{{ route('home') }}" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all">
+        <div class="block md:hidden px-4 py-3 bg-surface-container-lowest border-b border-outline-variant/40">
+            <a href="{{ route('home') }}" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all min-h-[38px]">
                 <span class="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center text-white group-hover:-translate-x-0.5 transition-transform">
                     <span class="material-symbols-outlined text-[14px]">arrow_back</span>
                 </span>
                 <span>Kembali ke Beranda</span>
             </a>
         </div>
-        <section class="hero-gradient py-xl px-margin-mobile md:px-margin-desktop text-white relative overflow-hidden">
-            <div class="max-w-7xl mx-auto relative z-10 py-lg">
+        <section class="hero-gradient py-10 sm:py-xl px-4 sm:px-margin-mobile md:px-margin-desktop text-white relative overflow-hidden">
+            <div class="max-w-7xl mx-auto relative z-10 py-6 sm:py-lg">
                 <div class="w-full md:w-2/3">
-                    <h1 class="font-display-lg text-display-lg mb-sm">Profil Penyusun</h1>
-                    <p class="font-body-lg text-body-lg text-on-primary-container leading-relaxed">
+                    <h1 class="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-sm leading-tight tracking-tight">Profil Penyusun</h1>
+                    <p class="text-xs sm:text-sm md:text-base text-on-primary-container leading-relaxed">
                         {{ $settings['about_hero_description'] ?? 'Mendedikasikan teknologi untuk melestarikan memori kolektif bangsa melalui dokumentasi silsilah keluarga yang akurat, sistematis, dan terintegrasi secara digital. Kami percaya bahwa memahami akar adalah langkah awal membangun masa depan.' }}
                     </p>
                 </div>
@@ -151,35 +151,35 @@
             </div>
         </section>
 
-        <section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-md items-start">
-                <div class="md:col-span-7 space-y-sm text-on-surface-variant leading-relaxed">
-                    <h2 class="font-headline-lg text-headline-lg text-primary mb-md">
+        <section class="py-10 sm:py-xl px-4 sm:px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-md items-start">
+                <div class="md:col-span-7 space-y-3 sm:space-y-sm text-on-surface-variant leading-relaxed">
+                    <h2 class="text-xl sm:text-2xl md:text-headline-lg font-bold text-primary mb-2 sm:mb-md">
                         {{ $settings['about_history_title'] ?? 'Dedikasi terhadap Integritas Genealogi' }}
                     </h2>
-                    <p class="font-body-lg text-body-lg">
+                    <p class="text-xs sm:text-sm md:text-base leading-relaxed text-justify">
                         {{ $settings['about_history_body_1'] ?? 'Berawal dari sebuah inisiatif penelitian sejarah lisan di lingkungan akademis, proyek Silsilah Keluarga tumbuh menjadi sebuah platform institusional yang mengedepankan akurasi data. Kami menyadari bahwa sejarah keluarga bukan sekadar daftar nama, melainkan warisan budaya yang membutuhkan sistem penyimpanan yang aman dan terstruktur.' }}
                     </p>
-                    <p class="font-body-lg text-body-lg">
+                    <p class="text-xs sm:text-sm md:text-base leading-relaxed text-justify">
                         {{ $settings['about_history_body_2'] ?? 'Melalui metodologi yang diadaptasi dari standar arsip nasional, setiap fitur dalam aplikasi ini dirancang untuk meminimalisir redundansi data dan memastikan hubungan antar-generasi tercatat secara logis. Fokus kami adalah memberikan kemudahan bagi setiap keluarga Indonesia untuk membangun repositori sejarah mereka sendiri dengan standar profesional.' }}
                     </p>
                 </div>
                 
                 <div class="md:col-span-5 w-full">
-                    <div class="bg-surface-container-low p-lg border border-outline-variant rounded-xl">
-                        <h3 class="font-title-lg text-title-lg text-secondary mb-sm border-b border-outline-variant pb-xs">Misi Kami</h3>
-                        <ul class="space-y-xs">
-                            <li class="flex gap-xs items-start">
-                                <span class="material-symbols-outlined text-secondary text-sm mt-1">check_circle</span>
-                                <span class="font-body-md text-body-md">Digitalisasi arsip keluarga fisik menjadi basis data terenkripsi.</span>
+                    <div class="bg-surface-container-low p-5 sm:p-lg border border-outline-variant rounded-xl shadow-xs">
+                        <h3 class="text-base sm:text-lg font-bold text-secondary mb-3 border-b border-outline-variant pb-2">Misi Kami</h3>
+                        <ul class="space-y-2.5">
+                            <li class="flex gap-2 items-start">
+                                <span class="material-symbols-outlined text-secondary text-base sm:text-lg mt-0.5 shrink-0">check_circle</span>
+                                <span class="text-xs sm:text-sm text-on-surface-variant">Digitalisasi arsip keluarga fisik menjadi basis data terenkripsi.</span>
                             </li>
-                            <li class="flex gap-xs items-start">
-                                <span class="material-symbols-outlined text-secondary text-sm mt-1">check_circle</span>
-                                <span class="font-body-md text-body-md">Visualisasi hubungan kekerabatan melalui antarmuka bento grid modern.</span>
+                            <li class="flex gap-2 items-start">
+                                <span class="material-symbols-outlined text-secondary text-base sm:text-lg mt-0.5 shrink-0">check_circle</span>
+                                <span class="text-xs sm:text-sm text-on-surface-variant">Visualisasi hubungan kekerabatan melalui antarmuka bento grid modern.</span>
                             </li>
-                            <li class="flex gap-xs items-start">
-                                <span class="material-symbols-outlined text-secondary text-sm mt-1">check_circle</span>
-                                <span class="font-body-md text-body-md">Penyediaan alat riset sejarah bagi peneliti genealogis independen.</span>
+                            <li class="flex gap-2 items-start">
+                                <span class="material-symbols-outlined text-secondary text-base sm:text-lg mt-0.5 shrink-0">check_circle</span>
+                                <span class="text-xs sm:text-sm text-on-surface-variant">Penyediaan alat riset sejarah bagi peneliti genealogis independen.</span>
                             </li>
                         </ul>
                     </div>
@@ -187,24 +187,24 @@
             </div>
         </section>
 
-        <section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-low">
-            <div class="max-w-7xl mx-auto space-y-xl">
+        <section class="py-10 sm:py-xl px-4 sm:px-margin-mobile md:px-margin-desktop bg-surface-container-low border-t border-outline-variant/30">
+            <div class="max-w-7xl mx-auto space-y-10 sm:space-y-xl">
                 
                 <div>
-                    <h2 class="text-primary font-headline-lg text-headline-lg mb-md border-b border-outline-variant/40 pb-2">Tim Ahli & Penyusun</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                    <h2 class="text-primary text-xl sm:text-2xl font-bold mb-4 border-b border-outline-variant/40 pb-2">Tim Ahli &amp; Penyusun</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-gutter">
                         @forelse($ahli as $member)
-                            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center shadow-sm">
-                                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-primary-fixed bg-gray-200 flex items-center justify-center shadow-inner">
+                            <div class="bento-card bg-white p-5 border border-outline-variant rounded-xl flex flex-col items-center text-center shadow-xs">
+                                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden mb-4 border-4 border-primary-fixed bg-gray-100 flex items-center justify-center shadow-inner">
                                     @if($member->photo)
                                         <img src="{{ asset('storage/' . $member->photo) }}" class="w-full h-full object-cover">
                                     @else
-                                        <span class="material-symbols-outlined text-primary text-5xl">person</span>
+                                        <span class="material-symbols-outlined text-primary text-4xl sm:text-5xl">person</span>
                                     @endif
                                 </div>
-                                <h3 class="font-title-lg text-title-lg text-primary">{{ $member->name }}</h3>
-                                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $member->role }}</p>
-                                <p class="font-body-md text-body-md text-on-surface-variant">{{ $member->description }}</p>
+                                <h3 class="text-base sm:text-lg font-bold text-primary mb-1">{{ $member->name }}</h3>
+                                <p class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">{{ $member->role }}</p>
+                                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">{{ $member->description }}</p>
                             </div>
                         @empty
                             <div class="col-span-full text-center py-8 text-gray-400 bg-white border border-dashed border-outline-variant rounded-xl">
@@ -216,20 +216,20 @@
                 </div>
 
                 <div>
-                    <h2 class="text-primary font-headline-lg text-headline-lg mb-md border-b border-outline-variant/40 pb-2">Tim Pengembang Teknologi</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                    <h2 class="text-primary text-xl sm:text-2xl font-bold mb-4 border-b border-outline-variant/40 pb-2">Tim Pengembang Teknologi</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-gutter">
                         @forelse($developers as $dev)
-                            <div class="bento-card bg-white p-md border border-outline-variant rounded-xl flex flex-col items-center text-center shadow-sm">
-                                <div class="w-32 h-32 rounded-full overflow-hidden mb-md border-4 border-secondary shadow-sm bg-gray-200 flex items-center justify-center shadow-inner">
+                            <div class="bento-card bg-white p-5 border border-outline-variant rounded-xl flex flex-col items-center text-center shadow-xs">
+                                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden mb-4 border-4 border-secondary shadow-xs bg-gray-100 flex items-center justify-center shadow-inner">
                                     @if($dev->photo)
                                         <img src="{{ asset('storage/' . $dev->photo) }}" class="w-full h-full object-cover">
                                     @else
-                                        <span class="material-symbols-outlined text-secondary text-5xl">code</span>
+                                        <span class="material-symbols-outlined text-secondary text-4xl sm:text-5xl">code</span>
                                     @endif
                                 </div>
-                                <h3 class="font-title-lg text-title-lg text-primary">{{ $dev->name }}</h3>
-                                <p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-sm">{{ $dev->role }}</p>
-                                <p class="font-body-md text-body-md text-on-surface-variant">{{ $dev->description }}</p>
+                                <h3 class="text-base sm:text-lg font-bold text-primary mb-1">{{ $dev->name }}</h3>
+                                <p class="text-xs font-bold text-secondary uppercase tracking-wider mb-2">{{ $dev->role }}</p>
+                                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">{{ $dev->description }}</p>
                             </div>
                         @empty
                             <div class="col-span-full text-center py-8 text-gray-400 bg-white border border-dashed border-outline-variant rounded-xl">
@@ -244,19 +244,17 @@
         </section>
     </main>
 
-    <footer class="w-full py-lg px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-sm bg-tertiary">
-        <div class="flex flex-col gap-base text-center md:text-left">
-            <div class="flex items-center gap-xs justify-center md:justify-start">
-                <span class="material-symbols-outlined text-white text-xl">account_tree</span>
-                <span class="font-title-lg text-title-lg text-tertiary-fixed">Silsilah Keluarga</span>
+    <footer class="w-full mt-auto py-8 sm:py-xl px-4 sm:px-margin-mobile md:px-margin-desktop bg-primary text-white border-t-4 border-secondary">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6 sm:gap-lg">
+            <div>
+                <div class="text-lg sm:text-xl md:text-2xl font-bold mb-1 tracking-tight">Silsilah Keluarga Raja</div>
+                <p class="opacity-70 text-xs sm:text-sm max-w-md leading-relaxed">
+                    Pusat Data Genealogi Digital untuk pelestarian sejarah keturunan nusantara dan warisan agung leluhur.
+                </p>
             </div>
-            <p class="font-label-md text-label-md text-on-tertiary-container">© 2026 Silsilah Keluarga. Institusi Arsip Genealogi Digital.</p>
-        </div>
-        <div class="flex flex-wrap justify-center gap-md">
-            <a class="font-label-md text-label-md text-on-tertiary-container hover:text-white transition-all" href="#">Kebijakan Privasi</a>
-            <a class="font-label-md text-label-md text-on-tertiary-container hover:text-white transition-all" href="#">Syarat Layanan</a>
-            <a class="font-label-md text-label-md text-on-tertiary-container hover:text-white transition-all" href="#">Bantuan</a>
-            <a class="font-label-md text-label-md text-on-tertiary-container hover:text-white transition-all" href="#">Kontak Kami</a>
+            <div class="text-xs opacity-60 font-medium">
+                &copy; 2026 Silsilah Keluarga Digital. Hak Cipta Dilindungi.
+            </div>
         </div>
     </footer>
 

@@ -59,28 +59,28 @@
 
 @include('public.partials.navbar')
 
-<main class="pt-20">
+<main class="pt-16 sm:pt-20">
     <!-- Hero Section dengan Gambar Latar Belakang Kustom Admin -->
     @php
         $bgImage = \App\Models\Setting::get('hero_background');
     @endphp
-    <section class="relative w-full min-h-[500px] flex flex-col items-center justify-center hero-gradient text-white overflow-hidden px-margin-mobile md:px-margin-desktop"
+    <section class="relative w-full min-h-[440px] sm:min-h-[500px] flex flex-col items-center justify-center hero-gradient text-white overflow-hidden px-4 sm:px-margin-mobile md:px-margin-desktop py-10 sm:py-16"
              style="@if($bgImage) background-image: linear-gradient(135deg, rgba(0, 30, 64, 0.88) 0%, rgba(0, 89, 187, 0.85) 100%), url('{{ asset('storage/' . $bgImage) }}'); background-position: center; background-size: cover; background-repeat: no-repeat; @endif">
         
-        <div class="relative z-10 text-center max-w-4xl w-full py-12">
-            <h1 class="text-3xl md:text-5xl font-extrabold mb-md leading-tight tracking-tight">
+        <div class="relative z-10 text-center max-w-4xl w-full">
+            <h1 class="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-md leading-tight tracking-tight">
                 {!! nl2br(e(\App\Models\Setting::get('hero_title', "Temukan Akar & \n Warisan Agung Keluarga Raja"))) !!}
             </h1>
-            <p class="text-base md:text-lg text-primary-fixed mb-xl opacity-90 max-w-2xl mx-auto leading-relaxed">
+            <p class="text-sm sm:text-base md:text-lg text-primary-fixed mb-6 sm:mb-xl opacity-90 max-w-2xl mx-auto leading-relaxed">
                 {{ \App\Models\Setting::get('hero_subtitle', 'Arsip digital silsilah keturunan Kesultanan Riau-Lingga yang aman, terstruktur, dan terverifikasi.') }}
             </p>
             
-            <form action="{{ route('home') }}" method="GET" class="relative w-full max-w-2xl mx-auto group shadow-2xl rounded-full">
-                <div class="absolute inset-y-0 left-6 flex items-center pointer-events-none text-outline">
-                    <span class="material-symbols-outlined">search</span>
+            <form action="{{ route('home') }}" method="GET" class="relative w-full max-w-2xl mx-auto group shadow-xl sm:shadow-2xl rounded-full">
+                <div class="absolute inset-y-0 left-4 sm:left-6 flex items-center pointer-events-none text-outline">
+                    <span class="material-symbols-outlined text-xl sm:text-2xl">search</span>
                 </div>
-                <input name="search" class="w-full pl-16 pr-32 py-4 bg-surface-container-lowest text-on-surface text-base rounded-full border-none focus:ring-4 focus:ring-secondary/30 transition-all outline-none" placeholder="Cari Nama Keturunan..." type="text" value="{{ request('search') }}"/>
-                <button type="submit" class="absolute inset-y-2 right-2 px-6 bg-secondary text-white rounded-full text-sm font-semibold hover:bg-secondary-container active:scale-95 transition-all">
+                <input name="search" class="w-full pl-11 sm:pl-16 pr-24 sm:pr-32 py-3 sm:py-4 bg-surface-container-lowest text-on-surface text-sm sm:text-base rounded-full border-none focus:ring-4 focus:ring-secondary/30 transition-all outline-none" placeholder="Cari Nama Keturunan..." type="text" value="{{ request('search') }}" autocomplete="off"/>
+                <button type="submit" class="absolute inset-y-1.5 sm:inset-y-2 right-1.5 sm:right-2 px-4 sm:px-6 bg-secondary text-white rounded-full text-xs sm:text-sm font-semibold hover:bg-secondary-container active:scale-95 transition-all flex items-center justify-center">
                     Cari
                 </button>
             </form>
@@ -89,40 +89,49 @@
 
     <!-- Hasil Pencarian -->
     @if(request('search'))
-    <section class="py-lg px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
-        <h3 class="text-xl md:text-2xl font-bold text-primary mb-md flex items-center gap-2">
-            <i class="fa-solid fa-square-poll-horizontal text-secondary"></i> Hasil Pencarian untuk "{{ request('search') }}"
-        </h3>
+    <section class="py-lg px-4 sm:px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-md">
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-primary flex items-center gap-2">
+                <i class="fa-solid fa-square-poll-horizontal text-secondary"></i> 
+                <span>Hasil Pencarian: "{{ request('search') }}"</span>
+            </h3>
+            @if(isset($results) && !$results->isEmpty())
+                <span class="text-xs bg-secondary/10 text-secondary px-3 py-1 rounded-full font-semibold">
+                    {{ count($results) }} tokoh ditemukan
+                </span>
+            @endif
+        </div>
+
         @if(isset($results) && !$results->isEmpty())
             <div class="space-y-3">
                 @foreach($results as $res)
-                <a href="{{ route('person.detail', $res->id) }}" class="block p-5 bg-white border border-outline-variant rounded-xl hover:border-secondary hover:shadow-md transition-all group">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-md">
-                        <div>
+                <a href="{{ route('person.detail', $res->id) }}" class="block p-4 sm:p-5 bg-white border border-outline-variant rounded-xl hover:border-secondary hover:shadow-md transition-all group">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                        <div class="min-w-0">
                             <div class="flex items-center gap-2 flex-wrap mb-2">
-                                <span class="font-bold text-on-surface text-lg group-hover:text-secondary transition-colors">
+                                <span class="font-bold text-on-surface text-base sm:text-lg group-hover:text-secondary transition-colors">
                                     {{ $res->nama_lengkap }}
                                     @if($res->has_duplicate_name && $res->nasab)
                                         <span class="text-secondary font-semibold">{{ $res->nasab }}</span>
                                     @elseif(!empty($res->gelar_pembeda))
-                                        <span class="text-primary font-semibold">{{ $res->gelar_pembeda }}</span>
+                                        <span class="text-primary font-semibold">({{ $res->gelar_pembeda }})</span>
                                     @endif
                                 </span>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-on-surface-variant">
-                                <div><span class="font-medium">Asal Lahir:</span> {{ $res->tempat_lahir ?? '-' }}</div>
-                                <div><span class="font-medium">Jenis Kelamin:</span> 
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-xs sm:text-sm text-on-surface-variant">
+                                <div><span class="font-medium text-outline">Asal Lahir:</span> {{ $res->tempat_lahir ?? '-' }}</div>
+                                <div><span class="font-medium text-outline">Jenis Kelamin:</span> 
                                     @if($res->jenis_kelamin == 'L')
-                                        <span class="inline-flex items-center gap-1"><i class="bi bi-gender-male text-secondary"></i> Laki-laki</span>
+                                        <span class="inline-flex items-center gap-1 font-medium"><i class="bi bi-gender-male text-secondary"></i> Laki-laki</span>
                                     @else
-                                        <span class="inline-flex items-center gap-1"><i class="bi bi-gender-female text-rose-600"></i> Perempuan</span>
+                                        <span class="inline-flex items-center gap-1 font-medium"><i class="bi bi-gender-female text-rose-600"></i> Perempuan</span>
                                     @endif
                                 </div>
-                                <div><span class="font-medium">Nama Ayah:</span> {{ $res->father->nama_lengkap ?? '-' }}</div>
-                                <div><span class="font-medium">Nama Ibu:</span> {{ $res->nama_ibu_non_raja ?? ($res->mother->nama_lengkap ?? '-') }}</div>
+                                <div><span class="font-medium text-outline">Nama Ayah:</span> {{ $res->father->nama_lengkap ?? '-' }}</div>
+                                <div><span class="font-medium text-outline">Nama Ibu:</span> {{ $res->nama_ibu_non_raja ?? ($res->mother->nama_lengkap ?? '-') }}</div>
                             </div>
                         </div>
-                        <span class="inline-flex items-center self-start sm:self-center px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full shrink-0 transition-colors group-hover:bg-secondary">
+                        <span class="inline-flex items-center justify-center self-start sm:self-center px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full shrink-0 transition-colors group-hover:bg-secondary min-h-[36px]">
                             Buka Profil &nbsp;&rarr;
                         </span>
                     </div>
@@ -131,74 +140,79 @@
             </div>
         @else
             <div class="p-8 bg-surface-container text-center rounded-xl text-on-surface-variant border border-outline-variant/50">
-                Tidak ada data keturunan dengan nama tersebut.
+                <span class="material-symbols-outlined text-4xl text-outline mb-2 block">person_search</span>
+                <p class="font-semibold text-primary mb-1">Tidak ada data keturunan dengan nama tersebut.</p>
+                <p class="text-xs text-on-surface-variant">Coba gunakan kata kunci nama yang lebih umum atau periksa ejaan nama tokoh.</p>
             </div>
         @endif
     </section>
     @endif
 
     <!-- Sejarah Section -->
-   <section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start mb-xl">
-        <div class="md:col-span-7 space-y-md">
-            <h2 class="text-2xl md:text-4xl font-extrabold text-primary leading-tight">
-                {{ \App\Models\Setting::get('about_history_title', 'Sejarah & Warisan Agung Keluarga Raja') }}
-            </h2>
-            <p class="text-base text-on-surface-variant leading-relaxed text-justify">
-                {{ \App\Models\Setting::get('about_history_body_1', 'Perjalanan sejarah keluarga raja bukan sekadar silsilah nama, melainkan sebuah narasi agung tentang kepemimpinan dan identitas budaya.') }}
-            </p>
-        </div>
-        <div class="md:col-span-5 md:sticky md:top-24">
-            <div class="bg-surface-container-low p-lg border border-outline-variant rounded-xl shadow-sm">
-                <h3 class="text-lg font-bold text-secondary mb-sm border-b border-outline-variant/60 pb-xs tracking-wide">Pilar Pelestarian</h3>
-                <ul class="space-y-sm">
-                    <li class="flex gap-xs items-start text-on-surface-variant">
-                        <span class="material-symbols-outlined text-secondary text-xl shrink-0">check_circle</span>
-                        <span class="text-sm md:text-base">Sistem Kekerabatan Adat Melayu Riau</span>
-                    </li>
-                    <li class="flex gap-xs items-start text-on-surface-variant">
-                        <span class="material-symbols-outlined text-secondary text-xl shrink-0">check_circle</span>
-                        <span class="text-sm md:text-base">Visualisasi Garis Keturunan & Trah</span>
-                    </li>
-                </ul>
+    <section class="py-10 sm:py-xl px-4 sm:px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-gutter items-start mb-8 sm:mb-xl">
+            <div class="md:col-span-7 space-y-md">
+                <h2 class="text-xl sm:text-3xl md:text-4xl font-extrabold text-primary leading-tight">
+                    {{ \App\Models\Setting::get('about_history_title', 'Sejarah & Warisan Agung Keluarga Raja') }}
+                </h2>
+                <p class="text-sm sm:text-base text-on-surface-variant leading-relaxed text-justify">
+                    {{ \App\Models\Setting::get('about_history_body_1', 'Perjalanan sejarah keluarga raja bukan sekadar silsilah nama, melainkan sebuah narasi agung tentang kepemimpinan dan identitas budaya.') }}
+                </p>
+            </div>
+            <div class="md:col-span-5 md:sticky md:top-24">
+                <div class="bg-surface-container-low p-5 sm:p-lg border border-outline-variant rounded-xl shadow-sm">
+                    <h3 class="text-base sm:text-lg font-bold text-secondary mb-sm border-b border-outline-variant/60 pb-xs tracking-wide">Pilar Pelestarian</h3>
+                    <ul class="space-y-sm">
+                        <li class="flex gap-2 items-start text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5">check_circle</span>
+                            <span class="text-sm sm:text-base">Sistem Kekerabatan Adat Melayu Riau</span>
+                        </li>
+                        <li class="flex gap-2 items-start text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5">check_circle</span>
+                            <span class="text-sm sm:text-base">Visualisasi Garis Keturunan & Trah</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
         <!-- Statistik Counter dengan Animasi Rolling -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter mt-lg">
-            <div class="p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center hover:border-secondary hover:shadow-md transition-all group cursor-pointer" onclick="rerollCounters()" title="Klik untuk memutar ulang animasi angka">
-                <span class="rolling-counter block text-3xl md:text-4xl font-black text-secondary mb-1 tabular-nums" data-target="{{ $totalNodes }}">{{ $totalNodes }}</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-gutter mt-6 sm:mt-lg">
+            <div class="p-6 sm:p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center hover:border-secondary hover:shadow-md transition-all group cursor-pointer" onclick="rerollCounters()" title="Sentuh untuk memutar ulang animasi angka">
+                <span class="rolling-counter block text-3xl sm:text-4xl font-black text-secondary mb-1 tabular-nums" data-target="{{ $totalNodes }}">{{ $totalNodes }}</span>
                 <span class="text-xs font-bold text-on-surface-variant tracking-wider uppercase text-center group-hover:text-secondary transition-colors">Total Keturunan</span>
+                <span class="text-[10px] text-outline mt-1 font-normal">(Sentuh kartu untuk memutar ulang)</span>
             </div>
-            <div class="p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center hover:border-secondary hover:shadow-md transition-all group cursor-pointer" onclick="rerollCounters()" title="Klik untuk memutar ulang animasi angka">
-                <span class="rolling-counter block text-3xl md:text-4xl font-black text-secondary mb-1 tabular-nums" data-target="{{ $totalLeluhur }}">{{ $totalLeluhur }}</span>
+            <div class="p-6 sm:p-lg bg-surface-container border border-outline-variant rounded-xl shadow-sm flex flex-col justify-center items-center hover:border-secondary hover:shadow-md transition-all group cursor-pointer" onclick="rerollCounters()" title="Sentuh untuk memutar ulang animasi angka">
+                <span class="rolling-counter block text-3xl sm:text-4xl font-black text-secondary mb-1 tabular-nums" data-target="{{ $totalLeluhur }}">{{ $totalLeluhur }}</span>
                 <span class="text-xs font-bold text-on-surface-variant tracking-wider uppercase text-center group-hover:text-secondary transition-colors">Leluhur Utama</span>
+                <span class="text-[10px] text-outline mt-1 font-normal">(Sentuh kartu untuk memutar ulang)</span>
             </div>
         </div>
     </section>
 
-    <!-- Pembaruan Terakhir -->
-    <section class="py-xl bg-surface-container-low px-margin-mobile md:px-margin-desktop border-t border-outline-variant/30">
+    <!-- Pembaruan Terakhir (Reflow: 1 kol di ponsel, 2 kol di tablet, 3 kol di desktop) -->
+    <section class="py-10 sm:py-xl bg-surface-container-low px-4 sm:px-margin-mobile md:px-margin-desktop border-t border-outline-variant/30">
         <div class="max-w-7xl mx-auto">
-            <div class="mb-lg">
-                <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-xs">Pembaruan Tokoh Terakhir</h2>
-                <p class="text-on-surface-variant text-sm md:text-base">Berikut adalah nama-nama anggota keluarga raja yang baru saja ditambahkan ke dalam pangkalan data arsip.</p>
+            <div class="mb-6 sm:mb-lg">
+                <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-primary mb-1">Pembaruan Tokoh Terakhir</h2>
+                <p class="text-on-surface-variant text-xs sm:text-sm md:text-base">Daftar tokoh silsilah keluarga raja yang baru saja diperbarui dalam pangkalan data arsip.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-lg">
                 @foreach($recentUpdates as $ru)
                 <div class="bento-card bg-white p-5 rounded-xl flex flex-col justify-between shadow-sm group">
                     <div class="space-y-2">
                         <span class="bg-secondary/10 text-secondary text-[10px] tracking-wider uppercase font-bold px-2.5 py-1 rounded inline-block">Terverifikasi</span>
-                        <h3 class="text-lg font-bold text-primary group-hover:text-secondary transition-colors line-clamp-1">{{ $ru->nama_lengkap }}</h3>
-                        <p class="text-on-surface-variant text-sm line-clamp-2">Status Pernikahan: {{ $ru->status_pernikahan ?? 'Belum Menikah' }}</p>
+                        <h3 class="text-base sm:text-lg font-bold text-primary group-hover:text-secondary transition-colors line-clamp-1">{{ $ru->nama_lengkap }}</h3>
+                        <p class="text-on-surface-variant text-xs sm:text-sm line-clamp-2">Status Pernikahan: {{ $ru->status_pernikahan ?? 'Belum Menikah' }}</p>
                     </div>
                     <div class="flex items-center justify-between pt-4 border-t border-outline-variant/60 mt-4 text-xs">
                         <span class="text-outline font-medium">
                             {{ $ru->created_at->diffForHumans() }}
                         </span>
-                        <a class="text-secondary font-bold inline-flex items-center gap-1 hover:underline" href="{{ route('person.trah', $ru->id) }}">
-                            Lihat Pohon &rarr;
+                        <a class="text-secondary font-bold inline-flex items-center gap-1 hover:underline py-1" href="{{ route('person.trah', $ru->id) }}">
+                            <span>Lihat Pohon</span>
+                            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </a>
                     </div>
                 </div>
@@ -208,15 +222,15 @@
     </section>
 </main>
 
-<footer class="w-full py-xl px-margin-mobile md:px-margin-desktop bg-primary text-white border-t-4 border-secondary">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
+<footer class="w-full py-8 sm:py-xl px-4 sm:px-margin-mobile md:px-margin-desktop bg-primary text-white border-t-4 border-secondary">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6 sm:gap-lg">
         <div>
-            <div class="text-xl md:text-2xl font-bold mb-xs tracking-tight">Silsilah Keluarga Raja</div>
-            <p class="opacity-70 text-sm max-w-md leading-relaxed">
+            <div class="text-lg sm:text-xl md:text-2xl font-bold mb-1 tracking-tight">Silsilah Keluarga Raja</div>
+            <p class="opacity-70 text-xs sm:text-sm max-w-md leading-relaxed">
                 Pusat Data Genealogi Digital untuk pelestarian sejarah keturunan nusantara dan warisan agung leluhur.
             </p>
         </div>
-        <div class="text-xs opacity-50 font-medium">
+        <div class="text-xs opacity-60 font-medium">
             &copy; 2026 Silsilah Keluarga Digital. Hak Cipta Dilindungi.
         </div>
     </div>

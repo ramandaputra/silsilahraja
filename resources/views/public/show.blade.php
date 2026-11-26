@@ -111,11 +111,24 @@
         body { font-family: 'Inter', sans-serif; background-color: #fbf9f8; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .bento-card { border: 1px solid #E1E4E8; background-color: #ffffff; border-radius: 12px; }
-        .active-tab { border-left: 4px solid #001e40; background-color: #efeded; color: #001e40; font-weight: 600; }
+        .active-tab { 
+            background-color: #001e40 !important; 
+            color: #ffffff !important; 
+            font-weight: 600; 
+        }
+        @media (min-width: 768px) {
+            .active-tab { 
+                border-left: 4px solid #001e40 !important; 
+                background-color: #efeded !important; 
+                color: #001e40 !important; 
+            }
+        }
         .hero-gradient { background: linear-gradient(135deg, #001e40 0%, #0059bb 100%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-background text-on-background min-h-screen flex flex-col pt-24">
+<body class="bg-background text-on-background min-h-screen flex flex-col pt-16 sm:pt-20">
 
     @php
         // 1. Cari Saudara Kandung
@@ -142,10 +155,10 @@
 
     @include('public.partials.navbar')
 
-    <main class="flex-grow max-w-7xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-md">
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-margin-mobile md:px-margin-desktop py-4 sm:py-md">
         
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm mb-lg">
-            <a href="{{ route('home') }}" class="group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm mb-4 sm:mb-lg">
+            <a href="{{ route('home') }}" class="group inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all min-h-[38px]">
                 <span class="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center text-white group-hover:-translate-x-0.5 transition-transform">
                     <span class="material-symbols-outlined text-[14px]">arrow_back</span>
                 </span>
@@ -153,32 +166,32 @@
             </a>
         </div>
 
-        <header class="hero-gradient rounded-xl p-md md:p-xl text-on-primary mb-lg shadow-lg relative overflow-hidden">
-            <div class="relative z-10 flex flex-col md:flex-row gap-lg items-center md:items-start">
-                <div class="w-32 h-32 md:w-48 md:h-48 rounded-lg overflow-hidden border-4 border-white shadow-md flex-shrink-0 bg-surface-container flex items-center justify-center">
+        <header class="hero-gradient rounded-2xl p-5 sm:p-8 md:p-xl text-on-primary mb-6 sm:mb-lg shadow-lg relative overflow-hidden">
+            <div class="relative z-10 flex flex-col sm:flex-row gap-5 sm:gap-lg items-center sm:items-start">
+                <div class="w-28 h-28 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-2xl overflow-hidden border-4 border-white/90 shadow-md flex-shrink-0 bg-surface-container flex items-center justify-center">
                     @if($person->foto)
                         <img class="w-full h-full object-cover" src="{{ asset('storage/' . $person->foto) }}" alt="Foto {{ $person->nama_lengkap }}">
                     @else
                         <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($person->nama_lengkap) }}&size=150&background=random" alt="Avatar">
                     @endif
                 </div>
-                <div class="flex-grow text-center md:text-left text-white">
-                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-xs mb-base">
-                        <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold">{{ $person->nama_lengkap }}</h1>
+                <div class="flex-grow text-center sm:text-left text-white min-w-0">
+                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
+                        <h1 class="text-xl sm:text-2xl md:text-headline-lg font-extrabold leading-tight">{{ $person->nama_lengkap }}</h1>
                         @if(!empty($person->gelar_pembeda))
-                            <span class="px-2 py-0.5 rounded-lg text-xs font-bold bg-white/20 text-white border border-white/30">
+                            <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-white/20 text-white border border-white/30">
                                 {{ $person->gelar_pembeda }}
                             </span>
                         @endif
-                        <span class="material-symbols-outlined text-secondary-fixed-dim text-3xl" style="font-variation-settings: 'FILL' 1;" title="Terverifikasi">verified</span>
+                        <span class="material-symbols-outlined text-secondary-fixed-dim text-2xl sm:text-3xl" style="font-variation-settings: 'FILL' 1;" title="Terverifikasi">verified</span>
                     </div>
                     @if($person->nasab)
-                        <p class="text-sm md:text-base font-semibold text-white/90 -mt-1 mb-2">
+                        <p class="text-xs sm:text-sm md:text-base font-semibold text-white/90 mb-2">
                             {{ $person->nasab }}
                         </p>
                     @endif
-                    <div class="flex flex-wrap justify-center md:justify-start gap-sm mt-sm">
-                        <span class="bg-primary-container/50 border border-inverse-primary/30 px-md py-xs rounded-full font-label-md text-label-md inline-flex items-center gap-1.5">
+                    <div class="flex flex-wrap justify-center sm:justify-start gap-2 mt-2">
+                        <span class="bg-primary-container/60 border border-inverse-primary/30 px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5">
                             @if($person->jenis_kelamin == 'L')
                                 <i class="bi bi-gender-male"></i> Laki-laki
                             @else
@@ -186,11 +199,11 @@
                             @endif
                         </span>
                         @if($person->tanggal_wafat)
-                            <span class="bg-error border border-error-container/30 px-md py-xs rounded-full font-label-md text-label-md">Wafat</span>
+                            <span class="bg-error border border-error-container/30 px-3 py-1 rounded-full text-xs font-semibold">Wafat</span>
                         @else
-                            <span class="bg-green-700 border border-white/30 px-md py-xs rounded-full font-label-md text-label-md">Hidup</span>
+                            <span class="bg-green-700 border border-white/30 px-3 py-1 rounded-full text-xs font-semibold">Hidup</span>
                         @endif
-                        <span class="bg-primary-container/50 border border-white/20 px-md py-xs rounded-full font-label-md text-label-md">ID: #{{ str_pad($person->id, 4, '0', STR_PAD_LEFT) }}</span>
+                        <span class="bg-primary-container/60 border border-white/20 px-3 py-1 rounded-full text-xs font-semibold">ID: #{{ str_pad($person->id, 4, '0', STR_PAD_LEFT) }}</span>
                     </div>
 
                     @if($person->has_duplicate_name && $person->tokoh_nama_sama->isNotEmpty())
@@ -209,7 +222,7 @@
                             </div>
                         </div>
                     @endif
-                    <p class="mt-md font-body-lg text-body-lg text-white/80 max-w-2xl italic">
+                    <p class="mt-3 text-xs sm:text-sm text-white/80 max-w-2xl italic">
                         "{{ $person->biografi ? Str::limit($person->biografi, 120) : 'Belum ada ringkasan biografi tertulis untuk tokoh ini.' }}"
                     </p>
                 </div>
@@ -219,47 +232,51 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-gutter">
             
-            <aside class="md:col-span-3 space-y-md">
-                <div class="bento-card p-md sticky top-24">
-                    <h3 class="font-title-lg text-title-lg text-primary mb-md pb-base border-b border-surface-variant">Navigasi Profil</h3>
-                    <nav class="flex flex-col gap-base">
-                        <button class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface-container transition-colors w-full text-left active-tab" id="btn-basic" onclick="switchTab('basic')">
-                            <span class="material-symbols-outlined">family_history</span>
-                            <span class="font-body-md text-body-md">Profil & Keluarga Inti</span>
+            <!-- Navigasi Profil: Horizontal Tab bar di Mobile, Sidebar di Desktop -->
+            <aside class="md:col-span-3">
+                <div class="bento-card p-2 sm:p-md md:sticky md:top-24 rounded-xl">
+                    <div class="hidden md:block">
+                        <h3 class="font-title-lg text-title-lg text-primary mb-md pb-base border-b border-surface-variant">Navigasi Profil</h3>
+                    </div>
+                    
+                    <nav class="flex flex-row md:flex-col gap-2 overflow-x-auto pb-1 md:pb-0 no-scrollbar">
+                        <button type="button" class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-left active-tab whitespace-nowrap shrink-0 text-xs sm:text-sm font-semibold" id="btn-basic" onclick="switchTab('basic')">
+                            <span class="material-symbols-outlined text-base sm:text-lg">family_history</span>
+                            <span>Profil &amp; Keluarga</span>
                         </button>
-                        <button class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface-container transition-colors w-full text-left text-on-surface-variant" id="btn-biografi" onclick="switchTab('biografi')">
-                            <span class="material-symbols-outlined">description</span>
-                            <span class="font-body-md text-body-md">Biografi Lengkap</span>
+                        <button type="button" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container md:bg-transparent hover:bg-surface-container transition-all text-left text-on-surface-variant whitespace-nowrap shrink-0 text-xs sm:text-sm font-semibold" id="btn-biografi" onclick="switchTab('biografi')">
+                            <span class="material-symbols-outlined text-base sm:text-lg">description</span>
+                            <span>Biografi Lengkap</span>
                         </button>
                         
-                        <div class="border-t border-surface-variant my-xs"></div>
+                        <div class="hidden md:block border-t border-surface-variant my-xs"></div>
                         
-                        <a href="{{ route('person.trah', $person->id) }}" class="flex items-center gap-sm p-sm rounded-lg bg-primary text-white hover:bg-secondary transition-all w-full text-left font-body-md font-medium shadow-sm">
-                            <span class="material-symbols-outlined text-md">account_tree</span>
-                            <span class="font-body-md text-body-md">Lihat Pohon Silsilah / Trah</span>
+                        <a href="{{ route('person.trah', $person->id) }}" class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-primary text-white hover:bg-secondary transition-all text-left text-xs sm:text-sm font-bold shadow-sm whitespace-nowrap shrink-0 md:mt-2">
+                            <span class="material-symbols-outlined text-base sm:text-lg">account_tree</span>
+                            <span>Bagan Trah &rarr;</span>
                         </a>
                     </nav>
                 </div>
             </aside>
 
-            <div class="md:col-span-9 space-y-md">
+            <div class="md:col-span-9 space-y-4 sm:space-y-md">
                 
-                <section class="bento-card p-lg block" id="content-basic">
-                    <div class="flex items-center justify-between mb-lg">
-                        <h2 class="font-headline-md text-headline-md text-primary">Informasi Personal</h2>
+                <section class="bento-card p-5 sm:p-lg block" id="content-basic">
+                    <div class="flex items-center justify-between mb-4 sm:mb-lg">
+                        <h2 class="text-lg sm:text-xl md:text-headline-md font-bold text-primary">Informasi Personal</h2>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-xl border-b border-surface-variant pb-lg mb-lg">
-                        <div class="space-y-md">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 border-b border-surface-variant pb-6 mb-6">
+                        <div class="space-y-4">
                             <div>
-                                <label class="font-label-md text-label-md text-on-tertiary-fixed-variant block mb-xs">Nama Lengkap</label>
-                                <p class="font-body-lg text-body-lg font-semibold">{{ $person->nama_lengkap }}</p>
+                                <label class="text-xs font-semibold text-outline block mb-1">Nama Lengkap</label>
+                                <p class="text-sm sm:text-base font-bold text-on-surface">{{ $person->nama_lengkap }}</p>
                             </div>
                             <div>
-                                <label class="font-label-md text-label-md text-on-tertiary-fixed-variant block mb-xs">Jenis Kelamin</label>
-                                <p class="font-body-lg text-body-lg inline-flex items-center gap-1.5">
+                                <label class="text-xs font-semibold text-outline block mb-1">Jenis Kelamin</label>
+                                <p class="text-sm sm:text-base inline-flex items-center gap-1.5 font-medium">
                                     @if($person->jenis_kelamin == 'L')
                                         <i class="bi bi-gender-male text-secondary"></i> Laki-laki
                                     @else
@@ -268,15 +285,15 @@
                                 </p>
                             </div>
                             <div>
-                                <label class="font-label-md text-label-md text-on-tertiary-fixed-variant block mb-xs">Status Pernikahan</label>
-                                <p class="font-body-lg text-body-lg">{{ $person->status_pernikahan ?? 'Belum Menikah' }}</p>
+                                <label class="text-xs font-semibold text-outline block mb-1">Status Pernikahan</label>
+                                <p class="text-sm sm:text-base font-medium">{{ $person->status_pernikahan ?? 'Belum Menikah' }}</p>
                             </div>
                             @if($person->status_pernikahan == 'Menikah' && $person->nama_pasangan)
                             <div>
-                                <label class="font-label-md text-label-md text-on-tertiary-fixed-variant block mb-xs">
+                                <label class="text-xs font-semibold text-outline block mb-1">
                                     Pasangan ({{ $person->jenis_kelamin == 'L' ? 'Istri' : 'Suami' }})
                                 </label>
-                                <ul class="list-disc pl-sm font-body-lg text-body-lg text-secondary font-medium">
+                                <ul class="list-disc pl-4 text-sm sm:text-base text-secondary font-medium space-y-1">
                                     @foreach(explode(',', $person->nama_pasangan) as $pasangan)
                                         <li>{{ trim($pasangan) }}</li>
                                     @endforeach
@@ -284,62 +301,63 @@
                             </div>
                             @endif
                         </div>
-                        <div class="space-y-md">
+                        <div class="space-y-4">
                             <div>
-                                <label class="font-label-md text-label-md text-on-tertiary-fixed-variant block mb-xs">Tempat Lahir</label>
-                                <p class="font-body-lg text-body-lg">{{ $person->tempat_lahir ?? '-' }}</p>
+                                <label class="text-xs font-semibold text-outline block mb-1">Tempat Lahir</label>
+                                <p class="text-sm sm:text-base font-medium">{{ $person->tempat_lahir ?? '-' }}</p>
                             </div>
                             <div>
-                                <label class="font-label-md text-label-md text-on-tertiary-fixed-variant block mb-xs">Tanggal Lahir</label>
-                                <p class="font-body-lg text-body-lg">{{ $person->tanggal_lahir ? \Carbon\Carbon::parse($person->tanggal_lahir)->translatedFormat('d F Y') : '-' }}</p>
+                                <label class="text-xs font-semibold text-outline block mb-1">Tanggal Lahir</label>
+                                <p class="text-sm sm:text-base font-medium">{{ $person->tanggal_lahir ? \Carbon\Carbon::parse($person->tanggal_lahir)->translatedFormat('d F Y') : '-' }}</p>
                             </div>
                             @if($person->tanggal_wafat)
                             <div>
-                                <label class="font-label-md text-label-md text-error block mb-xs">Tanggal Wafat</label>
-                                <p class="font-body-lg text-body-lg text-error font-semibold">{{ \Carbon\Carbon::parse($person->tanggal_wafat)->translatedFormat('d F Y') }}</p>
+                                <label class="text-xs font-semibold text-error block mb-1">Tanggal Wafat</label>
+                                <p class="text-sm sm:text-base text-error font-bold">{{ \Carbon\Carbon::parse($person->tanggal_wafat)->translatedFormat('d F Y') }}</p>
                             </div>
                             @endif
                         </div>
                     </div>
 
-                    <div class="space-y-lg">
+                    <div class="space-y-6">
                         <div>
-                            <h3 class="font-title-lg text-title-lg text-primary mb-sm flex items-center gap-xs">
-                                <span class="material-symbols-outlined text-md">diversity_3</span> Orang Tua Kandung
+                            <h3 class="text-base sm:text-lg font-bold text-primary mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-secondary text-xl">diversity_3</span> Orang Tua Kandung
                             </h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
-                                <div class="p-md border border-outline-variant bg-surface-container-low rounded-xl flex items-center gap-md hover:border-secondary transition-colors">
-                                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-md">
+                                <div class="p-3.5 sm:p-md border border-outline-variant bg-surface-container-low rounded-xl flex items-center gap-3 hover:border-secondary transition-colors">
+                                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-xs">
                                         <span class="material-symbols-outlined text-secondary">woman</span>
                                     </div>
-                                    <div>
-                                        <p class="font-label-md text-label-md text-outline">Ibu Kandung</p>
+                                    <div class="min-w-0">
+                                        <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Ibu Kandung</p>
                                         @if($person->nama_ibu_non_raja)
-                                            <p class="font-body-md text-body-md font-bold text-primary">
-                                                {{ $person->nama_ibu_non_raja }} <span class="text-[11px] font-normal text-outline block italic">(Masyarakat Biasa / Non-Raja)</span>
+                                            <p class="text-xs sm:text-sm font-bold text-primary truncate">
+                                                {{ $person->nama_ibu_non_raja }}
                                             </p>
+                                            <span class="text-[10px] text-outline block italic">(Non-Raja)</span>
                                         @elseif($person->mother)
-                                            <a href="{{ route('person.detail', $person->mother->id) }}" class="font-body-md text-body-md font-bold text-primary hover:text-secondary hover:underline">
+                                            <a href="{{ route('person.detail', $person->mother->id) }}" class="text-xs sm:text-sm font-bold text-primary hover:text-secondary hover:underline truncate block">
                                                 {{ $person->mother->has_duplicate_name ? $person->mother->nama_nasab : $person->mother->nama_lengkap }}
                                             </a>
                                         @else
-                                            <p class="font-body-md text-body-md italic text-outline">Tidak terdata</p>
+                                            <p class="text-xs sm:text-sm italic text-outline">Tidak terdata</p>
                                         @endif
                                     </div>
                                 </div>
 
-                                <div class="p-md border border-outline-variant bg-surface-container-low rounded-xl flex items-center gap-md hover:border-secondary transition-colors">
-                                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                                <div class="p-3.5 sm:p-md border border-outline-variant bg-surface-container-low rounded-xl flex items-center gap-3 hover:border-secondary transition-colors">
+                                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-xs">
                                         <span class="material-symbols-outlined text-secondary">man</span>
                                     </div>
-                                    <div>
-                                        <p class="font-label-md text-label-md text-outline">Ayah Kandung</p>
+                                    <div class="min-w-0">
+                                        <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Ayah Kandung</p>
                                         @if($person->father)
-                                            <a href="{{ route('person.detail', $person->father->id) }}" class="font-body-md text-body-md font-bold text-primary hover:text-secondary hover:underline">
+                                            <a href="{{ route('person.detail', $person->father->id) }}" class="text-xs sm:text-sm font-bold text-primary hover:text-secondary hover:underline truncate block">
                                                 {{ $person->father->has_duplicate_name ? $person->father->nama_nasab : $person->father->nama_lengkap }}
                                             </a>
                                         @else
-                                            <p class="font-body-md text-body-md italic text-outline">Tidak terdata</p>
+                                            <p class="text-xs sm:text-sm italic text-outline">Tidak terdata</p>
                                         @endif
                                     </div>
                                 </div>
@@ -347,19 +365,19 @@
                         </div>
 
                         <div>
-                            <h3 class="font-title-lg text-title-lg text-primary mb-sm flex items-center gap-xs">
-                                <span class="material-symbols-outlined text-md">group</span> Saudara Kandung
+                            <h3 class="text-base sm:text-lg font-bold text-primary mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-secondary text-xl">group</span> Saudara Kandung
                             </h3>
                             @if(count($saudaraKandung) > 0)
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-sm">
                                     @foreach($saudaraKandung as $sibling)
-                                        <a href="{{ route('person.detail', $sibling->id) }}" class="p-sm border border-outline-variant rounded-xl flex items-center gap-md hover:border-secondary transition-colors group bg-white">
-                                            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
+                                        <a href="{{ route('person.detail', $sibling->id) }}" class="p-3 border border-outline-variant rounded-xl flex items-center gap-3 hover:border-secondary transition-colors group bg-white shadow-xs">
+                                            <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
                                                 <span class="material-symbols-outlined text-primary text-sm">person</span>
                                             </div>
-                                            <div>
-                                                <p class="font-body-md text-body-md font-bold text-primary group-hover:text-secondary group-hover:underline">{{ $sibling->has_duplicate_name ? $sibling->nama_nasab : $sibling->nama_lengkap }}</p>
-                                                <p class="font-label-md text-label-md text-outline inline-flex items-center gap-1">
+                                            <div class="min-w-0">
+                                                <p class="text-xs sm:text-sm font-bold text-primary group-hover:text-secondary group-hover:underline truncate">{{ $sibling->has_duplicate_name ? $sibling->nama_nasab : $sibling->nama_lengkap }}</p>
+                                                <p class="text-[11px] text-outline inline-flex items-center gap-1">
                                                     @if($sibling->jenis_kelamin == 'L')
                                                         <i class="bi bi-gender-male text-secondary"></i> Laki-laki
                                                     @else
@@ -371,24 +389,27 @@
                                     @endforeach
                                 </div>
                             @else
-                                <p class="text-sm italic text-on-surface-variant bg-surface-container-low p-sm rounded-lg">Tidak ada data saudara kandung yang terdaftar dengan Orang Tua yang sama.</p>
+                                <div class="p-3.5 bg-surface-container-low rounded-xl text-xs sm:text-sm italic text-on-surface-variant flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base text-outline">info</span>
+                                    <span>Tidak ada data saudara kandung yang terdaftar dengan orang tua yang sama.</span>
+                                </div>
                             @endif
                         </div>
 
                         <div>
-                            <h3 class="font-title-lg text-title-lg text-primary mb-sm flex items-center gap-xs">
-                                <span class="material-symbols-outlined text-md">child_care</span> Keturunan Langsung (Anak)
+                            <h3 class="text-base sm:text-lg font-bold text-primary mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-secondary text-xl">child_care</span> Keturunan Langsung (Anak)
                             </h3>
                             @if(count($anakKandung) > 0)
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-sm">
                                     @foreach($anakKandung as $child)
-                                        <a href="{{ route('person.detail', $child->id) }}" class="p-sm border border-outline-variant rounded-xl flex items-center gap-md hover:border-secondary transition-colors group bg-white">
-                                            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
+                                        <a href="{{ route('person.detail', $child->id) }}" class="p-3 border border-outline-variant rounded-xl flex items-center gap-3 hover:border-secondary transition-colors group bg-white shadow-xs">
+                                            <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
                                                 <span class="material-symbols-outlined text-primary text-sm">child_care</span>
                                             </div>
-                                            <div>
-                                                <p class="font-body-md text-body-md font-bold text-primary group-hover:text-secondary group-hover:underline">{{ $child->has_duplicate_name ? $child->nama_nasab : $child->nama_lengkap }}</p>
-                                                <p class="font-label-md text-label-md text-outline inline-flex items-center gap-1">
+                                            <div class="min-w-0">
+                                                <p class="text-xs sm:text-sm font-bold text-primary group-hover:text-secondary group-hover:underline truncate">{{ $child->has_duplicate_name ? $child->nama_nasab : $child->nama_lengkap }}</p>
+                                                <p class="text-[11px] text-outline inline-flex items-center gap-1">
                                                     @if($child->jenis_kelamin == 'L')
                                                         <i class="bi bi-gender-male text-secondary"></i> Laki-laki
                                                     @else
@@ -400,16 +421,19 @@
                                     @endforeach
                                 </div>
                             @else
-                                <p class="text-sm italic text-on-surface-variant bg-surface-container-low p-sm rounded-lg">Tidak ada data anak yang terdaftar.</p>
+                                <div class="p-3.5 bg-surface-container-low rounded-xl text-xs sm:text-sm italic text-on-surface-variant flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base text-outline">info</span>
+                                    <span>Tidak ada data anak yang terdaftar untuk tokoh ini.</span>
+                                </div>
                             @endif
                         </div>
                     </div>
                 </section>
 
-                <section class="bento-card p-lg hidden" id="content-biografi">
-                    <h2 class="font-headline-md text-headline-md text-primary mb-lg">Biografi / Catatan Sejarah</h2>
-                    <div class="bg-surface-container-low p-md rounded-xl border border-outline-variant">
-                        <p class="text-on-surface-variant font-body-lg text-body-lg leading-relaxed whitespace-pre-line text-justify">
+                <section class="bento-card p-5 sm:p-lg hidden" id="content-biografi">
+                    <h2 class="text-lg sm:text-xl md:text-headline-md font-bold text-primary mb-4 sm:mb-lg">Biografi / Catatan Sejarah</h2>
+                    <div class="bg-surface-container-low p-4 sm:p-md rounded-xl border border-outline-variant">
+                        <p class="text-on-surface-variant text-xs sm:text-sm md:text-base leading-relaxed whitespace-pre-line text-justify">
                             {{ $person->biografi ?? 'Belum ada data biografi tertulis lengkap untuk tokoh ini.' }}
                         </p>
                     </div>
@@ -420,16 +444,16 @@
     </main>
 
     <footer class="bg-primary text-on-primary w-full mt-auto border-t border-primary-container">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-md px-margin-mobile md:px-margin-desktop py-lg max-w-7xl mx-auto items-center">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-md px-4 sm:px-margin-mobile md:px-margin-desktop py-6 sm:py-lg max-w-7xl mx-auto items-center">
             <div>
-                <div class="text-headline-md font-headline-md text-on-primary mb-base">Silsilah Keluarga</div>
-                <p class="font-body-md text-body-md opacity-80">© 2026 Silsilah Keluarga. Seluruh Hak Cipta Dilindungi. Institusi Genealogi Digital.</p>
+                <div class="text-base sm:text-lg font-bold text-on-primary mb-1">Silsilah Keluarga</div>
+                <p class="text-xs opacity-75">© 2026 Silsilah Keluarga. Seluruh Hak Cipta Dilindungi. Institusi Genealogi Digital.</p>
             </div>
-            <div class="flex flex-wrap md:justify-end gap-md">
-                <a class="text-on-primary-container hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Kebijakan Privasi</a>
-                <a class="text-on-primary-container hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Syarat &amp; Ketentuan</a>
-                <a class="text-on-primary-container hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Bantuan</a>
-                <a class="text-on-primary-container hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Kontak Kami</a>
+            <div class="flex flex-wrap md:justify-end gap-3 sm:gap-md text-xs sm:text-sm">
+                <a class="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#">Kebijakan Privasi</a>
+                <a class="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#">Syarat &amp; Ketentuan</a>
+                <a class="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#">Bantuan</a>
+                <a class="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#">Kontak Kami</a>
             </div>
         </div>
     </footer>
@@ -438,20 +462,32 @@
         function switchTab(tabId) {
             const sections = ['content-basic', 'content-biografi'];
             sections.forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-                document.getElementById(id).classList.remove('block');
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('block');
+                }
             });
 
             const buttons = ['btn-basic', 'btn-biografi'];
             buttons.forEach(id => {
-                document.getElementById(id).classList.remove('active-tab');
-                document.getElementById(id).classList.add('text-on-surface-variant');
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.classList.remove('active-tab');
+                    btn.classList.add('text-on-surface-variant');
+                }
             });
 
-            document.getElementById('content-' + tabId).classList.remove('hidden');
-            document.getElementById('content-' + tabId).classList.add('block');
-            document.getElementById('btn-' + tabId).classList.add('active-tab');
-            document.getElementById('btn-' + tabId).classList.remove('text-on-surface-variant');
+            const targetSection = document.getElementById('content-' + tabId);
+            const targetButton = document.getElementById('btn-' + tabId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('block');
+            }
+            if (targetButton) {
+                targetButton.classList.add('active-tab');
+                targetButton.classList.remove('text-on-surface-variant');
+            }
         }
     </script>
 </body>
