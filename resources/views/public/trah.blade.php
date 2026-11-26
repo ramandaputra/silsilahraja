@@ -273,19 +273,22 @@
                     <!-- KELOMPOK INDIVIDU / PASANGAN LELUHUR PUNCAK -->
                     <div class="inline-flex items-center gap-2">
                         <a href="{{ route('person.trah', $rootAncestor->id) }}" class="trah-card {{ $rootAncestor->id == $person->id ? 'active' : '' }}">
-                            <div class="flex items-center gap-1.5 whitespace-nowrap">
+                            <div class="flex items-start gap-1.5 whitespace-nowrap">
                                 @if($rootAncestor->jenis_kelamin == 'L')
-                                    <i class="bi bi-gender-male text-blue-500 text-sm shrink-0"></i>
+                                    <i class="bi bi-gender-male text-blue-500 text-sm shrink-0 mt-0.5"></i>
                                 @else
-                                    <i class="bi bi-gender-female text-rose-500 text-sm shrink-0"></i>
+                                    <i class="bi bi-gender-female text-rose-500 text-sm shrink-0 mt-0.5"></i>
                                 @endif
-                                <span class="font-bold">{{ $rootAncestor->nama_lengkap }}</span>
+                                <div class="flex flex-col text-left">
+                                    <span class="font-bold leading-tight">{{ $rootAncestor->nama_lengkap }}</span>
+                                    @if(!empty($rootAncestor->gelar_pembeda))
+                                        <span class="text-[10px] text-primary font-semibold leading-tight mt-0.5 text-left">{{ $rootAncestor->gelar_pembeda }}</span>
+                                    @endif
+                                    @if($rootAncestor->has_duplicate_name && $rootAncestor->nasab)
+                                        <span class="text-[9px] text-amber-700 font-semibold leading-tight mt-0.5 text-left">{{ $rootAncestor->nasab }}</span>
+                                    @endif
+                                </div>
                             </div>
-                            @if(!empty($rootAncestor->gelar_pembeda))
-                                <span class="block text-[10px] text-primary font-semibold mt-0.5">{{ $rootAncestor->gelar_pembeda }}</span>
-                            @elseif($rootAncestor->has_duplicate_name && $rootAncestor->nasab)
-                                <span class="block text-[9px] text-amber-700 font-semibold mt-0.5">{{ $rootAncestor->nasab }}</span>
-                            @endif
                         </a>
                         
                         @if($rootAncestor->status_pernikahan == 'Menikah' && $rootAncestor->nama_pasangan)
