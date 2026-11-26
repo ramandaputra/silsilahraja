@@ -34,8 +34,9 @@
            BAGAN SILSILAH MANUSKRIP DIRAJA (ZURIAT TRADISIONAL)
            ======================================================== */
         .trah-container {
-            display: block;
-            text-align: center;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
             overflow-x: auto;
             overflow-y: hidden;
             padding: 24px 16px;
@@ -44,6 +45,7 @@
             cursor: grab;
             position: relative;
             background-color: #ffffff;
+            min-height: 250px;
         }
         .trah-container.is-grabbing {
             cursor: grabbing !important;
@@ -53,6 +55,7 @@
             display: inline-block;
             text-align: center;
             margin: 0 auto;
+            flex-shrink: 0;
         }
         .trah-node-wrapper {
             display: flex;
@@ -371,44 +374,53 @@
     <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto w-full px-3 sm:px-4 py-3 sm:py-6">
         
-        <!-- Hint Interaktif Khusus Mobile -->
-        <div class="sm:hidden flex items-center gap-2 p-2.5 bg-blue-50/90 border border-blue-200/70 rounded-xl text-xs text-primary mb-3 shadow-xs no-print">
-            <span class="material-symbols-outlined text-secondary text-base shrink-0">touch_app</span>
-            <span>Sentuh &amp; geser layar untuk menelusuri bagan. Gunakan tombol <strong>Paskan</strong> untuk melihat seluruh pohon.</span>
-        </div>
+        <!-- Toolbar Navigasi & Kontrol Bagan (Sangat Rapi & Responsif) -->
+        <div class="space-y-2 mb-4 no-print">
+            <!-- Baris 1: Tombol Navigasi Cepat Seimbang 3 Kolom -->
+            <div class="grid grid-cols-3 gap-2">
+                <a href="{{ route('person.detail', $person->id) }}" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all min-h-[38px]">
+                    <span class="material-symbols-outlined text-[15px]">arrow_back</span>
+                    <span class="truncate">Profil Tokoh</span>
+                </a>
+                <button type="button" onclick="scrollToActivePerson()" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-bold text-primary bg-white hover:bg-surface-container border border-gray-300 shadow-xs active:scale-95 transition-all min-h-[38px]" title="Gulir Layar Menuju Tokoh Fokus">
+                    <span class="material-symbols-outlined text-[15px] text-secondary">my_location</span>
+                    <span class="truncate">Fokus Tokoh</span>
+                </button>
+                <button type="button" onclick="printFamilyTree()" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-bold text-white bg-secondary hover:bg-secondary/90 shadow-xs active:scale-95 transition-all min-h-[38px]" title="Cetak Bagan Pas 1 Halaman A4">
+                    <i class="fa-solid fa-print text-xs"></i>
+                    <span class="truncate">Cetak A4</span>
+                </button>
+            </div>
 
-        <!-- Toolbar Navigasi & Zoom -->
-        <div class="flex flex-wrap justify-between items-center gap-2.5 mb-4 no-print">
-            <a href="{{ route('person.detail', $person->id) }}" class="group inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold text-white bg-primary hover:bg-secondary shadow-xs active:scale-95 transition-all min-h-[38px]">
-                <span class="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center text-white group-hover:-translate-x-0.5 transition-transform">
-                    <span class="material-symbols-outlined text-[14px]">arrow_back</span>
-                </span>
-                <span>Kembali ke Profil</span>
-            </a>
-            
-            <div class="flex flex-wrap items-center gap-2">
-                <!-- Kontrol Zoom & Ukuran Layar -->
-                <div class="inline-flex items-center bg-white border border-gray-200 rounded-lg shadow-xs overflow-hidden min-h-[38px]">
-                    <button type="button" onclick="zoomTree(-0.1)" class="w-9 h-9 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-primary transition" title="Perkecil Tampilan" aria-label="Perkecil">
+            <!-- Baris 2: Kontrol Zoom & Tampilan (1 Baris Ringkas & Seimbang) -->
+            <div class="flex items-center justify-between bg-white border border-gray-200 rounded-xl shadow-xs p-1 min-h-[40px]">
+                <div class="flex items-center">
+                    <button type="button" onclick="zoomTree(-0.1)" class="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-lg active:scale-90 transition" title="Perkecil">
                         <i class="fa-solid fa-minus text-xs"></i>
                     </button>
-                    <span id="zoom-badge" class="px-2 py-1 text-xs font-semibold text-gray-700 min-w-[48px] text-center select-none border-x border-gray-100">100%</span>
-                    <button type="button" onclick="zoomTree(0.1)" class="w-9 h-9 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-primary transition" title="Perbesar Tampilan" aria-label="Perbesar">
+                    <span id="zoom-badge" class="px-2 py-1 text-xs font-bold text-primary min-w-[46px] text-center select-none font-mono">100%</span>
+                    <button type="button" onclick="zoomTree(0.1)" class="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-100 rounded-lg active:scale-90 transition" title="Perbesar">
                         <i class="fa-solid fa-plus text-xs"></i>
                     </button>
-                    <button type="button" onclick="fitTreeToScreen()" class="px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-primary border-l border-gray-100 transition inline-flex items-center gap-1 min-h-[38px]" title="Sesuaikan Tampilan dengan Lebar Layar">
-                        <i class="fa-solid fa-expand text-[10px] text-gray-500"></i>
-                        <span>Paskan</span>
+                </div>
+                
+                <div class="h-4 w-px bg-gray-200 mx-1"></div>
+
+                <div class="flex items-center gap-1.5">
+                    <button type="button" onclick="fitTreeToScreen()" class="px-3 py-1.5 text-xs font-bold text-secondary bg-blue-50 hover:bg-blue-100 rounded-lg inline-flex items-center gap-1 active:scale-95 transition" title="Sesuaikan Tampilan dengan Lebar Layar">
+                        <span class="material-symbols-outlined text-[15px]">fit_screen</span>
+                        <span>Paskan Layar</span>
                     </button>
-                    <button type="button" onclick="resetZoom()" class="px-2.5 py-1.5 text-xs text-gray-500 hover:bg-gray-100 hover:text-primary border-l border-gray-100 transition min-h-[38px]" title="Reset Ukuran (100%)">
-                        Reset
+                    <button type="button" onclick="resetZoom()" class="px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg active:scale-95 transition" title="Reset Ukuran Normal (100%)">
+                        <span>Reset</span>
                     </button>
                 </div>
+            </div>
 
-                <button type="button" onclick="printFamilyTree()" class="bg-primary text-white px-3.5 py-2 rounded-lg text-xs shadow-xs hover:bg-secondary inline-flex items-center gap-1.5 transition font-semibold min-h-[38px]">
-                    <i class="fa-solid fa-print"></i>
-                    <span>Cetak Bagan</span>
-                </button>
+            <!-- Petunjuk Ringkas & Elegan (1 Baris Sederhana) -->
+            <div class="text-[11px] text-gray-400 flex items-center justify-center gap-1.5 pt-0.5">
+                <span class="material-symbols-outlined text-xs text-secondary">swipe</span>
+                <span>Geser bagan untuk menjelajah &bull; Tekan <strong>Fokus Tokoh</strong> untuk melihat subjek</span>
             </div>
         </div>
 
@@ -416,7 +428,7 @@
         <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-4 sm:p-6 md:p-8 trah-main-card">
             
             <!-- Header Judul Silsilah Zuriat (Format Tradisional) -->
-            <div class="text-left border-b border-gray-200 pb-3 sm:pb-4 mb-4 sm:mb-6 print:pb-1.5 print:mb-2 print:border-b-gray-400">
+            <div class="text-center sm:text-left border-b border-gray-200 pb-3 sm:pb-4 mb-4 sm:mb-6 print:pb-1.5 print:mb-2 print:border-b-gray-400">
                 <div class="text-[10px] sm:text-[11px] print:text-[8.5px] font-bold text-gray-400 uppercase tracking-widest mb-1 print:mb-0.5">
                     Bagan Silsilah Keturunan Diraja &bull; Garis Nasab Menuju Leluhur Puncak: {{ $rootAncestor->nama_lengkap }}
                 </div>
@@ -478,13 +490,14 @@
         let currentZoom = 1;
 
         function zoomTree(step) {
-            currentZoom = Math.max(0.3, Math.min(2.0, Math.round((currentZoom + step) * 10) / 10));
+            currentZoom = Math.max(0.2, Math.min(2.0, Math.round((currentZoom + step) * 10) / 10));
             applyZoom(currentZoom);
         }
 
         function resetZoom() {
             currentZoom = 1;
             applyZoom(1);
+            centerRootAncestor();
         }
 
         function fitTreeToScreen() {
@@ -492,30 +505,73 @@
             const container = document.querySelector('.trah-container');
             if (!tree || !container) return;
 
-            // Reset scale sejenak untuk mengukur lebar asli bagan
-            tree.style.transform = 'scale(1)';
-            const treeWidth = tree.scrollWidth || tree.offsetWidth;
-            const containerWidth = container.clientWidth - 32;
+            // Reset zoom terlebih dahulu agar membaca dimensi asli
+            applyZoom(1);
+            
+            setTimeout(() => {
+                const treeWidth = tree.scrollWidth || tree.offsetWidth;
+                const containerWidth = container.clientWidth - 24;
 
-            if (treeWidth > containerWidth && containerWidth > 200) {
-                const fitScale = Math.max(0.35, Math.min(1.0, Math.floor((containerWidth / treeWidth) * 100) / 100));
-                currentZoom = fitScale;
-                applyZoom(fitScale);
-                container.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                resetZoom();
-            }
+                if (treeWidth > containerWidth && containerWidth > 150) {
+                    const fitScale = Math.max(0.25, Math.min(1.0, Math.floor((containerWidth / treeWidth) * 100) / 100));
+                    currentZoom = fitScale;
+                    applyZoom(fitScale);
+                    container.scrollLeft = 0;
+                } else {
+                    resetZoom();
+                }
+            }, 30);
         }
 
         function applyZoom(zoomLevel) {
             const tree = document.getElementById('trah-tree-root');
             if (!tree) return;
-            tree.style.transform = `scale(${zoomLevel})`;
-            tree.style.transformOrigin = 'top center';
+            
+            if ('zoom' in tree.style) {
+                tree.style.zoom = zoomLevel;
+                tree.style.transform = '';
+                tree.style.transformOrigin = '';
+            } else {
+                tree.style.transform = `scale(${zoomLevel})`;
+                tree.style.transformOrigin = 'top center';
+            }
             
             const badge = document.getElementById('zoom-badge');
             if (badge) {
                 badge.innerText = Math.round(zoomLevel * 100) + '%';
+            }
+        }
+
+        // Posisikan Leluhur Puncak tepat di tengah horizontal pandangan layar
+        function centerRootAncestor() {
+            const container = document.querySelector('.trah-container');
+            const rootBox = document.querySelector('#trah-tree-root > .trah-node-wrapper > .trah-person-box');
+            if (container && rootBox) {
+                const rootBoxRect = rootBox.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                const scrollTarget = container.scrollLeft + (rootBoxRect.left - containerRect.left) - (container.clientWidth / 2) + (rootBox.offsetWidth / 2);
+                container.scrollLeft = Math.max(0, scrollTarget);
+            }
+        }
+
+        // Gulir layar langsung ke Tokoh Fokus
+        function scrollToActivePerson() {
+            const container = document.querySelector('.trah-container');
+            const activeCard = document.querySelector('.trah-person-box.active');
+            if (container && activeCard) {
+                const activeRect = activeCard.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                const scrollTarget = container.scrollLeft + (activeRect.left - containerRect.left) - (container.clientWidth / 2) + (activeCard.offsetWidth / 2);
+                container.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' });
+                activeCard.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                
+                // Highlight halus sejenak
+                activeCard.style.outline = '2px solid #0059bb';
+                activeCard.style.outlineOffset = '2px';
+                setTimeout(() => {
+                    activeCard.style.outline = '';
+                    activeCard.style.outlineOffset = '';
+                }, 2500);
             }
         }
 
@@ -591,16 +647,12 @@
         window.addEventListener('beforeprint', preparePrintScale);
         window.addEventListener('afterprint', resetPrintScale);
 
-        // Auto-center ke tokoh saat halaman dibuka
+        // Saat halaman pertama kali dibuka, posisikan Leluhur Puncak tepat di tengah
         window.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.trah-container');
-            const activeCard = document.querySelector('.trah-person-box.active');
-            if (container && activeCard) {
-                const cardLeft = activeCard.getBoundingClientRect().left;
-                const containerLeft = container.getBoundingClientRect().left;
-                const scrollTarget = container.scrollLeft + (cardLeft - containerLeft) - (container.clientWidth / 2) + (activeCard.offsetWidth / 2);
-                container.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' });
-            }
+            centerRootAncestor();
+        });
+        window.addEventListener('load', () => {
+            centerRootAncestor();
         });
 
         // Fitur drag-to-scroll & mouse wheel zoom yang fleksibel
