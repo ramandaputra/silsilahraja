@@ -105,49 +105,6 @@
         .trah-node:first-child::after {
             border-radius: 4px 0 0 0;
         }
-
-        /* PERCABANGAN VERTIKAL: Untuk cabang yang tidak menunjukkan keturunan lebih lanjut agar tidak melebar ke samping */
-        .trah-branch-vertical {
-            display: block !important;
-            position: relative;
-            padding: 20px 0 10px 0 !important;
-            margin: 0 auto !important;
-            list-style: none !important;
-        }
-        .trah-branch-vertical::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 50% !important;
-            bottom: 20px !important;
-            border-left: 1.5px solid #001e40 !important;
-            width: 0 !important;
-            height: auto !important;
-            margin-left: -0.75px !important;
-        }
-        .trah-node-vertical {
-            position: relative !important;
-            display: block !important;
-            margin-left: 50% !important;
-            padding: 4px 0 4px 16px !important;
-            list-style: none !important;
-            white-space: nowrap !important;
-            text-align: left !important;
-        }
-        .trah-node-vertical::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 50% !important;
-            left: 0 !important;
-            width: 16px !important;
-            height: 0 !important;
-            border-top: 1.5px solid #001e40 !important;
-            border-left: 0 !important;
-            right: auto !important;
-        }
-        .trah-node-vertical::after {
-            display: none !important;
-        }
         
         /* DESAIN KARTU NODE SUPER CLEAN */
         .trah-card {
@@ -306,48 +263,9 @@
                 <p class="hidden print:block text-[11px] text-gray-500 mt-1">Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }} WIB</p>
                 <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full text-xs font-medium mt-2.5 shadow-xs">
                     <span class="material-symbols-outlined text-sm">account_tree</span>
-                    <span>Bagan Relasi Persaudaraan Derajat 3 dari Cabang {{ $degree3Ancestor->nama_lengkap ?? $rootAncestor->nama_lengkap }}</span>
+                    <span>Bagan Silsilah Kekerabatan Terdekat</span>
                 </div>
             </div>
-
-            @if(isset($ancestryLine) && count($ancestryLine) > 1)
-                <!-- PITA MATA RANTAI NASAB DARI LELUHUR UTAMA -->
-                <div class="mb-6 p-4 bg-surface-container-low rounded-xl border border-outline-variant/60 text-left no-print">
-                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                        <div class="flex items-center gap-2 text-primary font-bold text-sm">
-                            <span class="material-symbols-outlined text-secondary text-base">account_tree</span>
-                            <span>Jalur Garis Keturunan dari Leluhur Utama</span>
-                        </div>
-                        <span class="text-xs bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-full font-semibold">
-                            Generasi ke-{{ count($ancestryLine) }} dari {{ $ultimateAncestor->nama_lengkap }}
-                        </span>
-                    </div>
-
-                    <!-- Breadcrumbs Rantai Nasab -->
-                    <div class="flex flex-wrap items-center gap-1.5 text-xs">
-                        @foreach($ancestryLine as $idx => $ancestor)
-                            <a href="{{ route('person.trah', $ancestor->id) }}" 
-                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition-all {{ $ancestor->id == $person->id ? 'bg-primary text-white border-primary font-bold shadow-xs' : ($idx === 0 ? 'bg-primary-container text-white border-primary font-semibold' : 'bg-white hover:bg-secondary-fixed text-primary border-outline-variant/70') }}"
-                               title="Buka Trah {{ $ancestor->nama_lengkap }}">
-                                @if($ancestor->jenis_kelamin == 'L')
-                                    <i class="bi bi-gender-male {{ $ancestor->id == $person->id || $idx === 0 ? 'text-blue-200' : 'text-blue-500' }} text-xs shrink-0"></i>
-                                @else
-                                    <i class="bi bi-gender-female {{ $ancestor->id == $person->id || $idx === 0 ? 'text-rose-200' : 'text-rose-500' }} text-xs shrink-0"></i>
-                                @endif
-                                <span>{{ $ancestor->nama_lengkap }}</span>
-                                @if($idx === 0)
-                                    <span class="text-[9px] bg-white/20 text-white px-1.5 py-0.2 rounded font-medium">Leluhur Utama</span>
-                                @elseif($ancestor->id == $person->id)
-                                    <span class="text-[9px] bg-white/20 text-white px-1.5 py-0.2 rounded font-medium">Fokus</span>
-                                @endif
-                            </a>
-                            @if($idx < count($ancestryLine) - 1)
-                                <span class="text-gray-400 font-bold mx-0.5 select-none">➔</span>
-                            @endif
-                        @endforeach
-                    </div>
-                </div>
-            @endif
             
             <div class="trah-container">
                 <div id="trah-tree-root" style="display: inline-block;">
@@ -390,34 +308,14 @@
 
                     <!-- Keturunan -->
                     @if(!$rootChildren->isEmpty())
-                        @php
-                            $rootHasGrandChildren = false;
-                            foreach ($rootChildren as $c) {
-                                if (!empty($childrenMap[$c->id])) {
-                                    $rootHasGrandChildren = true;
-                                    break;
-                                }
-                            }
-                            $rootContainsCurrentPerson = false;
-                            foreach ($rootChildren as $c) {
-                                if ($c->id == $person->id) {
-                                    $rootContainsCurrentPerson = true;
-                                    break;
-                                }
-                            }
-                            $rootIsVertical = (!$rootHasGrandChildren && !$rootContainsCurrentPerson && count($rootChildren) > 1)
-                                              || (!$rootHasGrandChildren && count($rootChildren) > 6);
-                        @endphp
-                        <ul class="{{ $rootIsVertical ? 'trah-branch-vertical' : 'trah-branch-horizontal' }}">
+                        <ul>
                             @foreach($rootChildren as $child)
                                 @include('public.partials.trah_node', [
                                     'node' => $child,
                                     'currentPersonId' => $person->id,
                                     'childrenMap' => $childrenMap,
                                     'relatives' => $relatives,
-                                    'peopleById' => $peopleById ?? [],
-                                    'isVerticalParent' => $rootIsVertical,
-                                    'unexpandedChildrenCount' => $unexpandedChildrenCount ?? []
+                                    'peopleById' => $peopleById ?? []
                                 ])
                             @endforeach
                         </ul>
